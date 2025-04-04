@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elegant Nepali/English Calendar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- Base & Variables --- */
+        :root {
+            --primary-hue: 275; /* Base hue for purple */
+            --primary-color: hsl(var(--primary-hue), 55%, 55%); /* Main Purple */
+            --primary-color-light: hsl(var(--primary-hue), 50%, 95%);
+            --primary-color-dark: hsl(var(--primary-hue), 55%, 45%);
+            --accent-color: hsl(330, 80%, 60%); /* Pink Accent */
+            --text-color: hsl(0, 0%, 20%);
+            --text-muted: hsl(0, 0%, 55%);
+            --bg-color: hsl(220, 20%, 98%); /* Very light grey-blue */
+            --panel-bg: #ffffff;
+            --border-color: hsl(210, 15%, 92%);
+            --today-bg: hsla(var(--primary-hue), 55%, 55%, 0.1);
+            --today-border: var(--primary-color);
+            --selected-bg: hsla(var(--primary-hue), 55%, 55%, 0.15);
+            --selected-border: var(--primary-color-dark);
+            --holiday-color: hsl(145, 55%, 40%); /* Softer Green */
+            --event-dot-size: 5px;
+            --border-radius-sm: 6px;
+            --border-radius-md: 10px;
+            --border-radius-lg: 16px;
+            --transition-fast: 0.2s ease-out;
+            --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Material Design standard */
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            font-size: 16px; /* Base font size */
+            /* overflow: hidden; Let JS handle this when modal is open */
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            color: inherit;
+        }
+        ul { list-style: none; padding: 0; margin: 0; }
+        h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 600; }
+
+        /* --- Calendar Icon Trigger --- */
+        #calendar-icon-container {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 999;
+        }
+        #calendar-icon {
+            background-color: var(--primary-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6em;
+            cursor: pointer;
+            box-shadow: 0 5px 15px hsla(var(--primary-hue), 50%, 50%, 0.3);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+        #calendar-icon:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px hsla(var(--primary-hue), 50%, 50%, 0.4);
+        }
+        #calendar-icon:active { transform: scale(1.02); }
+
+        /* --- Calendar Popup --- */
+        .calendar-popup-overlay { /* New overlay for background dimming */
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            overflow: hidden; /* Prevent content spill */
+            transform: translate(-50%, -50%) scale(1);
+            flex-grow: 1;
+            border-right: 1px solid var(--border-color);
+            padding: 15px 20px;
+            background-color: #fdfdff; /* Slightly off-white */
+            border-radius: 15px 0 0 0; /* Match popup corner */
+            font-size: 1.2em;
+            color: var(--primary-color);
+            color: var(--secondary-color);
+            font-size: 1.4em;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        .nav-button:hover { background-color: rgba(0, 0, 0, 0.05); }
+        .close-button { color: var(--text-muted); font-size: 1.3em; } /* Close specific */
+        /* --- Toggle & Config Area --- */
+            justify-content: flex-end; /* Align toggle right */
+            padding: 8px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #fdfdff;
+            font-size: 0.9em;
+        .toggle-switch { display: flex; align-items: center; cursor: pointer; }
+        .toggle-switch input { display: none; }
+            width: 34px; height: 18px; background-color: #ccc;
+            border-radius: 18px; position: relative; transition: background-color 0.3s;
+            margin-left: 8px;
+            height: 12px; width: 12px; left: 3px; bottom: 3px;
+            background-color: white; border-radius: 50%; transition: transform 0.3s;
+        .toggle-switch input:checked + .slider { background-color: var(--secondary-color); }
+        .toggle-switch input:checked + .slider::before { transform: translateX(16px); }
+            padding: 8px 5px;
+            background-color: #f8f9fc;
+            font-weight: 600;
+            font-size: 0.8em;
+            gap: 1px; /* Subtle grid lines */
+            background-color: var(--border-color); /* Grid line color */
+            overflow-y: auto; /* Scroll if needed, unlikely with fixed height */
+            padding: 1px; /* Offset gap */
+            transition: opacity 0.2s ease-out;
+        /* Animation classes */
+        .calendar-days.slide-left { /* Define slide animation if desired */ }
+        .calendar-days.slide-right { /* Define slide animation if desired */ }
+        .calendar-days.fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0.3; } to { opacity: 1; } }
+            background-color: var(--panel-bg);
+            box-sizing: border-box;
+            text-align: right; /* Align dates to top-right initially */
+            min-height: 75px; /* Min height for content */
+            transition: background-color 0.2s;
+            flex-direction: column; /* Stack content */
+            font-size: 0.85em;
+        .day:hover:not(.inactive) { background-color: #f1f3f8; }
+        .day.inactive { background-color: #f8f9fa; color: #bbb; cursor: default; }
+        /* Date Display (English/Nepali) */
+        .day-dates { line-height: 1.2; margin-bottom: auto; /* Push to top */ }
+        .eng-date, .nepali-date { display: block; transition: font-size 0.2s, color 0.2s; }
+        .nepali-date { font-size: 0.8em; color: var(--text-muted); }
+        .calendar-days.nepali-visible .nepali-date { font-size: 1.1em; font-weight: 500; color: var(--text-color); }
+        .calendar-days.nepali-visible .eng-date { font-size: 0.8em; color: var(--text-muted); }
+        .day.today { background-color: var(--today-bg); color: white; border-radius: 4px; }
+        .day.today .eng-date, .day.today .nepali-date { color: white; } /* Ensure both are white */
+        .day.today .eng-date { font-weight: bold; }
+        .calendar-days.nepali-visible .day.today .nepali-date { font-weight: bold; } /* Bold Nepali if prominent */
+        .calendar-days.nepali-visible .day.today .eng-date { font-weight: normal; color: rgba(255, 255, 255, 0.8); } /* De-emphasize Eng */
+        .day.selected { background-color: var(--selected-bg); box-shadow: inset 0 0 0 2px var(--secondary-color); border-radius: 4px;}
+            color: var(--holiday-color); /* Color the prominent date green */
+            font-weight: bold;
+        }
+        .holiday-dot { /* Optional dot */
+            position: absolute; top: 4px; left: 4px;
+            width: var(--event-dot-size); height: var(--event-dot-size);
+            background-color: var(--holiday-color); border-radius: 50%;
+        /* Event Indicator Area */
+            display: flex; flex-wrap: wrap; gap: 2px;
+            justify-content: flex-start; /* Align dots left */
+            position: absolute; bottom: 4px; left: 4px; right: 4px;
+        }
+        .more-events { /* If needed */ }
+        .event-count {
+            font-size: 0.7em; font-weight: bold; color: var(--text-muted);
+            margin-left: auto; /* Push count to the right */
+            background: rgba(0,0,0,0.05); padding: 0 3px; border-radius: 3px;
+        }
+
+        /* --- Events Panel --- */
+        .events-panel {
+            width: 300px; /* Fixed width for the panel */
+            flex-shrink: 0;
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
+            border-radius: 0 15px 15px 0; /* Match popup corner */
+        .events-panel.active { opacity: 1; visibility: visible; transition-delay: 0s; }
+
+        .event-panel-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); }
+        #event-panel-date { font-weight: 600; font-size: 1.1em; margin-bottom: 5px; }
+        /* For combined EN/NP display */
+        #event-panel-date .sub-date { font-size: 0.8em; color: var(--text-muted); display: block; margin-top: 2px;}
+            display: inline-block; background-color: var(--holiday-color); color: white;
+            padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: 500;
+            margin-top: 5px;
+            display: flex; flex-wrap: wrap; gap: 8px;
+            padding: 10px 20px; border-bottom: 1px solid var(--border-color);
+        }
+            padding: 4px 8px; border-radius: 15px;
+            background-color: #f1f3f4; font-size: 0.8em;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        .category-filter:hover { background-color: #e8eaf0; }
+        .category-filter.selected { background-color: var(--secondary-color); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .category-filter.selected .category-dot { border: 1px solid white; }
+            width: 10px; height: 10px; border-radius: 50%;
+        .category-name { color: var(--text-color); }
+            padding: 10px 0px; /* Add padding */
+             padding: 0px 10px 0px 15px; /* Padding around item */
+         .event-item:hover .delete-event { opacity: 1; }
+            background-color: #fff; /* Keep card white */
+            padding: 12px;
+            margin-bottom: 10px; /* Space between cards */
+            border-radius: 8px;
+            border-left: 4px solid var(--text-muted); /* Default border */
+            transition: box-shadow 0.2s;
+            display: flex; /* Use flex for layout */
+            justify-content: space-between; /* Push delete btn */
+            align-items: flex-start;
+        }
+        .event-card:hover { box-shadow: 0 3px 8px rgba(0,0,0,0.08); }
+
+        .event-content-wrapper { flex-grow: 1; margin-right: 10px; } /* Wrapper for text */
+
+        .event-header { display: flex; align-items: center; margin-bottom: 5px; }
+        .event-icon { margin-right: 8px; font-size: 1.1em; }
+        .event-name { font-weight: 500; color: var(--text-color); }
+        .event-details { font-size: 0.85em; color: var(--text-muted); display: flex; gap: 10px; }
+        .event-time::before { content: "\f017"; /* Font Awesome clock */ font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 4px; }
+        .event-location::before { content: "\f3c5"; /* Font Awesome map marker */ font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 4px; }
+            color: #e57373; /* Light red */
+            font-size: 1.2em; font-weight: bold;
+            opacity: 0.2; /* Hidden by default */
+            transition: opacity 0.2s, color 0.2s;
+            flex-shrink: 0; /* Prevent shrinking */
+            padding: 0 5px; /* Click area */
+        .delete-event:hover { color: #d32f2f; /* Darker red */ opacity: 1;}
+         .no-events::before { /* Optional subtle icon */
+             content: "\f11a"; /* Font Awesome empty calendar? Smile? */
+                width: 95%; height: 90vh; max-height: none;
+                flex-direction: column; /* Stack calendar and events */
+                top: 0; left: 0; transform: none; /* Full screen */
+                border-radius: 0;
+                box-shadow: none;
+            .calendar-popup.mobile-view { /* Class added by JS */ }
+            .calendar-main { border-right: none; border-bottom: 1px solid var(--border-color); }
+            .events-panel {
+                width: 100%; height: 40%; /* Take lower part */
+                flex-shrink: 0;
+                border-radius: 0;
+                position: absolute; /* Allow sliding up/down */
+                bottom: 0; left: 0;
+                transform: translateY(100%); /* Hidden below */
+                opacity: 1; visibility: visible; /* Always visible when needed */
+                transition: transform 0.3s ease-out;
+                box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            }
+            .events-panel.mobile-visible { transform: translateY(0); /* Slide up */ }
+
+            #event-categories-filter { padding: 8px 15px; }
+            .category-filter { padding: 3px 7px; font-size: 0.75em; }
+
+            .calendar-header { padding: 10px 15px; border-radius: 0; }
+            #month-year { font-size: 1.1em; }
+            .nav-button, .close-button { font-size: 1.2em; }
+            .calendar-config { padding: 6px 15px; font-size: 0.8em;}
+            .calendar-weekdays { padding: 6px 3px; }
+            .weekday { font-size: 0.75em; }
+            .day { min-height: 55px; padding: 4px; font-size: 0.8em; }
+            .event-dot { width: 4px; height: 4px; }
+            .event-count { font-size: 0.6em; }
+    <div id="calendar-popup" class="calendar-popup" role="dialog" aria-modal="true" aria-labelledby="calendar-title" aria-hidden="true">
+                <h2 id="month-year" aria-live="polite">Month Year</h2>
+                <button id="close-calendar" class="nav-button close-button" aria-label="Close Calendar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+                <label class="toggle-switch" for="nepali-date-toggle">
+                    Show Nepali Dates
+            <div class="calendar-weekdays">
+            <div id="calendar-days" class="calendar-days">
+                <!-- Days will be generated here -->
+        <!-- Events Side Panel -->
+        <aside id="events-panel" class="events-panel" aria-labelledby="event-panel-date">
+                <div id="event-panel-date">Select a date</div>
+            <div id="event-categories-filter">
+                <!-- Category filter options will be generated here -->
+            <ul id="event-panel-list" class="event-panel-list">
+            <!-- Close button for mobile view -->
+             <button id="close-events" class="nav-button close-button" aria-label="Close Events Panel" style="position: absolute; top: 10px; right: 10px; display: none;">
+                 <i class="fas fa-times"></i>
+             </button>
+        // Wait for the DOM to be fully loaded
+            console.log("Combined Calendar script loaded.");
+            const eventsPanel = document.getElementById('events-panel');
+            const closeEventsBtn = document.getElementById('close-events'); // For mobile panel
+            let selectedDate = null;
+            let selectedCategories = new Set();
+
+            // Event Data (Example - Fetch from backend in production)
+            const eventsData = {
+                '2024-07-15': [ { id: 1, name: 'Team Lunch', category: 'work', time: '12:30', location: 'Cafeteria', description: 'Team building lunch' } ],
+                '2024-07-22': [ { id: 3, name: 'Art Workshop', category: 'culture', time: '10:00', location: 'Art Gallery', description: 'Learn painting techniques' } ],
+                '2024-07-05': [ { id: 4, name: 'Summer Sale', category: 'promotion', time: 'All Day', location: 'City Mall', description: 'Up to 50% off' } ],
+                    { id: 5, name: 'Park Festival', category: 'holiday', time: '09:00', location: 'Central Park', description: 'Music and food stalls' },
+                    { id: 6, name: 'Coding Bootcamp', category: 'education', time: '14:00', location: 'Innovation Hub', description: 'Learn JavaScript basics' },
+                    { id: 7, name: 'Open Mic Night', category: 'entertainment', time: '20:00', location: 'The Local Pub', description: 'Showcase your talent' }
+                ],
+                 // Add data matching today/tomorrow for testing
+                 [(new Date().toISOString().split('T')[0])] : [ { id: 101, name: 'Daily Standup', category: 'work', time: '09:00', location: 'Office / Zoom', description: 'Quick updates' } ],
+                 [(() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0]; })()] : [ { id: 102, name: 'Client Meeting Prep', category: 'work', time: '11:00', location: 'Meeting Room 3', description: 'Prepare presentation' } ]
+            };
+
+             // Holiday Data (Example - BS Year dependent)
+             const holidays = {
+                nepali: { // Format: YYYY-MM-DD (Nepali)
+                    '2081-01-01': 'Nepali New Year',
+                    '2081-07-03': 'Dashain (Phulpati)', // Example
+                    '2081-07-21': 'Tihar (Laxmi Puja)', // Example
+                },
+                english: { // Format: YYYY-MM-DD (English)
+                    '2024-01-01': 'New Year\'s Day',
+                    '2024-12-25': 'Christmas Day'
+                }
+
+            // Category Config (For styling)
+            const categoryConfig = {
+                'entertainment': { color: '#ff7f50', icon: '🎵' },
+                'education': { color: '#4682b4', icon: '📚' },
+                'culture': { color: '#9370db', icon: '🎨' },
+                'holiday': { color: '#2e8b57', icon: '🎉' },
+                'promotion': { color: '#eec609', icon: '💰' }, // Adjusted yellow
+                'work': { color: '#0277bd', icon: '💼' }, // Added Work
+                'default': { color: '#808080', icon: '📅' }
+            };
+
+            // Nepali Month/Day Data (Crucial for conversion function)
+            // IMPORTANT: Add data for all years you need to support!
+             const nepaliDaysInMonth = {
+                2080: [30, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 30],
+                2081: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 29, 30],
+                2082: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
+                2083: [31, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 30],
+                 // Add more years as needed...
+            };
+            // --- Helper Functions ---
+
+            /** Convert number to Nepali digits string */
+            function toNepaliDigits(num) {
+                return num.toString().split('').map(d => nepaliDigits[parseInt(d)] || d).join('');
+            }
+
+            /**
+             * Convert English date object to Nepali date details.
+             * Uses the reference date logic provided. Accuracy depends on nepaliDaysInMonth data.
+             */
+            function getNepaliDetails(targetDate) {
+                const year = targetDate.getFullYear();
+                const month = targetDate.getMonth(); // 0-indexed
+                const day = targetDate.getDate();
+
+                // Reference: Jan 1, 2024 is Poush 16, 2080 (Adjust if your reference is different)
+                const referenceEnglishDate = new Date(2024, 0, 1);
+                const referenceNepaliYear = 2080;
+                const referenceNepaliMonth = 8; // Poush (0-indexed)
+                const referenceNepaliDay = 16;
+
+                // Check if nepaliDaysInMonth has data for required years
+                function checkYearData(yr) {
+                    if (!nepaliDaysInMonth[yr]) {
+                         console.warn(`Nepali month data missing for year ${yr}. Conversion might be inaccurate.`);
+                         // Provide fallback data or throw error
+                         return nepaliDaysInMonth[2081]; // Fallback to 2081 data as example, likely incorrect
+                    }
+                    return nepaliDaysInMonth[yr];
+                }
+
+
+                const millisecondsPerDay = 24 * 60 * 60 * 1000;
+                // Ensure calculations are done at UTC midnight to avoid timezone issues
+                const targetUTC = Date.UTC(year, month, day);
+                const referenceUTC = Date.UTC(referenceEnglishDate.getFullYear(), referenceEnglishDate.getMonth(), referenceEnglishDate.getDate());
+                const daysDifference = Math.round((targetUTC - referenceUTC) / millisecondsPerDay);
+
+
+                let nepaliYear = referenceNepaliYear;
+                let nepaliMonth = referenceNepaliMonth;
+                let nepaliDay = referenceNepaliDay;
+                let currentYearData = checkYearData(nepaliYear);
+
+                let remainingDays = daysDifference;
+
+                if (remainingDays >= 0) { // Forward calculation
+                    while (remainingDays > 0) {
+                        const daysInCurrentMonth = currentYearData[nepaliMonth];
+                        const daysLeftInMonth = daysInCurrentMonth - nepaliDay;
+
+                        if (remainingDays <= daysLeftInMonth) {
+                            nepaliDay += remainingDays;
+                            remainingDays = 0;
+                        } else {
+                            remainingDays -= (daysLeftInMonth + 1);
+                            nepaliDay = 1;
+                            nepaliMonth++;
+                            if (nepaliMonth > 11) {
+                                nepaliMonth = 0;
+                                nepaliYear++;
+                                currentYearData = checkYearData(nepaliYear); // Update year data
+                            }
+                        }
+                    }
+                } else { // Backward calculation
+                    remainingDays = Math.abs(remainingDays);
+                    while (remainingDays > 0) {
+                        const daysToSubtract = nepaliDay - 1;
+
+                        if (remainingDays <= daysToSubtract) {
+                            nepaliDay -= remainingDays;
+                            remainingDays = 0;
+                        } else {
+                             remainingDays -= daysToSubtract + 1; // daysToSubtract + 1 (for the 1st day)
+                             nepaliMonth--;
+                             if (nepaliMonth < 0) {
+                                 nepaliMonth = 11;
+                                 nepaliYear--;
+                                 currentYearData = checkYearData(nepaliYear); // Update year data
+                             }
+                             nepaliDay = currentYearData[nepaliMonth]; // Go to last day of previous month
+                        }
+                    }
+                }
+
+                return {
+                    year: nepaliYear, // BS Year (Number)
+                    month: nepaliMonth, // 0-indexed BS month
+                    day: nepaliDay, // BS Day (Number)
+                    monthName: nepaliMonths[nepaliMonth], // BS Month Name
+                    dayNepali: toNepaliDigits(nepaliDay), // BS Day (String Nepali Digits)
+                    yearNepali: toNepaliDigits(nepaliYear) // BS Year (String Nepali Digits)
+                };
+            }
+
+            /** Get events for a specific English date object */
+            function getEventsForDate(date) {
+                const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                return eventsData[dateString] || [];
+            }
+
+             /** Check if an English date object has events */
+             function hasEvents(date) {
+                 return getEventsForDate(date).length > 0;
+             }
+
+            /** Check if a date is a holiday (English or Nepali) */
+            function isHoliday(date) {
+                 const dateKeyEn = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                 if (holidays.english[dateKeyEn]) return true;
+
+                 const nepaliDate = getNepaliDetails(date);
+                 const dateKeyNp = `${nepaliDate.year}-${String(nepaliDate.month + 1).padStart(2, '0')}-${String(nepaliDate.day).padStart(2, '0')}`;
+                 return !!holidays.nepali[dateKeyNp]; // Check if Nepali key exists
+            }
+
+             /** Get holiday name for a date */
+            function getHolidayName(date) {
+                const dateKeyEn = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                if (holidays.english[dateKeyEn]) return holidays.english[dateKeyEn];
+
+                const nepaliDate = getNepaliDetails(date);
+                const dateKeyNp = `${nepaliDate.year}-${String(nepaliDate.month + 1).padStart(2, '0')}-${String(nepaliDate.day).padStart(2, '0')}`;
+                return holidays.nepali[dateKeyNp] || ''; // Return empty if not found
+            }
+
+            /** Renders the calendar grid */
+            function renderCalendar(month, year) {
+                const nepaliHeaderDate = getNepaliDetails(new Date(year, month, 1)); // Get NP date for header
+                monthYearDisplay.textContent = `${new Date(year, month).toLocaleString('en-US', { month: 'long' })} ${year} / ${nepaliHeaderDate.monthName} ${nepaliHeaderDate.yearNepali}`;
+                const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0=Sun, 6=Sat
+                    const prevMonthDate = new Date(year, month -1, dayNum); // Date obj for prev month
+
+                    // Create spans but keep them muted
+                    dayElement.innerHTML = `
+                        <div class="day-dates">
+                            <span class="eng-date">${dayNum}</span>
+                            <span class="nepali-date">${nepDate.dayNepali}</span>
+                        </div>`;
+                    dayElement.dataset.date = dateString; // Store YYYY-MM-DD
+
+                    // Add date spans (CSS controls prominence via parent class)
+                    dayElement.innerHTML = `
+                        <div class="day-dates">
+                            <span class="eng-date">${dayNum}</span>
+                            <span class="nepali-date">${nepDate.dayNepali}</span>
+                        </div>`;
+
+                        const categoryCounts = events.reduce((acc, ev) => {
+                            const cat = ev.category || 'default';
+                            acc[cat] = (acc[cat] || 0) + 1;
+                            return acc;
+                        }, {});
+
+                        const maxVisibleIndicators = 3;
+                        Object.keys(categoryCounts).slice(0, maxVisibleIndicators).forEach(category => {
+                            const dot = document.createElement('span');
+                            dot.classList.add('event-dot');
+                            dot.style.backgroundColor = categoryConfig[category]?.color || categoryConfig.default.color;
+                         if(Object.keys(categoryCounts).length > maxVisibleIndicators) {
+                              const more = document.createElement('span'); more.classList.add('more-events'); more.textContent='+'; eventIndicator.appendChild(more);
+                         }
+
+                        if(events.length > 0 && Object.keys(categoryCounts).length <= maxVisibleIndicators) { // Show count only if dots don't fill space or few events
+                             const countBadge = document.createElement('span'); countBadge.classList.add('event-count'); countBadge.textContent = events.length; eventIndicator.appendChild(countBadge);
+                        }
+
+                    // Mark today
+
+                    // Mark selected
+                    if (selectedDate && currentDate.getTime() === selectedDate.getTime()) { dayElement.classList.add('selected'); }
+
+                    // Mark holiday
+                         dayElement.setAttribute('title', getHolidayName(currentDate));
+                         // Optional: Add holiday dot if not using colored text
+                         // const holidayDot = document.createElement('span'); holidayDot.className = 'holiday-dot'; dayElement.appendChild(holidayDot);
+                const nextMonthDaysToAdd = (7 - (totalDaysRendered % 7)) % 7; // Days needed to fill the week/grid
+                     const nextMonthDate = new Date(year, month + 1, i); // Date obj for next month
+                     dayElement.innerHTML = `
+                         <div class="day-dates">
+                             <span class="eng-date">${i}</span>
+                             <span class="nepali-date">${nepDate.dayNepali}</span>
+                         </div>`;
+
+
+                // Apply class for Nepali date visibility
+                // Apply animation
+                calendarDaysContainer.classList.remove('fade-in'); // Reset animation class
+                void calendarDaysContainer.offsetWidth; // Force reflow
+                calendarDaysContainer.classList.add('fade-in'); // Start animation
+
+            /** Handle date selection and update panel */
+            function handleDateClick(dayElement, date) {
+                const previouslySelected = calendarDaysContainer.querySelector('.day.selected');
+                if (previouslySelected) previouslySelected.classList.remove('selected');
+                if (window.innerWidth < 768) eventsPanel.classList.add('mobile-visible');
+            }
+
+            /** Update the events side panel */
+                 // Format date display with both calendars
+                 const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
+                 eventPanelList.innerHTML = ''; // Clear previous list
+                 updateCategoryFilters(events); // Ensure filters are available
+                    filteredEvents.sort((a, b) => (a.time === 'All Day' ? -1 : b.time === 'All Day' ? 1 : a.time.localeCompare(b.time)));
+                        li.dataset.eventId = event.id; // Store ID for deletion
+                                    <div class="event-header">
+                                        <span class="event-icon">${categoryInfo.icon}</span>
+                                        <span class="event-name">${event.name}</span>
+                                    </div>
+                                        <span class="event-time">${event.time}</span>
+                                     ${event.description ? `<div class="event-description" style="font-size: 0.8em; margin-top: 5px; color: #555;">${event.description}</div>` : ''}
+                                <button class="delete-event" aria-label="Delete event ${event.name}">×</button>
+                        // Add delete listener to the button within this event item
+                            e.stopPropagation(); // Prevent event card click
+
+                        li.addEventListener('click', () => console.log("Clicked event card:", event.name)); // Placeholder for event detail view
+                    li.textContent = selectedCategories.size > 0 ? 'No events matching filters.' : 'No events scheduled.';
+                eventsPanel.classList.add('active'); // Ensure panel is visible
+            /** Delete an event */
+                     if (eventsData[dateString].length === 0) {
+                         delete eventsData[dateString]; // Remove date key if no events left
+                     }
+                     // Refresh panel and calendar indicators
+                     updateEventsPanel(date);
+                     renderCalendar(currentMonth, currentYear); // Re-render to update indicators
+                 }
+            }
+
+
+            /** Populate category filters */
+                if (eventCategoriesFilter && eventCategoriesFilter.children.length === 0) { // Only populate once
+                    const allCategories = new Set();
+
+                    allCategories.forEach(category => {
+                        const categoryInfo = categoryConfig[category] || categoryConfig.default;
+                        const filterOption = document.createElement('button'); // Use button for semantics
+                        filterOption.innerHTML = `<span class="category-dot" style="background-color: ${categoryInfo.color}"></span><span class="category-name">${category.charAt(0).toUpperCase() + category.slice(1)}</span>`;
+                        filterOption.addEventListener('click', () => {
+                            filterOption.classList.toggle('selected');
+                            if (filterOption.classList.contains('selected')) selectedCategories.add(category);
+                            else selectedCategories.delete(category);
+                            if (selectedDate) updateEventsPanel(selectedDate); // Re-filter events
+                        });
+                }
+            /** Change month */
+                 calendarDaysContainer.classList.add('fade-out', direction);
+                    renderCalendar(currentMonth, currentYear);
+                     calendarDaysContainer.classList.remove('fade-out', 'slide-left', 'slide-right');
+                 }, 200); // Match CSS transition
+            }
+
+            /** Toggle calendar popup */
+            function toggleCalendarPopup() {
+                const isOpening = !calendarPopup.classList.contains('active');
+                calendarPopup.classList.toggle('active');
+                calendarPopup.setAttribute('aria-hidden', !isOpening);
+                if (isOpening) {
+                     // Render if empty, or maybe always re-render to ensure current month
+                     // Try to re-select and show events if a date was previously selected
+                          // Need to find the element again after re-render
+                          const dateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
+                          const dayElement = calendarDaysContainer.querySelector(`.day[data-date="${dateString}"]`);
+                          if(dayElement) dayElement.classList.add('selected'); // Re-apply visual selection
+                        // Optionally select today or show default message
+                     }
+                    eventsPanel.classList.remove('mobile-visible');
+                }
+            }
+
+            /** Handle window resize */
+            function handleResize() {
+                const isMobile = window.innerWidth < 768;
+                calendarPopup.classList.toggle('mobile-view', isMobile);
+                if(!isMobile) eventsPanel.classList.remove('mobile-visible'); // Ensure panel resets on desktop
+                 // Show/hide mobile close button for events panel
+                closeEventsBtn.style.display = isMobile ? 'flex' : 'none';
+            calendarIcon?.addEventListener('click', toggleCalendarPopup);
+            closeCalendarBtn?.addEventListener('click', toggleCalendarPopup); // Close button toggles off
+            // Nepali Date Toggle Listener
+            if (nepaliDateToggle) {
+                nepaliDateToggle.addEventListener('change', (event) => {
+                    // Re-render the calendar which will handle adding/removing the class
+                    renderCalendar(currentMonth, currentYear);
+                });
+            }
+
+            // Close Events Panel on Mobile
+            closeEventsBtn?.addEventListener('click', () => {
+                eventsPanel.classList.remove('mobile-visible');
+            });
+            // Close popup when clicking outside (on the backdrop)
+            document.addEventListener('click', (event) => {
+                // Check if the calendar is active AND the click was outside the popup
+                // AND the click was not on the calendar icon itself
+                if (calendarPopup?.classList.contains('active') &&
+                    !calendarPopup.contains(event.target) &&
+                    !calendarIcon?.contains(event.target))
+                {
+                    toggleCalendarPopup(); // Close the popup
+                }
+            // Keyboard navigation (arrow keys) for days
+                if (!selectedDate) return; // Needs a date selected to navigate from
+                if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(key)) return;
+                event.preventDefault(); // Prevent default scrolling
+                let targetDate = new Date(selectedDate); // Clone selected date
+                    // Re-trigger click on currently focused/selected day
+                     const dateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
+                     const currentDayElement = calendarDaysContainer.querySelector(`.day[data-date="${dateString}"]`);
+                     if(currentDayElement) currentDayElement.click();
+                     return; // Don't change date on Enter/Space
+                }
+
+
+                // Check if month/year changed
+                if (targetDate.getMonth() !== currentMonth || targetDate.getFullYear() !== currentYear) {
+                    // If month changed, navigate calendar and then select the date
+                     changeMonth(targetDate.getMonth() > currentMonth || (targetDate.getFullYear() > currentYear && targetDate.getMonth() === 0) ? 1 : -1);
+                     // We need to wait for re-render, then select. This is tricky without async/promises.
+                     // For now, just change month, user needs to navigate again within the new month.
+                     // A more complex solution would involve promises or callbacks on render complete.
+                     selectedDate = targetDate; // Update selected date logically anyway
+                    // Find and click the corresponding day element within the current view
+                    const dateString = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`;
+                    const dayElement = calendarDaysContainer.querySelector(`.day[data-date="${dateString}"]:not(.inactive)`); // Ensure it's not inactive
+
+                    if (dayElement) {
+                         handleDateClick(dayElement, targetDate); // Use handleDateClick to update selection and panel
+                         dayElement.focus(); // Set focus to the newly selected day
+                        // If day not found (e.g., navigating past month end), just update logical date
+                        selectedDate = targetDate;
+                    }
+
+            // Handle window resize for responsive layout
+            window.addEventListener('resize', handleResize);
+            if (nepaliDateToggle?.checked) { // Set initial state from checkbox
+                showNepaliDates = true;
+            }
+
+            handleResize(); // Apply initial responsive styles/classes
+            renderCalendar(currentMonth, currentYear); // Initial calendar render
+            updateCategoryFilters(); // Populate category filters initially
+            // Select today by default and show its events
+            const today = new Date();
+            const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            const todayElement = calendarDaysContainer.querySelector(`.day[data-date="${todayString}"]`);
+            if (todayElement) {
+                handleDateClick(todayElement, today); // Select today
+            } else {
+                // If today isn't in the current view, just show default message
+                eventsPanel.classList.remove('active'); // Or hide panel
+            }
+
+
+            console.log("Combined calendar initialized.");
+

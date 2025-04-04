@@ -1,0 +1,179 @@
+[
+    {
+      "id": 0,
+      "title": "Protest to Bring Back Kulman Ghising",
+      "description": "Join us in a protest to bring back Kulman Ghising as the Executive Director of the Nepal Electricity Authority (NEA). After his recent dismissal, we stand together to demand his reinstatement and support his leadership in the energy sector.",
+      "date": "March 25, 2025",
+      "time": "12:00 AM",
+      "location": "New Baneshowr",
+      "price": "Free",
+      "image": "/assets/kulman.png",
+      "category": "Protest",
+      "url": "https://www.aninews.in/news/world/asia/student-union-burns-effigy-of-nepali-minister-protesting-deposition-of-electricity-authority-chief20250325122015/",
+      "popularity": 10,
+      "highlights": [
+        "Join us to support Kulman Ghising!",
+        "Stand for good governance in the energy sector."
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Jameson Patan Fest 2025",
+      "description": "Jameson Patan Fest 2025 is set to be one of the biggest events in Nepal this year! If you're searching for upcoming events in Nepal, concerts near me, or festivals in Kathmandu, this is where you need to be! On April 5, 2025, from 2:00 PM onwards, Chyasal Stadium will transform into a high-energy celebration of music, culture, and entertainment, featuring some of Nepal's most electrifying performers!\n\nOur first headline act is here—John & The Locals! 🔥 Known for their unmatched energy and electrifying live performances, they're ready to take Jameson Patan Fest to the next level! But this is just the beginning—more powerhouse artists are set to be revealed soon! Stay tuned as we build up to an epic music festival that will keep you on your feet all night long!",
+      "date": "April 5, 2025",
+      "time": "2:00 PM Onwards",
+      "location": "Chyasal Stadium, Lalitpur, Nepal",
+      "price": "Rs. 900 to Rs. 1500",
+      "image": "assets/jameson.png",
+      "category": "Music",
+      "url": "https://events.khalti.com/events/ET25HCWK4QJV",
+      "popularity": 10
+    },
+    {
+      "id": 2,
+      "title": "Jameson Patan Fest 2025",
+      "description": "Jameson Patan Fest 2025 is set to be one of the biggest events in Nepal this year! If you're searching for upcoming events in Nepal, concerts near me, or festivals in Kathmandu, this is where you need to be! On April 5, 2025, from 2:00 PM onwards, Chyasal Stadium will transform into a high-energy celebration of music, culture, and entertainment, featuring some of Nepal's most electrifying performers!\n\nOur first headline act is here—John & The Locals! 🔥 Known for their unmatched energy and electrifying live performances, they're ready to take Jameson Patan Fest to the next level! But this is just the beginning—more powerhouse artists are set to be revealed soon! Stay tuned as we build up to an epic music festival that will keep you on your feet all night long!",
+      "date": "April 5, 2025",
+      "time": "2:00 PM Onwards",
+      "location": "Chyasal Stadium, Lalitpur, Nepal",
+      "price": "Rs. 900 to Rs. 1500",
+      "image": "assets/jameson.png",
+      "category": "Music",
+      "url": "https://events.khalti.com/events/ET25HCWK4QJV",
+      "popularity": 10
+    },
+    {
+      "id": 3,
+      "title": "1974 AD - The last show in nepal",
+      "description": "1974 AD is a Nepali rock band formed in Kathmandu in the early 1990s. Known for experimenting with various genres, including Nepali folk, ragas, rock, funk, blues, and jazz, they are among Nepal's most successful recording artists. Many of their albums rank among the top ten bestsellers. This event could be their final performance in Nepal as they celebrate the 30th anniversary of their formation.",
+      "date": "April 5, 2025",
+      "time": "4:00 PM onwards",
+      "location": "Hyatt Regency Kathmandu, Kathmandu, Nepal",
+      "price": "Rs. 1000 to Rs. 2500",
+      "image": "assets/1974.png",
+      "category": "Music",
+      "url": "https://esewaevents.com/booking/1974-ad-live-in-kathmandu",
+      "popularity": 10
+    },
+    {
+      "id": 4,
+      "title": "New Year Fest 2082",
+      "description": "New Year Fest 2082 is the ultimate way to kick off the Nepali New Year with high-energy live music, electrifying performances, and an unforgettable atmosphere! If you're searching for events in Nepal, upcoming events in Nepal, or concerts near you, this festival at Bhutandevi School Ground, Hetauda, is where you need to be!\n\nBrought to you by 8 Peaks Nepal, this festival features Albatross as the headliner, along with The Elements and more artists, ready to set the stage on fire! Get ready for a night of powerful beats, thrilling performances, and pure musical magic as we welcome Baisakh 1 with style, energy, and excitement! Don't miss out on the biggest New Year's Eve party in Nepal!",
+      "date": "April 14, 2025",
+      "time": "4:00 PM Onwards",
+      "location": "Bhutandevi Higher Secondary School, Hetauda, Nepal",
+      "price": "Early bird: RS. 500",
+      "image": "assets/elements.png",
+      "category": "Music",
+      "url": "https://events.khalti.com/events/ET25A9N43LYQ",
+      "popularity": 9
+    },
+    {
+      "id": 5,
+      "title": "BRAVE CF 93: Himalion vs. Magician (MMA)",
+      "description": "Nepal's MMA star, Rabindra Dhant aka Himalion is set to face China's Egiyuebu aka Magician at BRAVE CF 93. This event promises to be an electrifying showdown between two talented fighters, showcasing the best of mixed martial arts. Don't miss this thrilling encounter!",
+      "date": "April 18, 2025",
+      "time": "7:45 PM Onwards",
+      "location": "Zhengzhou, China",
+      "price": "7 crore",
+      "image": "assets/chinaboy.png",
+      "category": "Sports",
+      "url": "https://www.bravecf.com/events/93",
+      "popularity": 8,
+      "highlights": [
+        "Big news for Nepali MMA Fans."
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Nepal Super League (NSL) 2025",
+      "description": "From: sat, chaitra 16 - sat baisakh 13 (FINALLLL MATCH) The Nepal Super League (NSL) 2025 is the third edition of Nepal's first professional franchise-based football league, organized by Nepal Sports and Events Management (NSEM) with technical support from the All Nepal Football Association (ANFA). This league features seven teams: Butwal Lumbini FC, Dhangadhi FC, FC Chitwan, Jhapa FC, Kathmandu Rayzrs FC, Lalitpur City FC, and Pokhara Thunders FC. The league aims to enhance football development in Nepal, promote regional pride, and provide a platform for local footballers to excel.",
+      "date": "March 29, 2025 - April 25, 2025 ",
+      "time": "6:00 PM everymatch",
+      "location": "Dasrath Rangasala, Tripureshowr",
+      "price": "Rs.200 to Rs.500",
+      "image": "assets/nsl.png",
+      "category": "Sports",
+      "url": "https://events.khalti.com/events/ET257PPR6M74",
+      "popularity": 9,
+      "highlights": [
+        "Teams: The league will feature seven teams: Butwal Lumbini FC, Dhangadhi FC, FC Chitwan, Jhapa FC, Kathmandu Rayzrs FC, Lalitpur City FC, and Pokhara Thunders FC."
+      ]
+    },
+    {
+      "id": 7,
+      "title": "🔥 𝗠𝗲𝗻'𝘀 𝗣𝗠 𝗖𝘂𝗽 𝟮𝟬𝟮𝟱  🔥",
+      "description": "🏏 The Ultimate Battle for Nepal's Domestic Crown! 🏆\n📅 Tournament Dates: 9th March – 29th March\n\n3 venues, 46 matches – Who will rise as Nepal's Domestic Champions? 🇳🇵💥\n\n#PMCup2025 | #NepalCricket | #domesticchampions",
+      "date": "March 20, 2025",
+      "startDate": "March 9, 2025",
+      "endDate": "March 29, 2025",
+      "time": "9:00 AM every match",
+      "location": "Siddhartha Rangasala & Extra Tech & Lamahi",
+      "price": "Free on youtube",
+      "image": "assets/pmcup.png",
+      "category": "Sports",
+      "url": "https://www.youtube.com/@KantipurMaxHD",
+      "popularity": 9,
+      "highlights": [
+        "46 matches across 3 venues!",
+        "Who will be crowned the champions?"
+      ]
+    },
+     {
+      "id": 0,
+      "title": "Protest to Bring Back Kulman Ghising",
+      "description": "Join us in a protest to bring back Kulman Ghising as the Executive Director of the Nepal Electricity Authority (NEA). After his recent dismissal, we stand together to demand his reinstatement and support his leadership in the energy sector.",
+      "date": "March 25, 2025",
+      "time": "12:00 AM",
+      "location": "New Baneshowr",
+      "price": "Free",
+      "image": "assets/kulman.png",
+      "category": "Protest",
+      "url": "https://www.aninews.in/news/world/asia/student-union-burns-effigy-of-nepali-minister-protesting-deposition-of-electricity-authority-chief20250325122015/",
+      "popularity": 10,
+      "highlights": [
+        "Join us to support Kulman Ghising!",
+        "Stand for good governance in the energy sector."
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Jameson Patan Fest 2025",
+      "description": "Jameson Patan Fest 2025 is set to be one of the biggest events in Nepal this year! If you're searching for upcoming events in Nepal, concerts near me, or festivals in Kathmandu, this is where you need to be! On April 5, 2025, from 2:00 PM onwards, Chyasal Stadium will transform into a high-energy celebration of music, culture, and entertainment, featuring some of Nepal's most electrifying performers!\n\nOur first headline act is here—John & The Locals! 🔥 Known for their unmatched energy and electrifying live performances, they're ready to take Jameson Patan Fest to the next level! But this is just the beginning—more powerhouse artists are set to be revealed soon! Stay tuned as we build up to an epic music festival that will keep you on your feet all night long!",
+      "date": "April 5, 2025",
+      "time": "2:00 PM Onwards",
+      "location": "Chyasal Stadium, Lalitpur, Nepal",
+      "price": "Rs. 900 to Rs. 1500",
+      "image": "assets/jameson.png",
+      "category": "Music",
+      "url": "https://events.khalti.com/events/ET25HCWK4QJV",
+      "popularity": 10
+    },
+    {
+      "id": 2,
+      "title": "Jameson Patan Fest 2025",
+      "description": "Jameson Patan Fest 2025 is set to be one of the biggest events in Nepal this year! If you're searching for upcoming events in Nepal, concerts near me, or festivals in Kathmandu, this is where you need to be! On April 5, 2025, from 2:00 PM onwards, Chyasal Stadium will transform into a high-energy celebration of music, culture, and entertainment, featuring some of Nepal's most electrifying performers!\n\nOur first headline act is here—John & The Locals! 🔥 Known for their unmatched energy and electrifying live performances, they're ready to take Jameson Patan Fest to the next level! But this is just the beginning—more powerhouse artists are set to be revealed soon! Stay tuned as we build up to an epic music festival that will keep you on your feet all night long!",
+      "date": "April 5, 2025",
+      "time": "2:00 PM Onwards",
+      "location": "Chyasal Stadium, Lalitpur, Nepal",
+      "price": "Rs. 900 to Rs. 1500",
+      "image": "assets/jameson.png",
+      "category": "Music",
+      "url": "https://events.khalti.com/events/ET25HCWK4QJV",
+      "popularity": 10
+    },
+    {
+      "id": 3,
+      "title": "1974 AD - The last show in nepal",
+      "description": "1974 AD is a Nepali rock band formed in Kathmandu in the early 1990s. Known for experimenting with various genres, including Nepali folk, ragas, rock, funk, blues, and jazz, they are among Nepal's most successful recording artists. Many of their albums rank among the top ten bestsellers. This event could be their final performance in Nepal as they celebrate the 30th anniversary of their formation.",
+      "date": "April 5, 2025",
+      "time": "4:00 PM onwards",
+      "location": "Hyatt Regency Kathmandu, Kathmandu, Nepal",
+      "price": "Rs. 1000 to Rs. 2500",
+      "image": "assets/1974.png",
+      "category": "Music",
+      "url": "https://esewaevents.com/booking/1974-ad-live-in-kathmandu",
+      "popularity": 10
+    }
+  ]
+  
