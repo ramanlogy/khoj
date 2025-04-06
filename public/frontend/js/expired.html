@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+             <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7LWHSBNXT5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7LWHSBNXT5');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover trendy Events easily | Upcoming Events in Kathmandu | Khojum.com</title>
+    <meta name="description" content="Nepal's top event discovery platform. Browse upcoming concerts, cultural festivals, art exhibitions, and entertainment in Kathmandu and beyond. Plan your perfect outing with Khojum.">
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?fami~ly=Mukta:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --nepal-red: #dc143c;
+            --nepal-blue: #003893;
+            --accent-yellow: #f9d949;
+            --dark-text: #333333;
+            --light-text: #666666;
+            --lightest-bg: #f9f7f5;
+            --card-bg: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Mukta', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--lightest-bg);
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--nepal-red);
+            color: white;
+            padding: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 25L70 45L50 65L30 45L50 25Z' fill='rgba(255,255,255,0.05)'/%3E%3C/svg%3E");
+            background-size: 100px;
+            opacity: 0.2;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-family: 'Mukta', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .logo span {
+            color: var(--accent-yellow);
+        }
+        
+        .logo img {
+            width: 50px;
+            height: auto;
+        }
+        
+        .title-section {
+            text-align: center;
+            padding-bottom: 30px;
+        }
+        
+        .title-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        .title-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .date-display {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-top: 10px;
+            display: block;
+        }
+        
+        .filter-bar {
+            background-color: white;
+            padding: 15px 0;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .filter-button {
+            background-color: transparent;
+            border: 1px solid var(--nepal-red);
+            color: var(--nepal-red);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-family: 'Mukta', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-button:hover, .filter-button.active {
+            background-color: var(--nepal-red);
+            color: white;
+        }
+        
+        .sort-dropdown {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .sort-dropdown select {
+            padding: 8px 16px;
+            border: 1px solid var(--nepal-red);
+            border-radius: 100px;
+            background-color: transparent;
+            color: var(--nepal-red);
+            font-family: 'Mukta', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 25px;
+            padding-bottom: 60px;
+        }
+        
+        @media (min-width: 768px) {
+            .events-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .events-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .event-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .event-image {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .event-category {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--nepal-red);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .event-content {
+            padding: 20px;
+        }
+        
+        .event-title {
+            font-family: 'Mukta', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+            line-height: 1.3;
+        }
+        
+        .event-meta {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .event-date, .event-time, .event-location, .event-price {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+        
+        .event-meta i {
+            color: var(--nepal-red);
+            font-size: 1rem;
+        }
+        
+        .event-description {
+            font-size: 0.95rem;
+            color: var(--light-text);
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: nowrap;
+            margin-top: 10px;
+        }
+        
+        .event-price-tag {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--nepal-blue);
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .event-price-tag.free {
+            color: #2ecc71;
+        }
+        
+        .event-button {
+            background-color: var(--nepal-red);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-family: 'Mukta', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        
+        .event-button:hover {
+            background-color: #b01030;
+        }
+        
+        footer {
+            background-color: var(--nepal-red);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .logo-small {
+            font-family: 'Mukta', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        .logo-small span {
+            color: var(--accent-yellow);
+        }
+        
+        .copyright {
+            opacity: 0.8;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0,0,0,0.1);
+            border-left: 4px solid var(--nepal-red);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .title-section h2 {
+                font-size: 2.2rem;
+            }
+            
+            .filter-buttons {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+        
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .countdown {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 1px solid var(--nepal-red);
+            border-radius: 5px;
+            background-color: white;
+            color: var(--nepal-red);
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .expired {
+            color: red;
+        }
+
+        .sprinkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 1;
+        }
+
+        .event-time-counter {
+            margin-right: 10px;
+            font-weight: bold;
+            padding: 5px;
+            border-radius: 8px;
+            background-color: white;
+            border: 2px solid var(--nepal-red);
+            color: #aa2121;
+        }
+        .event-time-counter.upcoming {
+            background-color: hwb(0 100% 0%);
+            color: #dc143c;
+        }
+        .event-time-counter.happening {
+            background-color: #e6ffe6;
+            color: #006600;
+        }
+        .event-time-counter.expired {
+            background-color: #ffe6e6;
+            color: #cc0000;
+        }
+
+        @keyframes colorChange {
+            0% { color: #dc143c; }
+            25% { color: #f9d949; }
+            50% { color: #003893; }
+            75% { color: #2ecc71; }
+            100% { color: #dc143c; }
+        }
+
+        .animated-holi {
+            animation: colorChange 3s infinite;
+            font-weight: bold; /* Optional: make it bold */
+        }
+
+        #celebration-container {
+            position: fixed; /* Fixed position to cover the entire viewport */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allow clicks to pass through */
+            overflow: hidden; /* Prevent overflow */
+            z-index: -1; /* Send it to the back */
+        }
+
+        .color-splash {
+            position: absolute;
+            border-radius: 50%; /* Make the splash circular */
+            pointer-events: none; /* Prevent interaction */
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            padding: 10px; /* Add some padding for better click area */
+            background-color: transparent; /* Make background transparent */
+            border: none; /* Remove border */
+            cursor: pointer; /* Change cursor to pointer */
+            transition: background-color 0.3s; /* Smooth transition for hover effect */
+        }
+
+        .back-button:hover {
+            background-color: rgba(0, 0, 0, 0.1); /* Light background on hover */
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Khojum",
+        "url": "https://www.khojum.com",
+        "logo": "https://www.khojum.com//assets/favicon.ico" 
+    
+        
+    }
+    </script>
+</head>
+<body>
+    <div class="fixed-button-container">
+     
+        <span id="days-left" class="days-left-message"></span> <!-- Countdown message -->
+    </div>
+    <div id="celebration-container"></div>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" class="back-button" style="text-decoration: none; color: inherit;">
+                    <h1><span>खो</span>जुम</h1>
+                </a>
+            </div>
+            <div class="title-section">
+                <h2>You are too late for these events. </h2>
+                <p style="font-weight: bold;"><i>Don't miss new ones.</i></p>
+                <span class="date-display" id="date-range">Date</span>
+            </div>
+        </div>
+    </header>
+    
+    <div class="filter-bar">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-button active" data-filter="all">All Events</button>
+                <button class="filter-button" data-filter="Free">Free</button>
+                <button class="filter-button" data-filter="holi" id="filter-button">Concerts</button>
+                <button class="filter-button" data-filter="music">Public places</button>
+             
+            </div>
+            <div class="sort-dropdown">
+                <select id="sort-options">
+                    <option value="time">Sort by Time</option>
+                    <option value="popularity">Sort by Popularity</option>
+                    <option value="price">Sort by Price</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <main class="container">
+        <div class="events-grid" id="events-container">
+            <!-- Events will be dynamically populated here -->
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading more events...</p>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="logo-small">
+                <span>खो</span>जुम
+            </div>
+            <p>Discover and explore the best events happening in Nepal</p>
+            <p class="copyright">&copy; 2025 Khojum. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modal Structure -->
+    <div id="event-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-summary"></p>
+            <h3>Attendees:</h3>
+            <ul id="modal-attendees"></ul>
+            <h3>Special Highlights:</h3>
+            <ul id="modal-highlights"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Set the date to March 13
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('date-range').textContent = '';
+            // Load events
+            loadEvents();
+            
+            // Set default sorting by time when the page loads
+            sortEvents('time');
+            
+            // Set up filter buttons
+            const filterButtons = document.querySelectorAll('.filter-button');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    // Filter events
+                    const filter = this.getAttribute('data-filter');
+                    filterEvents(filter);
+
+                    // Check if the clicked button is the "Holi" button
+                    if (filter === 'holi') {
+                        createSprinkles(event);
+                    }
+                });
+            });
+
+            // Set up sort dropdown
+            const sortDropdown = document.getElementById('sort-options');
+            sortDropdown.addEventListener('change', function() {
+                const sortCriteria = this.value;
+                sortEvents(sortCriteria);
+            });
+        });
+        
+        // Sample business data
+        const businesses = [
+       
+        {
+    id: 0, // New ID for the protest event
+    title: "Protest to Bring Back Kulman Ghising",
+    description: "Join us in a protest to bring back Kulman Ghising as the Executive Director of the Nepal Electricity Authority (NEA). After his recent dismissal, we stand together to demand his reinstatement and support his leadership in the energy sector.",
+    date: "March 25, 2025", // Date of the event
+    time: "12:00 AM", // Time of the event
+    location: "NEA office", // Location can be specified if needed
+    price: "Free", // Price can be updated later
+    image: "/assets/kulman.png", // Add the appropriate image path
+    category: "Protest", // Tags for filtering
+    url: "https://www.aninews.in/news/world/asia/student-union-burns-effigy-of-nepali-minister-protesting-deposition-of-electricity-authority-chief20250325122015/",
+    popularity: 10, // Adjust popularity as needed
+    highlights: ['Join us to support Kulman Ghising!', 'Stand for good governance in the energy sector.'] // Special highlights
+},
+      {  
+        id: 1, 
+    title: "Metal Monsters III",
+    description: "After a long wait of five years, Metal Monsters III is finally back! This highly anticipated metal concert will take place on March 22 at Purple Haze Rock Bar in Kathmandu.\n\nThe event will feature three powerful bands: Antim Grahan, Binaash, and Strangle. This night is extra special as Antim Grahan will be launching their new album.\n\nPS. The Metal Monsters festival has been a great experience for Nepali metal fans. 🤘",
+    date: "March 22, 2025", // Date of the event
+    time: "3:00 PM Onwards", // Time of the event
+    location: "Purple Haze Rock Bar, Kathmandu, Nepal", // Venue
+    price: "Rs. 500 - Rs 1000 (Imepay)", // Ticket information
+    image: "/assets/monsters.png", // Add the appropriate image path
+    category: "Music", // Tags for filtering
+    url: "https://www.instagram.com/nonextquestion/p/DHQ3inUSZGX/?api=slot%2Bbos%E3%80%90GB999.bet%E3%80%91.wtif&hl=ne", // URL can be added when available
+    popularity: 8 // Adjust popularity as needed
+},
+   
+        
+        {
+        
+        
+        id: 1,
+        title: "Sushant KC Live in Nepal",
+        description: "Sushant KC is a prominent Nepali singer-songwriter and musician known for his heartfelt lyrics, soulful melodies, and emotional storytelling through music. Some of his hit songs are: 'Sarangi', 'Parkha Na', 'Kya Kardiya', 'Bardali'. His songs are widely celebrated for his soulful music and heartfelt lyrics that often explore themes of love, nostalgia, and life. His unique blend of contemporary pop with Nepali melodies has made him one of the most beloved artists in Nepal and among the Nepali diaspora.",
+        date: "March 8, 2025",
+        time: "3:00 PM Onwards",
+        location: "Sallaghari Ground, Bhaktapur",
+        price: "Rs. 1050 to Rs. 3000", // /* */Table will be announced soon
+        image: "/assets/susants.png", // Add the appropriate image path
+        category: "music",
+        url: "https://events.khalti.com/events/ET25DZREURPZ", // Example URL
+        popularity: 9
+    },
+    {
+        id: 2,
+        title: "Dream On Music Fest",
+        description: " Albatross, Sabin Rai & The Pharaoh, Swar and The Rockheads take the stage for an electrifying live performance! An unforgettable experience of a lifetime filled with high-energy beats, soulful tunes, and pure musical magic which will be hosted by Malvika Subba.",
+        date: "March 8, 2025",
+        time: "1:00 PM Onwards",
+        location: "Hyatt Ground, Boudha",
+        price: "Rs. 899 to Rs. 5,000", // Price range
+        image: "/assets/dreamon.png", // Add the appropriate image path
+        category: "music",
+        url: "https://events.khalti.com/events/ET257HPZKA7K", // Example URL
+        popularity: 7
+    },
+
+    {
+        id: 3,
+        title: "Support Women's work this Women's day. ",
+        description: "Shop unique, handcrafted products\n💜Come celebrate Women's Day with us at the HattiHatti x International Club Market! ✨🎉\n\n🛍️  Support women & sustainability\n🎶 Enjoy a vibrant market experience",
+        date: "March 7, 2025 - March 9, 2025",
+        time: "10 AM - 6 PM",
+        location: "International Club, Lalitpur",
+        price: "Free",
+        image: "/assets/hatihati.png", // Add the appropriate image path
+        category: "event", // Tag for filtering
+        url: "https://www.instagram.com/p/DGxkRoqsapH/", // Example URL for more information
+        popularity: 4
+    },
+    
+    {
+        id: 4,
+        title: "Yuwahub Upskill Event Pt. 2: TECHCAMP – Your Gateway to Nepal's IT Industry",
+        description: "If you're looking to break into IT, find job opportunities, or build valuable connections, TechCamp is the place to be. Whether you're just starting out or already in the field, this event is designed to give you the skills, network, and opportunities you need.\n\n📅 Date: 8th March, Saturday\n📍 Venue: Herald International College, Basundhara\n\nWhat to Expect:\n• 8+ skill-boosting workshops covering what colleges don't teach\n• Job & internship fair with top IT companies hiring on the spot\n• Exclusive panel discussion with CEOs and founders of Nepal's leading IT companies (featured on Paradygm Podcast)\n• Networking with over 100 IT professionals and recruiters\n\nEvent Schedule:\n• 9:00 AM – Registration for panel\n• 10:00 AM - 12:00 PM – Panel discussion\n• 1:00 PM - 3:00 PM – First workshop slot\n• 4:00 PM - 6:00 PM – Second workshop slot\n• 10:00 AM - 6:00 PM – Job fair, activity stalls, and more\n\nLimited spots available for the panel. To secure yours, send a message saying, \"Book my spot for Panel.\"\n\nRegister now: www.yuwahub.com/opportunity/upskill-techcamp-by-yuwahub-80\n\nThis is an opportunity you don't want to miss.",
+        date: "March 8, 2025",
+        time: "10 AM - 6 PM",
+        location: "Herald International College, Basundhara",
+        price: "Free",
+        image: "/assets/upskill.png", // Add the appropriate image path
+        category: "event", // Tag for filtering
+        url: "https://www.yuwahub.com/opportunity/upskill-techcamp-by-yuwahub-80", // Example URL for more information
+        popularity: 5
+    },
+        {
+                id: 5,
+                title: "DJ Alok Live in Nepal",
+                description: "DJ Alok takes the stage for a live performance, bringing hits like 'Hear Me Now' and 'Piece of Your Heart' to the crowd. This event marks his first performance in Nepal.",
+                date: "March 7, 2025",
+                time: "7:00 PM onwards",
+                location: "LOD, Thamel",
+                price: "Rs. 2,000 to Rs. 3,000",
+                image: "/assets/dj alok.png",
+                category: "music",
+                url: "https://www.instagram.com/p/DGJDIzISsW6/?utm_source=ig_web_copy_link",
+                popularity: 8
+            },
+        {
+                id: 6,
+                title: "61st Session of The StoryYellers",
+                description: "The StoryYellers is organising its 61st session featuring Srichchha Pradhan, Miss Nepal World 2023, Monish Niraula, Music Director, Nitesh Tandukar, Content Creator, and Basanta Pandey, CFO, fonepay as the speakers.",
+                date: "March 5, 2025",
+                time: "5:45 PM",
+                location: "Moksh, Jhamsikhel",
+                price: "Rs. 300 to Rs. 350",
+                image: "/assets/storyyellers.png",
+                category: "talk",
+                url: "https://www.instagram.com/p/DGaohi5vTCK/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+                popularity: 4
+            },
+            {
+                id: 7,
+                title: "KP OLI CUP 2025 Finals",
+                description: "Machhindra FC vs KP OLI FC at KP oli cup Final 2025 happening grand with live music and special guests.",
+                date: "March 3, 2025",
+                time: "3:00 PM",
+                location: "Dasharath Stadium",
+                price: "Free",
+                image: "/assets/kp oli cup.png",
+                category: "sports",
+                url: "https://www.facebook.com/kpolicup/",
+                attendees: ["World Cup-winning Italian legend Gianluigi Buffon", "Kuma sagar and khowpa", "Purna Rai and daju bhai"],
+                highlights: ["Live music performance", "Special guest appearances", "Food stalls available"],
+                popularity: 3
+            },
+            {
+                id: 8,
+                title: "EV Carnival by MAW Vriddhi",
+                description: " This is your chance to  Test drive the latest EV models from Deepal, Nami, and Seres, including the world's first Transformer SUV FOR FREE!!!. Enjoy exclusive offers, cash discounts, and a chance to win exciting prizes!",
+                date: "March 1 - 4, 2025",
+                time: "11:00 AM - 6:00 PM",
+                location: "Amrapali Banquet, Naxal, Kathmandu",
+                price: "Free Test Drive",
+                image: "/assets/evcar.png", // Add the appropriate image path
+                category: "event",
+                url: "https://english.aarthiknews.com/news/detail/17981/", // Example URL for more information
+                highlights: ["Chance to win iPhone 16", "Experience driving luxury cars for free"],
+                popularity: 5
+            },
+                   
+    {
+        id: 9,
+        title: "Holi Rewind 2025",
+        description: "Tilt Your World - Holi Rewind 2025 Reliving Holi, Reliving Memories",
+        date: "March 13, 2025",
+        time: "10:00 AM Onwards",
+        location: "International Club, Sanepa, Lalitpur",
+        price: "Rs. 799", // Price
+        image: "/assets/holirewind.png", // Add the appropriate image path
+        category: "holi", // Tag for filtering
+        url: "https://events.khalti.com/events/ET25WAA2W3FQ",// Example URL
+        popularity: 6
+    },
+    {
+    
+    id: 10, // New ID for the Heritage Holi bash event
+    title: "Heritage Holi Bash",
+    description: "HeritageHoli is bringing the ULTIMATE Holi bash to Heritage Garden, Sanepa, on March 13th! 🎉\n\n💃 Ladies, you're in luck—FREE ENTRY & UNLIMITED DRINKS till 1 PM! 🍹\n\nExpect crazy colors, non-stop music, and festive madness! Tag your squad & grab your tickets via @khaltiofficial before they're gone! 🎫",
+    date: "March 13, 2025",
+    time: "10:00 AM Onwards",
+    location: "Heritage Garden, Sanepa",
+    price: "Rs.1000-3000 (Free entry for womens till 1pm)", // Early Bird price
+    image: "/assets/heritageholi.png", // Add the appropriate image path
+    category: "holi", // Tag for filtering
+    url: "https://events.khalti.com/events/ET2556P586EZ", // Example URL for more information
+    popularity: 8 // Adjust popularity as needed
+},
+    {
+        id: 11, // New ID for the Holi celebration event
+        title: " Holi at Yak and Yeti | ft. Dj Almost Human",
+        description: "Make your Holi unforgettable with popular DJ Almost HUMAN. Club Fahrenheit is organising Holi at Yak and Yeti",
+        date: "March 13, 2025",
+        time: "1:00 PM",
+        location: "Yak & Yeti, Nepal",
+        price: "Rs.1000 to Rs.3000", // Assuming the event is free
+        image: "/assets/djhuman.png", // Add the appropriate image path
+        category: "holi", // Tag for filtering
+        url: "https://example.com/holi-celebration", // Example URL for more information
+        popularity: 7 // Adjust popularity as needed
+    },
+    
+        ];
+        
+        function loadEvents() {
+            const container = document.getElementById('events-container');
+            container.innerHTML = ''; // Clear previous content
+
+            const fragment = document.createDocumentFragment();
+            
+            businesses.forEach(event => {
+                const eventCard = createEventCard(event);
+                fragment.appendChild(eventCard);
+            });
+
+            container.appendChild(fragment); // Append all elements at once
+        }
+
+        function createEventCard(event) {
+            const card = document.createElement('div');
+            card.className = 'event-card';
+            const categories = Array.isArray(event.category) ? event.category.join(',') : event.category;
+            card.setAttribute('data-category', categories.trim()); // Ensure no extra spaces
+            
+            const imageUrl = event.image || "/assets/football-finals.png"; // Example image
+            
+            card.innerHTML = `
+                <div class="event-image" style="background-image: url('${imageUrl}')">
+                    <div class="event-category">${categories}</div>
+                </div>
+                <div class="event-content">
+                    <h3 class="event-title">${event.title}</h3>
+                    <div class="event-meta">
+                        <div class="event-date">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>${event.date}</span>
+                        </div>
+                        <div class="event-time">
+                            <i class="far fa-clock"></i>
+                            <span>${event.time}</span>
+                        </div>
+                    </div>
+                    <div class="event-meta">
+                        <div class="event-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${event.location}</span>
+                        </div>
+                    </div>
+                    <p class="event-description">${event.description}</p>
+                    <div class="event-footer">
+                        <div class="event-price-tag${event.price === 'Free' ? ' free' : ''}">
+                            ${event.price}
+                        </div>
+                        <a href="${event.url}" class="event-button" target="_blank">
+                            View Post <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                            <span class="sr-only">(opens in a new tab)</span>
+                        </a>
+                    </div>
+                    <div class="countdown-container">
+                        <div class="event-time-counter" id="countdown-${event.id}"></div>
+                    </div>
+                </div>
+            `;
+
+            // Add click event to open modal
+            card.addEventListener('click', () => {
+                openModal(event);
+            });
+
+            return card;
+        }
+        
+    
+        
+        function filterEvents(category) {
+            const allEvents = document.querySelectorAll('.event-card');
+            
+            allEvents.forEach(event => {
+                const eventCategories = event.getAttribute('data-category').split(',').map(cat => cat.trim()); // Trim whitespace
+                const priceElement = event.querySelector('.event-price-tag');
+                const isFreePrice = priceElement && priceElement.textContent.trim().includes('Free');
+                
+                // Debugging log for event categories
+                console.log(`Event: ${event.querySelector('.event-title').textContent}, Categories: ${eventCategories}`);
+
+                if (category === 'all') {
+                    event.style.display = 'block';
+                } else if (category === 'Free') {
+                    // Show events with "Free" price or "Free" category
+                    if (isFreePrice || eventCategories.includes('Free')) {
+                        event.style.display = 'block';
+                    } else {
+                        event.style.display = 'none';
+                    }
+                } else if (category === 'concert' || category === 'public places') { // Added filtering for concerts and public places
+                    if (eventCategories.includes(category)) {
+                        event.style.display = 'block';
+                    } else {
+                        event.style.display = 'none';
+                    }
+                } else {
+                    // Check for category match (case insensitive)
+                    if (eventCategories.some(cat => cat.toLowerCase() === category.toLowerCase())) {
+                        event.style.display = 'block';
+                    } else {
+                        event.style.display = 'none';
+                    }
+                }
+                
+                // Debugging log for visibility
+                console.log(`Event: ${event.querySelector('.event-title').textContent}, Display: ${event.style.display}`);
+            });
+        }
+
+        function sortEvents(criteria) {
+            const container = document.getElementById('events-container');
+            const eventsArray = Array.from(container.children);
+
+            eventsArray.sort((a, b) => {
+                const eventA = businesses.find(event => event.title === a.querySelector('.event-title').textContent);
+                const eventB = businesses.find(event => event.title === b.querySelector('.event-title').textContent);
+
+                switch (criteria) {
+                    case 'time':
+                        const timeA = new Date(eventA.date + ' ' + eventA.time);
+                        const timeB = new Date(eventB.date + ' ' + eventB.time);
+                        return timeA - timeB; // Sort by time ascending
+                    case 'popularity':
+                        return eventB.popularity - eventA.popularity; // Sort by popularity descending
+                    case 'price':
+                        const priceA = parseFloat(eventA.price.replace(/[^0-9.-]+/g, "")) || 0;
+                        const priceB = parseFloat(eventB.price.replace(/[^0-9.-]+/g, "")) || 0;
+                        return priceA - priceB;
+                    default:
+                        return 0;
+                }
+            });
+
+            // Clear and re-append sorted events
+            container.innerHTML = '';
+            eventsArray.forEach(event => container.appendChild(event));
+        }
+
+        function openModal(event) {
+            const modal = document.getElementById('event-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalSummary = document.getElementById('modal-summary');
+            const modalAttendees = document.getElementById('modal-attendees');
+            const modalHighlights = document.getElementById('modal-highlights');
+
+            // Populate modal with event details
+            modalTitle.textContent = event.title;
+            modalSummary.textContent = event.description;
+
+            // Clear previous attendees and highlights
+            modalAttendees.innerHTML = '';
+            modalHighlights.innerHTML = '';
+
+            // Add attendees and highlights if available
+            if (event.attendees) {
+                event.attendees.forEach(attendee => {
+                    const li = document.createElement('li');
+                    li.textContent = attendee;
+                    modalAttendees.appendChild(li);
+                });
+            }
+
+            if (event.highlights) {
+                event.highlights.forEach(highlight => {
+                    const li = document.createElement('li');
+                    li.textContent = highlight;
+                    modalHighlights.appendChild(li);
+                });
+            }
+
+            // Show the modal
+            modal.style.display = 'block';
+
+            // Close modal when the close button is clicked
+            const closeButton = document.querySelector('.close-button');
+            closeButton.onclick = function() {
+                modal.style.display = 'none';
+            }
+
+            // Close modal when clicking outside of the modal content
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        }
+
+        function createSprinkles(event) {
+            const sprinkleContainer = document.createElement("div");
+            sprinkleContainer.classList.add("sprinkle-container");
+            document.body.appendChild(sprinkleContainer);
+            const numSprinkles = 20; // Number of sprinkles to generate
+            for (let i = 0; i < numSprinkles; i++) {
+                const sprinkle = document.createElement("div");
+                sprinkle.classList.add("sprinkle");
+                sprinkle.style.backgroundColor = getRandomColor();
+
+                const x = event.clientX;
+                const y = event.clientY;
+                sprinkle.style.left = `${x}px`;
+                sprinkle.style.top = `${y}px`;
+
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = Math.random() * 100;
+                const finalX = x + Math.cos(angle) * distance;
+                const finalY = y + Math.sin(angle) * distance;
+
+                document.body.appendChild(sprinkle);
+
+                animateSprinkle(sprinkle, finalX, finalY);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const lazyImages = document.querySelectorAll("img.lazy-load");
+            
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove("lazy-load");
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            lazyImages.forEach(img => observer.observe(img));
+        });
+
+        function createEventTimeCounter() {
+            // Get all event cards
+            const eventCards = document.querySelectorAll('.event-card');
+
+            eventCards.forEach(card => {
+                // Find the event in the businesses array
+                const eventTitle = card.querySelector('.event-title').textContent;
+                const event = businesses.find(e => e.title === eventTitle);
+
+                if (event) {
+                    // Create or find the time counter element
+                    let timeCounterEl = card.querySelector('.event-time-counter');
+                    if (!timeCounterEl) {
+                        timeCounterEl = document.createElement('div');
+                        timeCounterEl.classList.add('event-time-counter');
+                        card.querySelector('.event-footer').insertBefore(timeCounterEl, card.querySelector('.event-button'));
+                    }
+
+                    // Parse the event date and time
+                    const eventDateTime = parseEventDateTime(event.date, event.time);
+                    
+                    // Calculate time difference
+                    const now = new Date();
+                    const timeDiff = eventDateTime - now;
+
+                    // Check if the event spans multiple days
+                    const eventEndDateTime = new Date(eventDateTime);
+                    eventEndDateTime.setDate(eventEndDateTime.getDate() + 1); // Assuming the event lasts for one day
+
+                    // Style and text for different event states
+                    if (timeDiff > 0) {
+                        // Event is in the future
+                        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        
+                        timeCounterEl.textContent = `Starts in ${days}d ${hours}h`;
+                        timeCounterEl.style.display = 'inline-block';
+                        timeCounterEl.style.padding = '10px 15px';
+                        timeCounterEl.style.border = '1px solid var(--nepal-red)';
+                        timeCounterEl.style.borderRadius = '5px';
+                        timeCounterEl.style.backgroundColor = 'white';
+                        timeCounterEl.style.color = 'var(--nepal-red)';
+                        timeCounterEl.style.fontWeight = 'bold';
+                        timeCounterEl.style.textAlign = 'center';
+                        timeCounterEl.style.cursor = 'pointer';
+                        timeCounterEl.classList.add('upcoming');
+                        timeCounterEl.classList.remove('happening', 'expired');
+                    } else if (now >= eventDateTime && now < eventEndDateTime) { // Check if the event is happening now
+                        // Event is happening now
+                        timeCounterEl.textContent = 'Happening Now!';
+                        timeCounterEl.style.display = 'inline-block';
+                        timeCounterEl.style.padding = '10px 15px';
+                        timeCounterEl.style.border = '1px solid var(--nepal-red)';
+                        timeCounterEl.style.borderRadius = '5px';
+                        timeCounterEl.style.backgroundColor = 'white';
+                        timeCounterEl.style.color = 'var(--nepal-red)';
+                        timeCounterEl.style.fontWeight = 'bold';
+                        timeCounterEl.style.textAlign = 'center';
+                        timeCounterEl.style.cursor = 'pointer';
+                        timeCounterEl.classList.add('happening');
+                        timeCounterEl.classList.remove('upcoming', 'expired');
+                    } else {
+                        // Event has passed
+                        timeCounterEl.textContent = 'Expired';
+                        timeCounterEl.style.display = 'inline-block';
+                        timeCounterEl.style.padding = '10px 15px';
+                        timeCounterEl.style.border = '1px solid var(--nepal-red)';
+                        timeCounterEl.style.borderRadius = '5px';
+                        timeCounterEl.style.backgroundColor = 'white';
+                        timeCounterEl.style.color = 'var(--nepal-red)';
+                        timeCounterEl.style.fontWeight = 'bold';
+                        timeCounterEl.style.textAlign = 'center';
+                        timeCounterEl.style.cursor = 'pointer';
+                        timeCounterEl.classList.add('expired');
+                        timeCounterEl.classList.remove('upcoming', 'happening');
+                    }
+                }
+            });
+        }
+
+        function parseEventDateTime(dateString, timeString) {
+            // Clean and parse the time string
+            const timeParts = timeString.toLowerCase().replace(/\s*(am|pm|onwards)/g, '').trim();
+            let [hours, minutes] = timeParts.split(':').map(Number);
+            
+            // Adjust for 12-hour format if needed
+            if (timeString.toLowerCase().includes('pm') && hours !== 12) {
+                hours += 12;
+            }
+            if (timeString.toLowerCase().includes('am') && hours === 12) {
+                hours = 0;
+            }
+
+            // Parse the date
+            const dateParts = dateString.split(/\s*-\s/); // Handle date ranges
+            const parsedDate = new Date(dateParts[0]);
+
+            // Set time
+            parsedDate.setHours(hours || 0, minutes || 0, 0, 0);
+
+            return parsedDate;
+        }
+
+        // Call the function when the page loads and update periodically
+        document.addEventListener('DOMContentLoaded', createEventTimeCounter);
+        setInterval(createEventTimeCounter, 60000); // Update every minute
+
+        const celebrationContainer = document.getElementById('celebration-container');
+        const holiButton = document.querySelector('.holi-button');
+        const cursor = document.getElementById('cursor');
+
+        // Enhanced color palette with more nuanced colors
+        const holiColors = [
+            { color: '#FF4136', name: 'Gulal Red', intensity: 1.2 },
+            { color: '#FF6B6B', name: 'Vermilion', intensity: 1.1 },
+            { color: '#FFD700', name: 'Marigold Yellow', intensity: 1.0 },
+            { color: '#4ECDC4', name: 'Turquoise', intensity: 0.9 },
+            { color: '#9D4EDD', name: 'Royal Purple', intensity: 1.3 },
+            { color: '#FF8C42', name: 'Mandarin Orange', intensity: 1.1 }
+        ];
+
+        // Cursor tracking
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
+        });
+
+        function createColorSplash(x, y) {
+            const splash = document.createElement('div');
+            splash.classList.add('color-splash');
+
+            // Select a random color with intensity
+            const colorObj = holiColors[Math.floor(Math.random() * holiColors.length)];
+            splash.style.backgroundColor = colorObj.color;
+
+            // More dynamic splash properties
+            const baseSize = Math.random() * 200 + 100; // 100-300px
+            const size = baseSize * colorObj.intensity;
+            splash.style.width = `${size}px`;
+            splash.style.height = `${size}px`;
+
+            // More complex positioning
+            splash.style.left = `${x - size / 2}px`;
+            splash.style.top = `${y - size / 2}px`;
+
+            // Enhanced splash animation with more natural movement
+            const animation = splash.animate([
+                { 
+                    transform: 'scale(0.1) translate(0, 0) rotate(0deg)',
+                    opacity: 0.9
+                },
+                { 
+                    transform: `scale(4) translate(
+                        ${(Math.random() - 0.5) * 500}px, 
+                        ${(Math.random() - 0.5) * 500}px
+                    ) rotate(${Math.random() * 360}deg)`,
+                    opacity: 0
+                }
+            ], {
+                duration: 2500, // Longer duration
+                easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+                fill: 'forwards'
+            });
+
+            // More sophisticated removal
+            animation.onfinish = () => {
+                splash.remove();
+            };
+
+            return splash;
+        }
+
+        function createMultipleSplashes(x, y, count = 30) {
+            for (let i = 0; i < count; i++) {
+                // More spread-out splash creation
+                const spread = 150;
+                const splashX = x + (Math.random() - 0.5) * spread;
+                const splashY = y + (Math.random() - 0.5) * spread;
+                
+                const splash = createColorSplash(splashX, splashY);
+                celebrationContainer.appendChild(splash);
+            }
+        }
+
+        // Global click event
+        document.addEventListener('click', function(event) {
+            console.log("Click detected at:", event.clientX, event.clientY); // Add this line
+            createMultipleSplashes(event.clientX, event.clientY);
+        });
+
+        // Button-specific event
+        if (holiButton) { // Check if the button exists
+            holiButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                const rect = holiButton.getBoundingClientRect();
+                createMultipleSplashes(
+                    rect.left + rect.width / 2, 
+                    rect.top + rect.height / 2
+                );
+            });
+        }
+
+        createMultipleSplashes(100, 100); // This should create splashes at position (100, 100)
+    </script>
+</body>
+</html>

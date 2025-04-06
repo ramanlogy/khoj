@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Promote Your Business & Offers for Free | Khojum Nepal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="List your business deals and discounts for free on Khojum.com. Reach thousands of customers in Nepal looking for great offers.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        :root {
+            --primary-color: #dc143c;
+            --secondary-color: #4a5a94;
+            --dark-text: #333;
+            --light-text: #666;
+            --border-color: #e8edf3;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: var(--dark-text);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        .page-header {
+            background-color: #dc143c;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+        
+        .page-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo a {
+            text-decoration: none;
+            color: var(--dark-text);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+        }
+        
+        .logo span {
+            color:  #f9d949;
+        }
+        
+        .title-section h2 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color:#e8edf3
+        }
+        
+        /* Main Content */
+        .promote-page-content {
+            padding: 40px 0;
+        }
+        
+        .promote-intro {
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .promote-intro h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .promote-intro .subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Form */
+        .promote-form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .form-group label i {
+            margin-right: 6px;
+            color: var(--secondary-color);
+            width: 16px;
+            text-align: center;
+        }
+        
+        .required:after {
+            content: " *";
+            color: var(--primary-color);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(74, 90, 148, 0.2);
+        }
+        
+        .form-help {
+            font-size: 0.8rem;
+            color: var(--light-text);
+            margin-top: 4px;
+        }
+        
+        /* Terms checkbox */
+        .terms-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .terms-group input[type="checkbox"] {
+            margin-top: 4px;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .terms-group label {
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        
+        .terms-group a {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        /* Submit Button */
+        .form-submit {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .submit-button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .submit-button:hover {
+            background-color: #3a4a84;
+            transform: translateY(-2px);
+        }
+        
+        /* Footer */
+        footer {
+            background-color:  #dc143c;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .logo-small {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #f9d949;
+        }
+        
+        .logo-small span {
+            color: var(--primary-color);
+        }
+        
+        .support-message {
+            margin: 10px 0;
+        }
+        
+        .twitter-link {
+            color: #1DA1F2;
+            text-decoration: none;
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .promote-intro h1 {
+                font-size: 1.8rem;
+            }
+            
+            .promote-form-container {
+                padding: 20px;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+           
+.logo-small {
+    font-family: 'Lora', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: inline-block;
+    color: white; /* White color for logo */
+}
+
+.logo-small span {
+    color: var(--accent-yellow);
+} 
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/"><h1><span>खो</span>जुम</h1></a>
+            </div>
+            <div class="title-section">
+                <h2>Partner with Khojum</h2>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container promote-page-content">
+        <div class="promote-intro">
+            <h1>Promote Your Business & Offers For Free!</h1>
+            <p class="subtitle">Reach thousands of shoppers across Nepal looking for great deals and discounts.</p>
+        </div>
+
+        <!-- Simplified Form -->
+        <div class="promote-form-container">
+            <form id="promote-form" action="/api/submit-listing" method="POST" enctype="multipart/form-data">
+                
+                <!-- Business Info Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Business Information</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="business-name" class="required"><i class="fas fa-store"></i>Business Name</label>
+                            <input type="text" id="business-name" name="businessName" required placeholder="e.g., Himalayan Java Coffee">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="business-category" class="required"><i class="fas fa-tags"></i>Category</label>
+                            <select id="business-category" name="businessCategory" required>
+                                <option value="" disabled selected>Select Category...</option>
+                                <option value="restaurant">Restaurant / Cafe</option>
+                                <option value="fashion">Fashion & Apparel</option>
+                                <option value="electronics">Electronics Store</option>
+                                <option value="shopping">General Shopping / Retail</option>
+                                <option value="travel">Travel & Tours</option>
+                                <option value="health_beauty">Health & Beauty</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="services">Services (Salon, Repair, etc.)</option>
+                                <option value="groceries">Groceries / Supermarket</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="business-address" class="required"><i class="fas fa-map-marker-alt"></i>Address</label>
+                            <input type="text" id="business-address" name="businessAddress" required placeholder="e.g., Tridevi Marg, Thamel, Kathmandu">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="business-phone" class="required"><i class="fas fa-phone"></i>Phone Number</label>
+                            <input type="tel" id="business-phone" name="businessPhone" required placeholder="e.g., 01-44XXXXX or 98XXXXXXXX">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="business-email"><i class="fas fa-envelope"></i>Email</label>
+                            <input type="email" id="business-email" name="businessEmail" placeholder="e.g., info@yourbusiness.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="business-website"><i class="fas fa-link"></i>Website</label>
+                            <input type="url" id="business-website" name="businessWebsite" placeholder="e.g., https://www.yourbusiness.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="business-logo"><i class="fas fa-image"></i>Business Logo</label>
+                        <input type="file" id="business-logo" name="businessLogo" accept="image/png, image/jpeg, image/webp">
+                        <p class="form-help">Square format recommended (e.g., 200x200px), max 1MB</p>
+                    </div>
+                </div>
+                
+                <!-- Offer Details Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Offer Details</h3>
+                    
+                    <div class="form-group">
+                        <label for="deal-title" class="required"><i class="fas fa-bullhorn"></i>Offer Headline</label>
+                        <input type="text" id="deal-title" name="dealTitle" required placeholder="e.g., 20% Off All Items, Buy 1 Get 1 Free">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deal-description" class="required"><i class="fas fa-info-circle"></i>Description & Terms</label>
+                        <textarea id="deal-description" name="dealDescription" required placeholder="Describe your offer clearly. Include important terms and conditions."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="deal-discount-percentage"><i class="fas fa-percent"></i>Discount %</label>
+                            <input type="number" id="deal-discount-percentage" name="dealDiscountPercentage" min="1" max="100" placeholder="e.g., 25">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="deal-expiry-date" class="required"><i class="fas fa-calendar-times"></i>Expiry Date</label>
+                            <input type="date" id="deal-expiry-date" name="dealExpiryDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deal-image"><i class="fas fa-camera"></i>Deal Image</label>
+                        <input type="file" id="deal-image" name="dealImage" accept="image/png, image/jpeg, image/webp">
+                        <p class="form-help">Landscape format recommended (e.g., 800x450px), max 2MB</p>
+                    </div>
+                </div>
+                
+               
+                    
+                    <div class="terms-group">
+                        <input type="checkbox" id="terms-agree" name="termsAgree" required>
+                        <label for="terms-agree">I confirm that I am authorized to submit this information and agree to Khojum's <a href="/terms" target="_blank">Terms & Conditions</a> for listings.</label>
+                    </div>
+                </div>
+                
+                <div class="form-submit">
+                    <button type="submit" class="submit-button">Submit My Listing for Review</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="logo-small"><span>खो</span>जुम</div>
+            <p>Discovering Nepal's best discounts and offers, made easy.</p>
+          
+            </p>
+            <p class="copyright">© <span id="current-year"></span> Khojum.com</p>
+        </div>
+    </footer>
+
+    <script>
+        // Set copyright year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Simple form validation
+        document.getElementById('promote-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Check required fields
+            const requiredFields = document.querySelectorAll('[required]');
+            let valid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    valid = false;
+                    field.style.borderColor = '#dc143c';
+                } else {
+                    field.style.borderColor = '';
+                }
+            });
+            
+            if (valid) {
+                this.submit();
+            } else {
+                alert('Please fill in all required fields.');
+            }
+        });
+    </script>
+</body>
+</html>

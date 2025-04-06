@@ -1,0 +1,102 @@
+[
+  {
+    "id": "80f56d09-7a67-4716-b449-fc9a7f20d5a2",
+    "createdAt": "2025-04-05T09:22:20.645Z",
+    "status": "pending",
+    "business": {
+      "name": "fgd",
+      "category": "restaurant",
+      "address": "vcz",
+      "phone": "zfv",
+      "email": null,
+      "website": null,
+      "logoPath": null
+    },
+    "deal": {
+      "title": "dfv",
+      "description": "dfg",
+      "discountPercentage": null,
+      "expiryDate": "2025-04-24",
+      "imagePath": null
+    },
+    "contact": {
+      "name": "fvz",
+      "email": "kl@gmail.com"
+    }
+  },
+  {
+    "id": "d9542cb6-e6c2-411a-9e75-cf8c95f9b331",
+    "createdAt": "2025-04-05T09:26:24.546Z",
+    "status": "pending",
+    "business": {
+      "name": "fgd",
+      "category": "restaurant",
+      "address": "vcz",
+      "phone": "zfv",
+      "email": null,
+      "website": null,
+      "logoPath": null
+    },
+    "deal": {
+      "title": "dfv",
+      "description": "dfg",
+      "discountPercentage": null,
+      "expiryDate": "2025-04-24",
+      "imagePath": null
+    },
+    "contact": {
+      "name": "fvz",
+      "email": "kl@gmail.com"
+    }
+  },
+  {
+    "id": "7d8d7962-af2f-4a8d-a039-d495baf2dbef",
+    "createdAt": "2025-04-05T09:28:05.861Z",
+    "status": "pending",
+    "business": {
+      "name": "fuvkkkkk",
+      "category": "travel",
+      "address": "vcz",
+      "phone": "zfv",
+      "email": null,
+      "website": null,
+      "logoPath": null
+    },
+    "deal": {
+      "title": "dfv",
+      "description": "dfg",
+      "discountPercentage": null,
+      "expiryDate": "2025-04-24",
+      "imagePath": null
+    },
+    "contact": {
+      "name": "fvz",
+      "email": "kl@gmail.com"
+    }
+  },
+  {
+    "id": "db554463-c2d1-41d3-897c-b22e2d2e19b7",
+    "createdAt": "2025-04-05T09:29:29.729Z",
+    "status": "pending",
+    "business": {
+      "name": "fuvkkkkk",
+      "category": "travel",
+      "address": "vcz",
+      "phone": "zfv",
+      "email": null,
+      "website": null,
+      "logoPath": "/uploads/1743845369715-30256cb2-bad9-437c-a1f9-5a603b132469.png"
+    },
+    "deal": {
+      "title": "dfv",
+      "description": "dfg",
+      "discountPercentage": null,
+      "expiryDate": "2025-04-24",
+      "imagePath": null
+    },
+    "contact": {
+      "name": "fvz",
+      "email": "kl@gmail.com"
+    }
+  }
+]

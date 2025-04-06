@@ -1,0 +1,224 @@
+// server.js - Express server for handling business promotion form submissions
+
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
+
+// Initialize Express app
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Set up middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(__dirname, 'uploads');
+    
+    // Create uploads directory if it doesn't exist
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    // Create unique filename with original extension
+    const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.originalname)}`;
+    cb(null, uniqueName);
+  }
+});
+
+// File filter to allow only images
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only JPG, PNG and WebP files are allowed'), false);
+  }
+};
+
+// Initialize multer with our configuration
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 2 * 1024 * 1024, // 2MB max file size
+  }
+});
+
+
+// Setup file uploads for form fields
+const uploadFields = upload.fields([
+  { name: 'businessLogo', maxCount: 1 },
+  { name: 'dealImage', maxCount: 1 }
+]);
+
+// Data storage - in a real app, this would be a database
+const dataFilePath = path.join(__dirname, 'data', 'listings.json');
+
+// Ensure data directory exists
+if (!fs.existsSync(path.dirname(dataFilePath))) {
+  fs.mkdirSync(path.dirname(dataFilePath), { recursive: true });
+}
+
+// Initialize listings data file if it doesn't exist
+if (!fs.existsSync(dataFilePath)) {
+  fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2));
+}
+
+// Helper function to read listings data
+function readListings() {
+  try {
+    const data = fs.readFileSync(dataFilePath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading listings data:', error);
+    return [];
+  }
+}
+
+// Helper function to write listings data
+function writeListings(listings) {
+  try {
+    fs.writeFileSync(dataFilePath, JSON.stringify(listings, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Error writing listings data:', error);
+    return false;
+  }
+}
+
+// Handle form submission
+app.post('/api/submit-listing', uploadFields, (req, res) => {
+  try {
+    // Extract form data
+    const {
+      businessName,
+      businessCategory,
+      businessAddress,
+      businessPhone,
+      businessEmail,
+      businessWebsite,
+      dealTitle,
+      dealDescription,
+      dealDiscountPercentage,
+      dealExpiryDate,
+      contactName,
+      contactEmail,
+      termsAgree
+    } = req.body;
+
+    // Handle file uploads (get file paths)
+    const businessLogoPath = req.files.businessLogo ? 
+      '/uploads/' + req.files.businessLogo[0].filename : null;
+    
+    const dealImagePath = req.files.dealImage ? 
+      '/uploads/' + req.files.dealImage[0].filename : null;
+
+    // Create new listing object
+    const newListing = {
+      id: uuidv4(),
+      createdAt: new Date().toISOString(),
+      status: 'pending', // Initial status (pending review)
+      business: {
+        name: businessName,
+        category: businessCategory,
+        address: businessAddress,
+        phone: businessPhone,
+        email: businessEmail || null,
+        website: businessWebsite || null,
+        logoPath: businessLogoPath
+      },
+      deal: {
+        title: dealTitle,
+        description: dealDescription,
+        discountPercentage: dealDiscountPercentage || null,
+        expiryDate: dealExpiryDate,
+        imagePath: dealImagePath
+      },
+      contact: {
+        name: contactName,
+        email: contactEmail
+      }
+    };
+
+    // Read existing listings
+    const listings = readListings();
+    
+    // Add new listing
+    listings.push(newListing);
+    
+    // Save updated listings
+    if (writeListings(listings)) {
+      // Success response
+      res.status(201).json({
+        success: true,
+        message: 'Listing submitted successfully. It will be reviewed shortly.',
+        listingId: newListing.id
+      });
+    } else {
+      // Error saving data
+      res.status(500).json({
+        success: false,
+        message: 'Error saving listing data. Please try again later.'
+      });
+    }
+  } catch (error) {
+    console.error('Error processing submission:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error. Please try again later.'
+    });
+  }
+});
+
+// Error handling for file uploads
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        message: 'File is too large. Maximum size is 2MB.'
+      });
+    }
+  }
+  
+  console.error('Error:', error);
+  res.status(500).json({
+    success: false,
+    message: 'An error occurred during file upload.'
+  });
+});
+
+// Simple API to get approved listings (for demonstration)
+app.get('/api/listings', (req, res) => {
+  const listings = readListings();
+  // Filter to only show approved listings
+  const approvedListings = listings.filter(listing => listing.status === 'approved');
+  
+  res.json({
+    success: true,
+    count: approvedListings.length,
+    listings: approvedListings
+  });
+});
+
+// Serve the main HTML file
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
