@@ -5,7 +5,7 @@ window.allDealsData = [];
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
 
-    console.log("Main script for DEALS loaded (Final Version).");
+    console.log("Main script for TOURIST EXPERIENCES loaded (Final Version).");
 
     // --- DOM Elements ---
     const dealsGridContainer = document.getElementById('events-grid-container');
@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalImage = document.getElementById('modal-image');
     const modalDetails = document.getElementById('modal-details');
 
+
+    
+
     // --- Check Core Elements ---
     if (!dealsGridContainer || !loadingIndicator || !filterButtonsContainer || !sortDealsSelect || !modal) {
         console.error("CRITICAL ERROR: One or more essential UI elements not found. Aborting script.");
@@ -31,15 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- State ---
     let currentFilter = 'all';
-    let currentSort = 'expiry-asc'; // Default sort for deals
+    let currentSort = 'rating-desc'; // Default sort for tourist experiences
 
     // --- Functions ---
 
     /**
-     * Fetches DEAL data from deals.json.
+     * Fetches experience data from deals.json. 
+     * Note: You may want to rename this file to experiences.json in the future
      */
     async function fetchDeals() {
-        console.log("Fetching deals from deals.json...");
+        console.log("Fetching tourist experiences from deals.json...");
         loadingIndicator.style.display = 'block';
         dealsGridContainer.innerHTML = ''; // Clear grid
 
@@ -64,68 +68,95 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (window.allDealsData.length === 0) {
                 console.warn("Fetched data is empty.");
-                dealsGridContainer.innerHTML = '<p style="text-align: center; color: var(--light-text);">No deals available at the moment.</p>';
+                dealsGridContainer.innerHTML = '<p style="text-align: center; color: var(--light-text);">No experiences available at the moment.</p>';
             } else {
-                console.log("Deals fetched successfully:", window.allDealsData.length, "items");
+                console.log("Experiences fetched successfully:", window.allDealsData.length, "items");
                 renderDeals(); // Initial render ONLY if data was fetched successfully
                 // renderFeaturedItems(); // Call if you have a featured section
             }
 
         } catch (error) {
-            console.error("Failed to fetch or process deals:", error);
-            dealsGridContainer.innerHTML = `<p style="color: red; text-align: center;">Failed to load deals. Please check connection or data source. (${error.message})</p>`;
+            console.error("Failed to fetch or process experiences:", error);
+            dealsGridContainer.innerHTML = `<p style="color: red; text-align: center;">Failed to load experiences. Please check connection or data source. (${error.message})</p>`;
             window.allDealsData = []; // Set to empty on error
         } finally {
             loadingIndicator.style.display = 'none'; // Hide loading
         }
     }
 
+    const words = [
+        "Discounts & Offers",
+        "Find Best Local Foods",
+        "Places to Go",
+        "Hidden Temples",
+        "Peaceful Nature Spots",
+        "Cheap Hotels",
+        "Local Experiences"
+      ];
+    
+      const rotatingText = document.getElementById("rotating-text");
+      let index = 0;
+    
+      setInterval(() => {
+        rotatingText.classList.remove("fade-in");
+        rotatingText.classList.add("fade-out");
+    
+        setTimeout(() => {
+          index = (index + 1) % words.length;
+          rotatingText.textContent = words[index];
+          rotatingText.classList.remove("fade-out");
+          rotatingText.classList.add("fade-in");
+        }, 400); // Wait for fade-out to finish
+      }, 3000); // Rotate every 3 seconds
+    
     /**
-     * Renders deals based on current filters and sorting.
+     * Renders experiences based on current filters and sorting.
      */
     function renderDeals() {
-        console.log(`Rendering deals with filter: ${currentFilter}, sort: ${currentSort}`);
+        console.log(`Rendering experiences with filter: ${currentFilter}, sort: ${currentSort}`);
         dealsGridContainer.innerHTML = ''; // Clear grid
 
         let filteredDeals = window.allDealsData;
 
-        // 1. Filter
+        // 1. Filter - Using tourist categories
         if (currentFilter !== 'all') {
-            filteredDeals = window.allDealsData.filter(deal => deal && deal.category === currentFilter); // Add check for deal existence
+            filteredDeals = window.allDealsData.filter(deal => deal && deal.category === currentFilter);
         }
 
         // Ensure filteredDeals is an array before sorting
-         if (!Array.isArray(filteredDeals)) {
-             console.error("Filtered data is not an array!", filteredDeals);
-             filteredDeals = []; // Prevent sorting error
-         }
+        if (!Array.isArray(filteredDeals)) {
+            console.error("Filtered data is not an array!", filteredDeals);
+            filteredDeals = []; // Prevent sorting error
+        }
 
-
-        // 2. Sort
+        // 2. Sort - Updated for tourist experiences
         filteredDeals.sort((a, b) => {
             // Add checks for potentially undefined properties
             const now = new Date();
-            const expiryA = a?.expiryDate ? new Date(a.expiryDate) : new Date('9999-12-31');
-            const expiryB = b?.expiryDate ? new Date(b.expiryDate) : new Date('9999-12-31');
             const dateAddedA = a?.dateAdded ? new Date(a.dateAdded) : new Date(0);
             const dateAddedB = b?.dateAdded ? new Date(b.dateAdded) : new Date(0);
-            const discountA = a?.discountPercentage ?? 0;
-            const discountB = b?.discountPercentage ?? 0;
-            const priceA = a?.price ?? a?.originalPrice ?? Infinity; // Default high for asc sort
+            const priceA = a?.price ?? a?.originalPrice ?? Infinity;
             const priceB = b?.price ?? b?.originalPrice ?? Infinity;
-            const priceADesc = a?.price ?? a?.originalPrice ?? -1; // Default low for desc sort
+            const priceADesc = a?.price ?? a?.originalPrice ?? -1;
             const priceBDesc = b?.price ?? b?.originalPrice ?? -1;
-
+            const ratingA = a?.rating ?? 0;
+            const ratingB = b?.rating ?? 0;
+            const popularityA = a?.popularity ?? 0;
+            const popularityB = b?.popularity ?? 0;
+            const distanceA = a?.distanceFromCenter ?? Infinity;
+            const distanceB = b?.distanceFromCenter ?? Infinity;
 
             switch (currentSort) {
-                case 'expiry-asc':
-                    return expiryA - expiryB;
-                case 'discount-desc':
-                    return discountB - discountA;
+                case 'rating-desc':
+                    return ratingB - ratingA;
+                case 'popularity-desc':
+                    return popularityB - popularityA;
                 case 'price-asc':
                     return priceA - priceB;
                 case 'price-desc':
                     return priceBDesc - priceADesc;
+                case 'distance-asc':
+                    return distanceA - distanceB;
                 case 'newest':
                     return dateAddedB - dateAddedA;
                 default:
@@ -135,101 +166,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 3. Create HTML and Append
         if (filteredDeals.length === 0) {
-             dealsGridContainer.innerHTML = '<p style="text-align: center; color: var(--light-text);">No deals match the current filter/sort.</p>';
-             return;
+            dealsGridContainer.innerHTML = '<p style="text-align: center; color: var(--light-text);">No experiences match the current filter/sort.</p>';
+            return;
         }
 
         filteredDeals.forEach(deal => {
             const card = createDealCard(deal);
-            if (card) dealsGridContainer.appendChild(card); // Only append if card creation succeeded
+            if (card) dealsGridContainer.appendChild(card);
         });
 
         // Re-initialize relevant listeners for dynamic content
         addDescriptionScrollListeners();
-        // Image zoom and details button listeners are handled by delegation now
     }
 
     /**
-     * Creates an HTML element for a single DEAL card.
+     * Creates an HTML element for a single experience card.
      */
     function createDealCard(deal) {
         // Basic validation of the deal object
-         if (!deal || typeof deal !== 'object' || !deal.id || !deal.name) {
-             console.warn("Skipping invalid/incomplete deal data:", deal);
-             return null; // Return null if essential data is missing
-         }
+        if (!deal || typeof deal !== 'object' || !deal.id || !deal.name) {
+            console.warn("Skipping invalid/incomplete experience data:", deal);
+            return null;
+        }
 
         const card = document.createElement('div');
-        card.classList.add('event-card'); // Base class (consider renaming)
+        card.classList.add('event-card');
         card.dataset.category = deal.category || 'unknown';
         card.dataset.dealId = deal.id;
 
-        const expiryDate = deal.expiryDate ? new Date(deal.expiryDate) : null;
-        const now = new Date();
-        let expiryText = 'No Expiry Date';
-        let expiryStatusClass = '';
-
-        if (expiryDate && !isNaN(expiryDate.getTime())) { // Check if date is valid
-            const expiryDay = new Date(expiryDate.getFullYear(), expiryDate.getMonth(), expiryDate.getDate());
-            const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-            if (expiryDay < todayDay) {
-                expiryText = 'Expired';
-                expiryStatusClass = 'expired-deal';
-            } else {
-                 const diffTime = expiryDate - now;
-                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                 const displayDays = Math.max(0, diffDays);
-
-                 if (displayDays === 0) {
-                      expiryText = 'Expires Today';
-                      expiryStatusClass = 'expiring-soon';
-                 } else {
-                     expiryText = `Expires in ${displayDays} day${displayDays !== 1 ? 's' : ''}`;
-                     if (displayDays <= 3) {
-                         expiryStatusClass = 'expiring-soon';
-                     }
-                 }
-            }
+        // For tourist experiences, we'll display duration instead of expiry
+        let durationText = 'Duration: N/A';
+        let durationClass = '';
+        
+        if (deal.duration) {
+            durationText = `Duration: ${deal.duration}`;
+            durationClass = 'experience-duration';
         }
 
-        // ** THE FIX IS HERE: Only add class if non-empty **
-        if (expiryStatusClass) {
-            card.classList.add(expiryStatusClass);
-        }
+        // Card HTML - Updated for Tourist Experiences
+        const imageUrl = deal.imageUrl || '/assets/images/experience-placeholder.jpg';
+        const categoryDisplay = deal.category || 'Experience';
+        const ratingDisplay = deal.rating ? 
+            `<span class="experience-rating"><i class="fas fa-star"></i> ${deal.rating}/5</span>` : '';
+        const locationDisplay = deal.location ? 
+            `<span class="event-location"><i class="fas fa-map-marker-alt"></i> ${deal.location}</span>` : '';
+        const descriptionDisplay = deal.description ? 
+            `<div class="event-description"><p>${deal.description}</p><span class="scroll-indicator" style="display: none;">▼</span></div>` : '';
 
-        // --- Card HTML - Updated for Deals ---
-        const imageUrl = deal.imageUrl || '/assets/images/deal-placeholder.jpg'; // Default image
-        const categoryDisplay = deal.category || 'Deal';
-        const discountBadge = deal.discountPercentage ? `<span class="event-category discount-badge">${deal.discountPercentage}% OFF</span>` : `<span class="event-category">${categoryDisplay}</span>`;
-        const storeDisplay = deal.store ? `<span class="deal-store"><i class="fas fa-store"></i> ${deal.store}</span>` : '';
-        const locationDisplay = deal.location ? `<span class="event-location"><i class="fas fa-map-marker-alt"></i> ${deal.location}</span>` : '';
-        const descriptionDisplay = deal.description ? `<div class="event-description"><p>${deal.description}</p><span class="scroll-indicator" style="display: none;">▼</span></div>` : '';
-
-        let priceDisplay = 'Check Store';
+        let priceDisplay = 'Check Price';
         if (deal.price !== null && deal.price !== undefined) {
             priceDisplay = `NPR ${deal.price}`;
             if (deal.originalPrice && deal.price < deal.originalPrice) {
                 priceDisplay += ` <span class="original-price"> NPR ${deal.originalPrice}</span>`;
             }
-        } else if (deal.originalPrice) {
-             priceDisplay = `Was NPR ${deal.originalPrice}`;
         }
         const priceClass = (deal.price === 0) ? 'free' : '';
 
-
         card.innerHTML = `
             <div class="event-image" style="background-image: url('${imageUrl}');" data-img-src="${imageUrl}">
-                ${discountBadge}
+                <span class="event-category">${categoryDisplay}</span>
                 <div class="expand-image-icon" title="Expand Image"><i class="fas fa-expand"></i></div>
             </div>
             <div class="event-content">
                 <h3 class="event-title">${deal.name}</h3>
                 <div class="event-meta">
-                    ${storeDisplay}
-                     <span class="deal-expiry ${expiryStatusClass}"><i class="fas fa-calendar-times"></i> ${expiryText}</span>
-                     ${locationDisplay}
-                 </div>
+                    ${ratingDisplay}
+                    <span class="deal-duration ${durationClass}"><i class="fas fa-clock"></i> ${durationText}</span>
+                    ${locationDisplay}
+                </div>
                 ${descriptionDisplay}
                 <div class="event-footer">
                     <span class="event-price-tag ${priceClass}">${priceDisplay}</span>
@@ -298,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
      }
 
     /**
-     * Opens the modal, optionally with an image or DEAL details.
+     * Opens the modal with tourist experience details or image.
      */
      function openModal(imageUrl = null, dealDetails = null) {
          if (!modal || !modalImage || !modalDetails || !modalCloseButton) {
@@ -308,15 +312,15 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (imageUrl) {
                 modalImage.src = imageUrl;
-                modalImage.alt = dealDetails?.name || 'Expanded deal image';
+                modalImage.alt = dealDetails?.name || 'Expanded experience image';
                 modalImage.style.display = 'block';
                 modalDetails.style.display = 'none';
             } else if (dealDetails) {
                 modalImage.style.display = 'none';
                 modalDetails.style.display = 'block';
 
-                const expiryDate = dealDetails.expiryDate ? new Date(dealDetails.expiryDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
-                let priceInfo = 'Check Store';
+                const durationText = dealDetails.duration || 'N/A';
+                let priceInfo = 'Check Price';
                 if (dealDetails.price !== null && dealDetails.price !== undefined) {
                     priceInfo = `NPR ${dealDetails.price}`;
                     if(dealDetails.originalPrice && typeof dealDetails.originalPrice === 'number' && dealDetails.price < dealDetails.originalPrice) {
@@ -326,17 +330,23 @@ document.addEventListener('DOMContentLoaded', () => {
                      priceInfo = `<span style="text-decoration: line-through; color: grey;">Was NPR ${dealDetails.originalPrice}</span>`;
                 }
 
+                // Display tourist-specific details
                 modalDetails.innerHTML = `
-                    <h3>${dealDetails.name || 'Deal Details'}</h3>
-                    <p><strong>Store/Brand:</strong> ${dealDetails.store || 'N/A'}</p>
+                    <h3>${dealDetails.name || 'Experience Details'}</h3>
                     <p><strong>Category:</strong> ${dealDetails.category || 'N/A'}</p>
-                    ${dealDetails.discountPercentage ? `<p><strong>Discount:</strong> ${dealDetails.discountPercentage}% OFF</p>` : ''}
+                    ${dealDetails.rating ? `<p><strong>Rating:</strong> ${dealDetails.rating}/5 ${dealDetails.reviewCount ? `(${dealDetails.reviewCount} reviews)` : ''}</p>` : ''}
+                    <p><strong>Duration:</strong> ${durationText}</p>
                     <p><strong>Price:</strong> ${priceInfo}</p>
-                    <p><strong>Expires:</strong> ${expiryDate}</p>
                     ${dealDetails.location ? `<p><strong>Location:</strong> ${dealDetails.location}</p>` : ''}
+                    ${dealDetails.distanceFromCenter ? `<p><strong>Distance from City Center:</strong> ${dealDetails.distanceFromCenter} km</p>` : ''}
                     <hr style="margin: 10px 0; border: none; border-top: 1px solid var(--c-border);">
                     <p style="white-space: pre-wrap;">${dealDetails.description || 'No description available.'}</p>
-                     ${dealDetails.link ? `<p style="margin-top: 15px;"><a href="${dealDetails.link.startsWith('http') ? dealDetails.link : '//' + dealDetails.link}" target="_blank" rel="noopener noreferrer" class="event-button" style="display: inline-block; padding: 8px 15px; background-color: var(--c-primary); color: white; text-decoration: none; border-radius: 5px;">Visit Store/Offer <i class="fas fa-external-link-alt" style="font-size: 0.8em; margin-left: 5px;"></i></a></p>` : ''}
+                    ${dealDetails.highlights ? `
+                    <h4 style="margin-top: 15px;">Highlights</h4>
+                    <ul style="padding-left: 20px;">
+                        ${Array.isArray(dealDetails.highlights) ? dealDetails.highlights.map(highlight => `<li>${highlight}</li>`).join('') : ''}
+                    </ul>` : ''}
+                    ${dealDetails.link ? `<p style="margin-top: 15px;"><a href="${dealDetails.link.startsWith('http') ? dealDetails.link : '//' + dealDetails.link}" target="_blank" rel="noopener noreferrer" class="event-button" style="display: inline-block; padding: 8px 15px; background-color: var(--c-primary); color: white; text-decoration: none; border-radius: 5px;">Book Now <i class="fas fa-external-link-alt" style="font-size: 0.8em; margin-left: 5px;"></i></a></p>` : ''}
                  `;
             } else {
                 console.error("Modal opened without valid content.");
@@ -451,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
                           console.log("Zooming image (delegated):", imgSrc);
                            const card = imgContainer.closest('.event-card');
                            const dealId = card?.dataset.dealId;
-                           const dealData = window.allDealsData.find(d => d && d.id === dealId); // Add check for d
+                           const dealData = window.allDealsData.find(d => d && d.id === dealId);
                            openModal(imgSrc, dealData);
                       }
                       return;
@@ -460,13 +470,13 @@ document.addEventListener('DOMContentLoaded', () => {
                  if (detailsButton) {
                       const dealId = detailsButton.dataset.dealId;
                       console.log("Details requested (delegated):", dealId);
-                      const dealData = window.allDealsData.find(deal => deal && deal.id === dealId); // Add check for deal
+                      const dealData = window.allDealsData.find(deal => deal && deal.id === dealId);
                       if (dealData) openModal(null, dealData);
-                      else console.error("Deal data not found (delegated):", dealId);
+                      else console.error("Experience data not found (delegated):", dealId);
                       return;
                  }
              });
-         } else { console.warn("Deals grid container #events-grid-container not found."); }
+         } else { console.warn("Experiences grid container #events-grid-container not found."); }
 
          // Close modal with Escape key
          document.addEventListener('keydown', (event) => {
@@ -495,5 +505,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Global Helper CSS (Prevent body scroll when modal is open) ---
 const style = document.createElement('style');
-style.textContent = ` body.modal-open { overflow: hidden; } `;
+style.textContent = `
+body.modal-open { overflow: hidden; }
+.experience-rating { color: #ffb100; }
+.experience-duration { color: #0a84ff; }
+`;
 document.head.appendChild(style);
