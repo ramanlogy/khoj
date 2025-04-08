@@ -147,7 +147,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 // Serve the promote page
-app.get('/promote', (req, res) => {
+app.get('/promote.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'promote.html')); // Serve the correct form page
 });
 
