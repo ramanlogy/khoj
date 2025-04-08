@@ -2,37 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Khojum Calendar | Nepali/English Events</title>
+    <meta name="viewport" content="width=device-width, initial-scale=5.0">
+    <title>Khojum | Event List & Calendar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- Base & Enhanced Variables --- */
         :root {
-            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            --font-nepali: 'Noto Sans Devanagari', var(--font-primary); /* Add a specific Nepali font if available */
-
-            /* Modern Minimal Palette */
-            --c-primary: #6D5B97; /* Muted Purple */
-            --c-secondary: #A0D2DB; /* Light Teal/Blue */
-            --c-accent: #F5A6E8; /* Soft Pink */
-            --c-text-dark: #34495e; /* Dark Slate Blue */
-            --c-text-light: #7f8c8d; /* Grey */
-            --c-bg-main: #f8f9fd; /* Very Light Lavender/Blue */
+            --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            --font-nepali: 'Noto Sans Devanagari', var(--font-primary);
+            --c-primary: #6D5B97;
+            --c-secondary: #A0D2DB;
+            --c-accent: #F5A6E8;
+            --c-text-dark: #34495e;
+            --c-text-light: #7f8c8d;
+            --c-bg-main: #f8f9fd;
             --c-bg-panel: #ffffff;
-            --c-border: #e2e8f0; /* Lighter border */
-            --c-today-bg: color-mix(in srgb, var(--c-primary) 20%, transparent); /* Lighter today bg */
+            --c-border: #e2e8f0;
+            --c-today-bg: color-mix(in srgb, var(--c-primary) 20%, transparent);
             --c-today-text: var(--c-primary);
             --c-selected-border: var(--c-primary);
             --c-selected-bg: color-mix(in srgb, var(--c-secondary) 15%, transparent);
-            --c-holiday-text: #27ae60; /* Vibrant Green */
-            --c-event-dot-size: 6px;
-            --c-mobile-event-dot-size: 5px;
-            --c-danger: #e74c3c; /* Red for delete */
-
+            --c-holiday-text: #27ae60;
+            --c-event-dot-size: 5px; /* Slightly smaller dots */
+            --c-mobile-event-dot-size: 4px;
+            --c-highlight-bg: #fff3cd;
             --shadow-light: 0 2px 5px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.1);
-            --shadow-heavy: 0 10px 30px rgba(0, 0, 0, 0.15);
-
+            --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --shadow-heavy: 0 10px 30px rgba(0, 0, 0, 0.12);
             --transition-fast: 0.2s ease;
             --transition-medium: 0.3s ease;
         }
@@ -40,854 +37,605 @@
         *, *::before, *::after { box-sizing: border-box; }
 
         body {
-            font-family: var(--font-primary);
-            margin: 0;
-            background-color: var(--c-bg-main);
-            color: var(--c-text-dark);
-            line-height: 1.6;
-            font-size: 15px; /* Slightly smaller base for mobile */
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            font-family: var(--font-primary); margin: 0; background-color: var(--c-bg-main);
+            color: var(--c-text-dark); line-height: 1.6; font-size: 15px;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            scroll-behavior: smooth;
         }
 
-        button {
-            cursor: pointer; border: none; background: none; padding: 0;
-            font-family: inherit; color: inherit;
-        }
+        button { cursor: pointer; border: none; background: none; padding: 0; font-family: inherit; color: inherit; font-weight: 500; }
         ul { list-style: none; padding: 0; margin: 0; }
         h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 600; }
+        a { color: var(--c-primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
 
-        /* --- Utility --- */
-        .visually-hidden {
-             position: absolute; width: 1px; height: 1px; margin: -1px;
-             padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
-        }
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
+        .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
 
-        /* --- Floating Action Buttons --- */
-        .fab-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .fab {
-            background-color: var(--c-primary);
-            color: white;
-            width: 55px; height: 55px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8em;
-            cursor: pointer;
-            box-shadow: var(--shadow-medium);
-            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-        }
-        .fab:hover { transform: scale(1.08); box-shadow: var(--shadow-heavy); }
-        #add-event-button { background-color: var(--c-accent); } /* Different color for add */
-
-        /* --- Calendar Popup --- */
-        .calendar-popup {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 95vw; max-width: 500px; height: 90vh;
-            background-color: var(--c-bg-panel);
-            border-radius: 12px;
-            box-shadow: var(--shadow-heavy);
-            display: flex; flex-direction: column;
-            opacity: 0; visibility: hidden;
-            transition: opacity var(--transition-medium), transform var(--transition-medium), visibility 0s var(--transition-medium);
-            z-index: 1000;
-            overflow: hidden;
-        }
-        .calendar-popup.active {
-            opacity: 1; visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-            transition-delay: 0s;
+        /* Highlight for Deep Linking */
+        .highlight { animation: highlight-fade 2.5s ease-in-out; /* Slightly longer */ }
+        @keyframes highlight-fade {
+            0%, 100% { background-color: transparent; }
+            10%, 70% { background-color: var(--c-highlight-bg); } /* Hold highlight longer */
         }
 
-        /* Calendar Main Area */
-        .calendar-main {
-            flex-shrink: 1; display: flex; flex-direction: column;
-            height: 60%; min-height: 300px;
-            border-bottom: 1px solid var(--c-border);
-            overflow: hidden;
+        /* Page Header / Controls */
+        .page-controls { background-color: var(--c-bg-panel); padding: 15px; border-radius: 12px; box-shadow: var(--shadow-medium); margin-bottom: 25px; }
+        .controls-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: wrap; gap: 15px; }
+        .view-switcher { display: flex; gap: 10px; border-bottom: 1px solid var(--c-border); flex-grow: 1; }
+        .view-tab { padding: 10px 15px; font-weight: 500; color: var(--c-text-light); position: relative; border-bottom: 3px solid transparent; transition: color var(--transition-fast), border-color var(--transition-fast); }
+        .view-tab:hover { color: var(--c-primary); }
+        .view-tab.active { color: var(--c-primary); border-bottom-color: var(--c-primary); }
+        .global-actions a { /* Promote link */
+            background-color: var(--c-primary); color: white !important; padding: 9px 20px; border-radius: 20px; font-size: 0.9em; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--shadow-light); text-decoration: none !important; transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast); white-space: nowrap;
         }
+        .global-actions a:hover { background-color: color-mix(in srgb, var(--c-primary) 85%, black); transform: translateY(-2px); box-shadow: var(--shadow-medium); }
 
-        /* Header */
-        .calendar-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 15px;
-            border-bottom: 1px solid var(--c-border);
-            background-color: var(--c-bg-panel);
+        /* Category Filters (Shared) */
+        #event-categories-filter { display: flex; flex-wrap: nowrap; gap: 8px; padding: 10px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--c-border) transparent; }
+        #event-categories-filter::-webkit-scrollbar { height: 4px; }
+        #event-categories-filter::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 2px; }
+        .category-filter { display: flex; align-items: center; cursor: pointer; padding: 6px 14px; border-radius: 18px; background-color: #f0f3f7; font-size: 0.85em; transition: all var(--transition-fast); white-space: nowrap; border: 1px solid transparent; }
+        .category-filter:hover { background-color: #e8eaf0; }
+        .category-filter.selected { background-color: color-mix(in srgb, var(--c-primary) 15%, transparent); color: var(--c-primary); font-weight: 600; border-color: color-mix(in srgb, var(--c-primary) 30%, transparent); box-shadow: var(--shadow-light); }
+        .category-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; flex-shrink: 0; }
+        .category-name { color: var(--c-text-dark); }
+        .category-filter.selected .category-name { color: var(--c-primary); }
+
+        /* View Containers */
+        .view-container { display: none; }
+        .view-container.active { display: block; animation: fadeInView 0.5s ease-out; }
+        @keyframes fadeInView { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* List View Styles */
+        #list-view-container { /* Container has less styling now */ padding: 0; background: none; box-shadow: none; border-radius: 0; }
+        .list-date-group { margin-bottom: 35px; }
+        .list-date-header {
+            font-size: 1.4em; font-weight: 700; /* Bolder */ color: var(--c-primary);
+            margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--c-primary); /* Primary color border */
+            display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+        }
+        .list-date-header .sub-date { font-size: 0.7em; color: var(--c-text-light); font-weight: 500; } /* Slightly bolder */
+
+        .event-item { position: relative; }
+        .event-item:not(:last-child) { margin-bottom: 18px; } /* More space between cards */
+
+        .event-card {
+            background-color: var(--c-bg-panel); padding: 0; /* Remove padding here, apply to inner divs */ border-radius: 10px; /* More rounded */
+            border: 1px solid var(--c-border);
+            /* border-left: none; Remove default colored border */
+            transition: all var(--transition-medium); /* Slower transition */
+            display: flex; /* Use flex for image/content layout */
+            box-shadow: var(--shadow-medium); cursor: pointer;
+            overflow: hidden; /* Ensure children don't overflow rounded corners */
+        }
+        .event-card:hover { box-shadow: var(--shadow-heavy); transform: scale(1.015); /* Slightly scale up */ border-color: color-mix(in srgb, var(--c-primary) 30%, transparent); }
+
+        /* NEW: Image container */
+        .event-image-container {
             flex-shrink: 0;
+            width: 120px; /* Fixed width for image */
+            height: auto; /* Let height adjust */
+            background-color: #eee; /* Placeholder bg */
+            position: relative;
         }
-        #month-year {
-            font-size: 1.15em; font-weight: 600; color: var(--c-primary);
-            text-align: center; flex-grow: 1; margin: 0 10px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        .event-image-container img {
+            display: block;
+            width: 100%;
+            height: 100%; /* Fill container height */
+            object-fit: cover; /* Cover the area, might crop */
+            aspect-ratio: 3 / 4; /* Portrait aspect ratio */
+            border-radius: 10px 0 0 10px; /* Round left corners */
         }
-        .nav-button {
-            color: var(--c-text-light); font-size: 1.2em; padding: 10px;
-            border-radius: 50%; width: 40px; height: 40px;
-            display: inline-flex; align-items: center; justify-content: center;
-            transition: background-color var(--transition-fast), color var(--transition-fast);
-            flex-shrink: 0;
+        /* Style adjustments when no image */
+        .event-card:not(.has-image) .event-image-container { display: none; }
+        .event-card:not(.has-image) .event-content-wrapper { padding: 18px 20px; /* Add padding back if no image */ }
+        .event-card:not(.has-image) { padding: 0; } /* Reset card padding */
+
+        .event-content-wrapper {
+            flex-grow: 1; padding: 18px 20px; /* Padding moved here */
+            overflow: hidden; display: flex; flex-direction: column; /* Stack content vertically */
         }
+        .event-header { display: flex; align-items: flex-start; margin-bottom: 8px; } /* Align items top */
+        .event-icon { margin-right: 9px; font-size: 1.1em; color: var(--c-primary); margin-top: 2px; flex-shrink: 0;}
+        .event-name { font-weight: 700; color: var(--c-text-dark); font-size: 1.1em; line-height: 1.3; margin-bottom: 4px; /* Space below name */ }
+        .event-details { font-size: 0.9em; color: var(--c-text-dark); display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; font-weight: 400; } /* Stack details */
+        .event-time, .event-location { display: inline-flex; align-items: center; gap: 6px; }
+        .event-time::before, .event-location::before { font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.9em; color: var(--c-text-light); width: 14px; text-align: center; }
+        .event-time::before { content: "\f017"; }
+        .event-location::before { content: "\f3c5"; }
+        .event-description { font-size: 0.9em; margin-top: auto; /* Push description down */ color: var(--c-text-dark); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; padding-top: 10px; border-top: 1px dashed var(--c-border); font-weight: 400; }
+        .event-card:not(.has-description) .event-description { display: none; } /* Hide if no description */
+
+
+        .no-events-list { padding: 50px 20px; text-align: center; color: var(--c-text-light); font-style: normal; font-size: 1em; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; min-height: 250px; background-color: var(--c-bg-panel); border-radius: 12px; box-shadow: var(--shadow-light); }
+        .no-events-list::before { content: "\f11a"; font-family: 'Font Awesome 6 Free'; font-weight: 400; font-size: 3em; color: var(--c-border); }
+
+        /* --- Calendar View Styles (Keep as is, layout handled by media query) --- */
+        #calendar-view-container { background-color: var(--c-bg-panel); border-radius: 12px; box-shadow: var(--shadow-light); overflow: hidden; display: flex; flex-direction: column; }
+        /* ... (Keep all other specific Calendar styles: .calendar-main, .calendar-header, .nav-button, #month-year, .calendar-config, .toggle-switch, .calendar-weekdays, .weekday, .calendar-days, .day, .day-dates, .eng-date, .nepali-date, .day.inactive, .day.today, .day.selected, .day.holiday, .event-indicator, .event-dot, .event-count, #events-panel, .event-panel-header, #event-panel-date, .holiday-badge, .event-panel-list, .no-events) ... */
+         .calendar-main { flex-shrink: 1; display: flex; flex-direction: column; border-bottom: 1px solid var(--c-border); }
+        .calendar-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid var(--c-border); background-color: var(--c-bg-panel); flex-shrink: 0; }
+        #month-year { font-size: 1.15em; font-weight: 600; color: var(--c-primary); text-align: center; flex-grow: 1; margin: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .nav-button { color: var(--c-text-light); font-size: 1.2em; padding: 10px; border-radius: 50%; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; transition: background-color var(--transition-fast), color var(--transition-fast); flex-shrink: 0; }
         .nav-button:hover { background-color: #f0f0f0; color: var(--c-primary); }
-        .nav-button.close-button:hover { background-color: #fde0e0; color: var(--c-danger); } /* Red hover for close */
-
-        /* Config Area */
-        .calendar-config {
-            display: flex; justify-content: flex-end; align-items: center;
-            padding: 8px 15px;
-            border-bottom: 1px solid var(--c-border);
-            background-color: #fafbff;
-            font-size: 0.8em;
-            flex-shrink: 0;
-        }
+        .nav-button.close-button:hover { background-color: #fde0e0; color: var(--c-danger); } /* Keep for modal close */
+        .calendar-config { display: flex; justify-content: flex-end; align-items: center; padding: 8px 15px; border-bottom: 1px solid var(--c-border); background-color: #fafbff; font-size: 0.8em; flex-shrink: 0; }
         .toggle-switch { display: flex; align-items: center; cursor: pointer; color: var(--c-text-light); }
         .toggle-switch span { margin-right: 8px;}
         .toggle-switch input { display: none; }
-        .toggle-switch .slider {
-            width: 40px; height: 20px; background-color: #ccc;
-            border-radius: 20px; position: relative; transition: background-color var(--transition-medium);
-        }
-        .toggle-switch .slider::before {
-            content: ""; position: absolute;
-            height: 14px; width: 14px; left: 3px; bottom: 3px;
-            background-color: white; border-radius: 50%; transition: transform var(--transition-medium);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
+        .toggle-switch .slider { width: 40px; height: 20px; background-color: #ccc; border-radius: 20px; position: relative; transition: background-color var(--transition-medium); }
+        .toggle-switch .slider::before { content: ""; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: transform var(--transition-medium); box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .toggle-switch input:checked + .slider { background-color: var(--c-primary); }
         .toggle-switch input:checked + .slider::before { transform: translateX(20px); }
-
-        /* Weekdays */
-        .calendar-weekdays {
-            display: grid; grid-template-columns: repeat(7, 1fr);
-            padding: 8px 5px;
-            background-color: #fafbff;
-            border-bottom: 1px solid var(--c-border);
-            flex-shrink: 0;
-        }
-        .weekday {
-            text-align: center; font-weight: 600; font-size: 0.75em;
-            color: var(--c-text-light); text-transform: uppercase;
-        }
-
-        /* Days Grid */
-        .calendar-days {
-            display: grid; grid-template-columns: repeat(7, 1fr);
-            gap: 1px; background-color: var(--c-border);
-            flex-grow: 1; overflow-y: auto; padding: 1px;
-            transition: opacity 0.2s ease-out;
-        }
+        .calendar-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); padding: 8px 5px; background-color: #fafbff; border-bottom: 1px solid var(--c-border); flex-shrink: 0; }
+        .weekday { text-align: center; font-weight: 600; font-size: 0.75em; color: var(--c-text-light); text-transform: uppercase; }
+        .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background-color: var(--c-border); flex-grow: 1; padding: 1px; transition: opacity 0.2s ease-out; min-height: 400px; }
         .calendar-days.fade-out { opacity: 0; }
-        .calendar-days.fade-in { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Day Cell */
-        .day {
-            background-color: var(--c-bg-panel);
-            padding: 5px; box-sizing: border-box;
-            text-align: right; position: relative; min-height: 70px;
-            cursor: pointer;
-            transition: background-color var(--transition-fast);
-            display: flex; flex-direction: column;
-            font-size: 0.8em;
-            overflow: hidden; /* Prevent content spill */
-        }
+        .calendar-days.fade-in { animation: fadeInGrid 0.3s ease-out; }
+        @keyframes fadeInGrid { from { opacity: 0; } to { opacity: 1; } }
+        .day { background-color: var(--c-bg-panel); padding: 5px; box-sizing: border-box; text-align: right; position: relative; min-height: 70px; cursor: pointer; transition: background-color var(--transition-fast); display: flex; flex-direction: column; font-size: 0.8em; overflow: hidden; }
         .day:hover:not(.inactive) { background-color: color-mix(in srgb, var(--c-secondary) 10%, transparent); }
         .day.inactive { background-color: var(--c-bg-main); color: #bbb; cursor: default; }
-
-        /* Date Display & Toggle Animation */
-        .day-dates {
-             line-height: 1.3;
-             margin-bottom: auto; /* Pushes dates to top */
-             position: relative; /* For absolute positioning of dates during transition */
-             height: 2.6em; /* Allocate space for two lines */
-        }
-        .eng-date, .nepali-date {
-            display: block;
-            position: absolute; /* Position for animation */
-            right: 0; /* Align right */
-            width: 100%;
-            transition: transform var(--transition-medium), opacity var(--transition-medium);
-            font-family: var(--font-primary); /* Default font */
-        }
-        .eng-date {
-            top: 0;
-            font-size: 1.1em; font-weight: 500; color: var(--c-text-dark);
-            transform: translateY(0); opacity: 1;
-        }
-        .nepali-date {
-            top: 1.3em; /* Position below English date */
-            font-size: 0.85em; color: var(--c-text-light);
-            font-family: var(--font-nepali); /* Use specific Nepali font */
-            transform: translateY(0); opacity: 1;
-        }
-        /* Animation States */
+        .day-dates { line-height: 1.3; margin-bottom: auto; position: relative; height: 2.6em; }
+        .eng-date, .nepali-date { display: block; position: absolute; right: 0; width: 100%; transition: transform var(--transition-medium), opacity var(--transition-medium); font-family: var(--font-primary); }
+        .eng-date { top: 0; font-size: 1.1em; font-weight: 500; color: var(--c-text-dark); transform: translateY(0); opacity: 1; }
+        .nepali-date { top: 1.3em; font-size: 0.85em; color: var(--c-text-light); font-family: var(--font-nepali); transform: translateY(0); opacity: 1; }
         .calendar-days.nepali-visible .eng-date { transform: translateY(-5px); opacity: 0; }
         .calendar-days.nepali-visible .nepali-date { transform: translateY(-1.3em); opacity: 1; font-size: 1.1em; font-weight: 500; color: var(--c-text-dark); }
         .calendar-days:not(.nepali-visible) .eng-date { transform: translateY(0); opacity: 1; }
         .calendar-days:not(.nepali-visible) .nepali-date { transform: translateY(5px); opacity: 0; }
-
         .day.inactive .eng-date, .day.inactive .nepali-date { color: #ccc; }
-
-        /* Today & Selected Styles */
         .day.today { background-color: var(--c-today-bg); border-radius: 4px; }
         .day.today .eng-date, .day.today .nepali-date { color: var(--c-today-text); font-weight: 700; }
         .calendar-days.nepali-visible .day.today .nepali-date { color: var(--c-today-text); }
-        .calendar-days.nepali-visible .day.today .eng-date { color: color-mix(in srgb, var(--c-today-text) 60%, transparent); font-weight: 500; } /* Muted when Nepali is primary */
-        .day.selected {
-            background-color: var(--c-selected-bg);
-            box-shadow: inset 0 0 0 2px var(--c-selected-border);
-            border-radius: 4px;
-        }
-
-        /* Holiday Indicator */
-        .day.holiday .eng-date, .calendar-days.nepali-visible .day.holiday .nepali-date {
-            color: var(--c-holiday-text) !important; /* Override other colors */
-            font-weight: 600;
-        }
-        .day.holiday::after { /* Subtle bottom border for holidays */
-             content: ''; position: absolute; bottom: 2px; left: 5px; right: 5px;
-             height: 2px; background-color: var(--c-holiday-text); border-radius: 1px;
-             opacity: 0.6;
-         }
-
-        /* Event Indicator Area */
-        .event-indicator {
-            display: flex; flex-wrap: wrap; gap: 3px;
-            justify-content: flex-start;
-            margin-top: 4px; /* Space above dots */
-            max-height: 18px; /* Limit height to prevent overflow */
-            overflow: hidden;
-            padding-left: 2px;
-        }
-        .event-dot {
-            width: var(--c-mobile-event-dot-size); height: var(--c-mobile-event-dot-size);
-            border-radius: 50%; flex-shrink: 0;
-        }
-        .event-count {
-            font-size: 0.7em; font-weight: bold; color: var(--c-text-light);
-            margin-left: 3px; background: rgba(0,0,0,0.04); padding: 0 4px; border-radius: 4px;
-            line-height: 1.2; align-self: center;
-        }
-
-        /* --- Events Panel --- */
-        .events-panel {
-            position: absolute; bottom: 0; left: 0;
-            width: 100%; height: 45%; /* Slightly more height */
-            background-color: var(--c-bg-panel);
-            display: flex; flex-direction: column;
-            transform: translateY(100%);
-            opacity: 1; visibility: visible;
-            transition: transform var(--transition-medium);
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-            border-radius: 16px 16px 0 0;
-            overflow: hidden;
-        }
-        .events-panel.mobile-visible { transform: translateY(0); }
-
-        .event-panel-header {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--c-border);
-            flex-shrink: 0; position: relative;
-            background-color: #fafbff; /* Match config bg */
-        }
+        .calendar-days.nepali-visible .day.today .eng-date { color: color-mix(in srgb, var(--c-today-text) 60%, transparent); font-weight: 500; }
+        .day.selected { background-color: var(--c-selected-bg); box-shadow: inset 0 0 0 2px var(--c-selected-border); border-radius: 4px; }
+        .day.holiday .eng-date, .calendar-days.nepali-visible .day.holiday .nepali-date { color: var(--c-holiday-text) !important; font-weight: 600; }
+        .day.holiday::after { content: ''; position: absolute; bottom: 2px; left: 5px; right: 5px; height: 2px; background-color: var(--c-holiday-text); border-radius: 1px; opacity: 0.6; }
+        .event-indicator { display: flex; flex-wrap: wrap; gap: 3px; justify-content: flex-start; margin-top: 4px; max-height: 18px; overflow: hidden; padding-left: 2px; }
+        .event-dot { width: var(--c-mobile-event-dot-size); height: var(--c-mobile-event-dot-size); border-radius: 50%; flex-shrink: 0; }
+        .event-count { font-size: 0.7em; font-weight: bold; color: var(--c-text-light); margin-left: 3px; background: rgba(0,0,0,0.04); padding: 0 4px; border-radius: 4px; line-height: 1.2; align-self: center; }
+        #events-panel { width: 100%; height: auto; background-color: var(--c-bg-panel); display: flex; flex-direction: column; border-radius: 0; overflow: hidden; }
+        .event-panel-header { padding: 12px 15px; border-bottom: 1px solid var(--c-border); flex-shrink: 0; position: relative; background-color: #fafbff; }
         #event-panel-date { font-weight: 600; font-size: 1.1em; margin-bottom: 2px; color: var(--c-primary); }
         #event-panel-date .sub-date { font-size: 0.8em; color: var(--c-text-light); display: block; }
-        .holiday-badge {
-            display: inline-block; background-color: var(--c-holiday-text); color: white;
-            padding: 2px 8px; border-radius: 12px; font-size: 0.7em; font-weight: 500;
-            margin-top: 5px;
-        }
-        /* Mobile Close Button for Events Panel */
-        #close-events {
-            position: absolute; top: 8px; right: 8px;
-            width: 30px; height: 30px; /* Smaller, better placement */
-            display: none; /* JS controls display */
-            z-index: 10;
-        }
-        .mobile-view #close-events { display: inline-flex; } /* Show on mobile */
+        .holiday-badge { display: inline-block; background-color: var(--c-holiday-text); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7em; font-weight: 500; margin-top: 5px; }
+        .event-panel-list { flex-grow: 1; overflow-y: auto; padding: 15px; min-height: 150px; }
+        .no-events { padding: 40px 15px; text-align: center; color: var(--c-text-light); font-style: normal; font-size: 0.9em; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%; }
+        .no-events::before { content: "\f11a"; font-family: 'Font Awesome 6 Free'; font-weight: 400; font-size: 2.5em; color: var(--c-border); }
 
 
-        /* Category Filters */
-        #event-categories-filter {
-            display: flex; flex-wrap: nowrap; /* Prevent wrapping, allow scroll */
-            gap: 8px;
-            padding: 10px 15px;
-            border-bottom: 1px solid var(--c-border);
-            flex-shrink: 0;
-            overflow-x: auto; /* Horizontal scroll */
-             -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
-             scrollbar-width: thin; /* Firefox */
-             scrollbar-color: var(--c-border) transparent; /* Firefox */
-        }
-        #event-categories-filter::-webkit-scrollbar { height: 4px; }
-        #event-categories-filter::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 2px; }
-
-        .category-filter {
-            display: flex; align-items: center; cursor: pointer;
-            padding: 5px 12px; border-radius: 18px;
-            background-color: #f0f3f7; font-size: 0.8em;
-            transition: all var(--transition-fast);
-            white-space: nowrap; border: 1px solid transparent;
-        }
-        .category-filter:hover { background-color: #e8eaf0; }
-        .category-filter.selected {
-             background-color: color-mix(in srgb, var(--c-primary) 15%, transparent);
-             color: var(--c-primary);
-             font-weight: 600;
-             border-color: color-mix(in srgb, var(--c-primary) 30%, transparent);
-             box-shadow: var(--shadow-light);
-        }
-         .category-filter.selected .category-dot { /* No border needed, use color */ }
-        .category-dot {
-            width: 9px; height: 9px; border-radius: 50%;
-            margin-right: 6px; flex-shrink: 0;
-        }
-        .category-name { color: var(--c-text-dark); }
-        .category-filter.selected .category-name { color: var(--c-primary); }
-
-        /* Event List */
-        .event-panel-list {
-            flex-grow: 1; overflow-y: auto;
-            padding: 15px;
-        }
-        .event-item { position: relative; }
-        .event-item:not(:last-child) { margin-bottom: 10px; }
-        .event-item:hover .delete-event { opacity: 1; }
-
-        .event-card {
-            background-color: var(--c-bg-panel);
-            padding: 12px; border-radius: 8px;
-            border-left: 5px solid var(--c-text-light); /* Default border */
-            transition: all var(--transition-fast);
-            display: flex; justify-content: space-between; align-items: flex-start;
-            box-shadow: var(--shadow-light);
-        }
-        .event-card:hover { box-shadow: var(--shadow-medium); transform: translateY(-2px); }
-        .event-card.highlight { /* For click feedback */
-             animation: highlightPulse 0.5s ease-out;
-        }
-        @keyframes highlightPulse {
-             0%, 100% { transform: scale(1); }
-             50% { transform: scale(1.02); }
-        }
-
-
-        .event-content-wrapper { flex-grow: 1; margin-right: 10px; }
-        .event-header { display: flex; align-items: center; margin-bottom: 5px; }
-        .event-icon { margin-right: 8px; font-size: 1.1em; }
-        .event-name { font-weight: 600; color: var(--c-text-dark); font-size: 0.95em; }
-        .event-details { font-size: 0.85em; color: var(--c-text-light); display: flex; gap: 12px; flex-wrap: wrap; margin-top: 3px; }
-        .event-time::before, .event-location::before { font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 4px; font-size: 0.9em; }
-        .event-time::before { content: "\f017"; } /* Clock */
-        .event-location::before { content: "\f3c5"; } /* Map marker */
-        .event-description { font-size: 0.8em; margin-top: 6px; color: var(--c-text-dark); }
-
-        .delete-event {
-            color: var(--c-danger); font-size: 1.2em; font-weight: bold;
-            opacity: 0.3; transition: all var(--transition-fast);
-            flex-shrink: 0; padding: 5px; border-radius: 50%; width: 30px; height: 30px;
-            display: inline-flex; align-items: center; justify-content: center;
-        }
-        .delete-event:hover { background-color: #fde0e0; opacity: 1; transform: scale(1.1); }
-
-        .no-events {
-            padding: 40px 15px; text-align: center; color: var(--c-text-light);
-            font-style: normal; font-size: 0.9em;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 10px; height: 100%;
-        }
-         .no-events::before {
-             content: "\f11a"; /* Smile */
-             font-family: 'Font Awesome 6 Free'; font-weight: 400;
-             font-size: 2.5em; color: var(--c-border);
-         }
-
-        /* --- Modal --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1050;
-            opacity: 0; visibility: hidden;
-            transition: opacity var(--transition-medium), visibility 0s var(--transition-medium);
-        }
+        /* Event Details Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 1050; opacity: 0; visibility: hidden; transition: opacity var(--transition-medium), visibility 0s var(--transition-medium); }
         .modal-overlay.active { opacity: 1; visibility: visible; transition-delay: 0s; }
-
-        .modal-content {
-            background-color: var(--c-bg-panel);
-            padding: 25px; border-radius: 12px;
-            box-shadow: var(--shadow-heavy);
-            width: 90%; max-width: 450px;
-            position: relative;
-            transform: scale(0.9);
-            transition: transform var(--transition-medium);
-        }
+        .modal-content { background-color: var(--c-bg-panel); padding: 0; /* Remove padding */ border-radius: 12px; box-shadow: var(--shadow-heavy); width: 90%; max-width: 600px; /* Wider modal */ position: relative; transform: scale(0.95); transition: transform var(--transition-medium); max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; /* Ensure rounded corners clip content */ }
         .modal-overlay.active .modal-content { transform: scale(1); }
-
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .modal-title { font-size: 1.3em; color: var(--c-primary); }
-        .modal-close-button { /* Uses .nav-button styles */ }
-
-        .modal-body form { display: flex; flex-direction: column; gap: 15px; }
-        .form-group { display: flex; flex-direction: column; }
-        .form-group label { font-size: 0.85em; color: var(--c-text-light); margin-bottom: 5px; font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 10px 12px; border: 1px solid var(--c-border); border-radius: 6px;
-            font-size: 0.95em; font-family: inherit;
-            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; /* Adjusted padding */ border-bottom: 1px solid var(--c-border); flex-shrink: 0;}
+        .modal-title { font-size: 1.3em; color: var(--c-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 15px; }
+        .modal-close-button { flex-shrink: 0; }
+        .modal-body { overflow-y: auto; flex-grow: 1; padding: 20px 25px; /* Padding for content */ }
+        /* NEW: Modal Image */
+        .detail-image-container {
+            width: 100%;
+            margin-bottom: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none; border-color: var(--c-primary);
-            box-shadow: 0 0 0 2px color-mix(in srgb, var(--c-primary) 20%, transparent);
-        }
-        .form-group textarea { min-height: 80px; resize: vertical; }
-        .modal-footer { margin-top: 25px; text-align: right; }
-        .modal-button {
-            padding: 10px 20px; border-radius: 6px; font-size: 0.95em;
-            font-weight: 500; transition: background-color var(--transition-fast), color var(--transition-fast);
-        }
-        .modal-button.primary { background-color: var(--c-primary); color: white; }
-        .modal-button.primary:hover { background-color: color-mix(in srgb, var(--c-primary) 85%, black); }
-        .modal-button.secondary { background-color: #eef1f5; color: var(--c-text-dark); margin-right: 10px; }
-        .modal-button.secondary:hover { background-color: #dfe4ea; }
+         .detail-image-container img {
+             display: block;
+             width: 100%;
+             height: auto;
+             max-height: 300px; /* Limit image height */
+             object-fit: cover;
+         }
+        .detail-item { margin-bottom: 14px; display: flex; align-items: flex-start; gap: 12px; font-size: 1em; } /* Slightly larger font */
+        .detail-item i.fas { color: var(--c-primary); width: 22px; text-align: center; margin-top: 4px; flex-shrink: 0; font-size: 1.1em;}
+        .detail-item span { color: var(--c-text-dark); line-height: 1.5; }
+        #detail-category { font-weight: 500; }
+        #detail-description-item h4 { font-size: 1.1em; color: var(--c-text-dark); margin-bottom: 8px; margin-top: 10px; }
+        .detail-description { white-space: pre-wrap; line-height: 1.6; background-color: var(--c-bg-main); padding: 12px 15px; border-radius: 6px; font-size: 0.95em; color: #444; }
+        .modal-footer { margin-top: 20px; padding: 15px 25px; /* Add padding */ border-top: 1px solid var(--c-border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; flex-wrap: wrap; gap: 10px; background-color: #fafbff; /* Light footer bg */ }
+        .modal-share-buttons { display: flex; gap: 12px; }
+        .modal-button.share { background-color: #e9edf1; padding: 9px 15px; font-size: 0.9em; border-radius: 6px; display: inline-flex; align-items: center; gap: 7px; transition: background-color var(--transition-fast), color var(--transition-fast); border: 1px solid var(--c-border); }
+        .modal-button.share i { font-size: 1.2em; }
+        .modal-button.share:hover { background-color: #dde3ea; }
+        .modal-button.share.whatsapp { color: #25D366; border-color: #ace9c0; }
+        .modal-button.share.whatsapp:hover { background-color: #e0f5e6; }
+        .modal-button.share.copy { color: var(--c-primary); border-color: color-mix(in srgb, var(--c-primary) 40%, transparent); }
+        .modal-button.share.copy:hover { background-color: color-mix(in srgb, var(--c-primary) 10%, transparent); }
 
-        /* --- Desktop / Larger Screens --- */
+        /* Toast Notification */
+        #toast-notification { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 12px 22px; border-radius: 25px; font-size: 0.95rem; z-index: 1100; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; transform: translate(-50%, 10px); }
+        #toast-notification.show { opacity: 1; transform: translate(-50%, 0); }
+
+        /* Desktop / Larger Screens */
         @media (min-width: 768px) {
-            body { font-size: 16px; } /* Restore larger base */
-
-            .calendar-popup {
-                width: 90%; max-width: 950px; /* Wider */
-                height: 85vh; max-height: 700px;
-                flex-direction: row;
-                border-radius: 16px;
-            }
-
-            .calendar-main {
-                flex-grow: 1; flex-shrink: 0; height: 100%; min-height: auto;
-                border-right: 1px solid var(--c-border); border-bottom: none;
-                overflow: visible;
-                border-radius: 16px 0 0 16px;
-            }
-             .calendar-header { border-radius: 16px 0 0 0; padding: 15px 20px; }
+            body { font-size: 16px; }
+            .event-image-container { width: 180px; height: auto; } /* Wider image on desktop */
+            .event-card:not(.has-image) .event-content-wrapper { padding: 20px 25px; }
+            .event-content-wrapper { padding: 20px 25px; }
+            .event-name { font-size: 1.2em; }
+            .event-details { font-size: 0.95em; flex-direction: row; gap: 20px; } /* Side-by-side details */
+            .event-description { -webkit-line-clamp: 3; } /* Allow more description lines */
+            /* Calendar View Desktop Layout */
+            #calendar-view-container { flex-direction: row; max-height: 80vh; }
+             .calendar-main { flex-grow: 1; flex-shrink: 1; height: 100%; min-height: auto; border-right: 1px solid var(--c-border); border-bottom: none; overflow: visible; border-radius: 12px 0 0 12px; }
+             .calendar-header { border-radius: 12px 0 0 0; padding: 15px 20px; }
              #month-year { font-size: 1.3em; }
              .nav-button { font-size: 1.3em; }
              .calendar-config { padding: 10px 20px; font-size: 0.9em; }
              .calendar-weekdays { padding: 10px 5px; }
              .weekday { font-size: 0.8em; }
-
-            .calendar-days { overflow-y: hidden; }
-
-            .day { min-height: 90px; padding: 8px; font-size: 0.85em; }
-             .day-dates { height: 3em; } /* Adjust height */
+             .calendar-days { overflow-y: hidden; min-height: 550px; } /* Taller grid */
+             .day { min-height: 100px; padding: 8px; font-size: 0.85em; } /* Taller cells */
+             .day-dates { height: 3em; }
              .eng-date { font-size: 1.2em; top: 0; }
-             .nepali-date { font-size: 0.9em; top: 1.5em; } /* Adjust positioning */
-             .calendar-days.nepali-visible .nepali-date { transform: translateY(-1.5em); font-size: 1.2em; } /* Match movement */
-
-            .event-dot { width: var(--c-event-dot-size); height: var(--c-event-dot-size); }
+             .nepali-date { font-size: 0.9em; top: 1.5em; }
+             .calendar-days.nepali-visible .nepali-date { transform: translateY(-1.5em); font-size: 1.2em; }
+             .event-dot { width: var(--c-event-dot-size); height: var(--c-event-dot-size); }
              .event-indicator { max-height: 22px; }
-
-            .events-panel {
-                width: 340px; flex-shrink: 0;
-                position: static; height: 100%; transform: none;
-                opacity: 1; visibility: visible;
-                border-left: 1px solid var(--c-border);
-                box-shadow: none; border-radius: 0 16px 16px 0;
-            }
-             .events-panel.mobile-visible { transform: none; } /* Override mobile style */
-
-             .event-panel-header { padding: 18px 25px; border-radius: 0 16px 0 0; }
+             #events-panel { width: 360px; flex-shrink: 0; height: 100%; border-left: 1px solid var(--c-border); box-shadow: none; border-radius: 0 12px 12px 0; overflow-y: hidden; display: flex; flex-direction: column; }
+             .event-panel-header { padding: 18px 25px; border-radius: 0 12px 0 0; }
              #event-panel-date { font-size: 1.2em; }
              #event-panel-date .sub-date { font-size: 0.85em; }
              .holiday-badge { font-size: 0.75em; padding: 3px 10px; }
-             #event-categories-filter { padding: 12px 25px; }
-             .category-filter { padding: 6px 14px; font-size: 0.85em; }
-             .category-dot { width: 10px; height: 10px; }
-             .event-panel-list { padding: 20px 25px; }
-             .event-card { padding: 15px; margin-bottom: 12px; }
-             .event-icon { font-size: 1.2em; }
-             .event-name { font-size: 1.05em; }
-             .event-details { font-size: 0.9em; gap: 15px; }
-             .event-description { font-size: 0.85em; }
-             .delete-event { font-size: 1.3em; }
+             .event-panel-list { padding: 20px 25px; flex-grow: 1; overflow-y: auto; }
+             /* Event Card styles inside panel are inherited */
              .no-events { padding: 50px 20px; font-size: 1em; }
              .no-events::before { font-size: 3em; }
-             #close-events { display: none !important; }
+             /* Modal */
+             .modal-content { max-width: 700px; }
+             .modal-title { font-size: 1.5em; }
+             .detail-image-container { max-height: 350px; }
         }
+         @media (max-width: 480px) {
+            /* Fine-tune mobile card */
+             .event-image-container { width: 100px; }
+             .event-content-wrapper { padding: 15px; }
+             .event-name { font-size: 1em; }
+             .event-details { font-size: 0.8em; gap: 4px;}
+             .event-description { font-size: 0.85em; -webkit-line-clamp: 2;}
+         }
 
     </style>
 </head>
 <body>
 
-    <!-- Floating Action Buttons -->
-    <div class="fab-container">
-        <button id="add-event-button" class="fab" aria-label="Add New Event">
-            <i class="fas fa-plus"></i>
-        </button>
-        <button id="calendar-icon" class="fab" aria-label="Open Calendar">
-            <i class="far fa-calendar-alt"></i>
-        </button>
-    </div>
-
-    <!-- Calendar Popup Structure -->
-    <div id="calendar-popup" class="calendar-popup" role="dialog" aria-modal="true" aria-labelledby="calendar-title" aria-hidden="true">
-        <!-- Calendar Main Area -->
-        <div class="calendar-main">
-            <div class="calendar-header">
-                <button id="prev-month" class="nav-button" aria-label="Previous Month"><i class="fas fa-chevron-left"></i></button>
-                <h2 id="month-year" aria-live="polite">Month Year</h2>
-                <button id="next-month" class="nav-button" aria-label="Next Month"><i class="fas fa-chevron-right"></i></button>
-                <button id="close-calendar" class="nav-button close-button" aria-label="Close Calendar"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="calendar-config">
-                <label class="toggle-switch" for="nepali-date-toggle">
-                    <span>Show Nepali Dates</span>
-                    <input type="checkbox" id="nepali-date-toggle">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="calendar-weekdays">
-                <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div>
-                <div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div>
-                <div class="weekday">Sat</div>
-            </div>
-            <div id="calendar-days" class="calendar-days" role="grid">
-                <!-- Days generated here -->
-            </div>
-        </div>
-        <!-- Events Side Panel -->
-        <aside id="events-panel" class="events-panel" aria-labelledby="event-panel-date">
-            <div class="event-panel-header">
-                <div id="event-panel-date">Select a date</div>
-                <!-- Holiday badge inserted here -->
-                <button id="close-events" class="nav-button close-button" aria-label="Close Events Panel"><i class="fas fa-times"></i></button>
+    <div class="container">
+        <h1>Daily money saving deals..</h1>
+        <div class="page-controls">
+            <div class="controls-top-row">
+                 <div class="view-switcher">
+                    
+                    <button class="view-tab" data-view="calendar">📅  Calendar View</button>
+                     <button class="view-tab active" data-view="list"> ☰List View</button>
+                     
+                 </div>
+                 <div class="global-actions">
+                     <a href="/promote.html" class="add-event-btn-global">
+                         <i class="fas fa-bullhorn"></i> List your products here
+                     </a>
+                 </div>
             </div>
             <div id="event-categories-filter">
-                <!-- Category filters generated here -->
+                <!-- Shared Category filters generated here -->
             </div>
-            <ul id="event-panel-list" class="event-panel-list">
-                <li class="no-events">Select a date to see events.</li>
-            </ul>
-        </aside>
+        </div>
+
+
+        <div id="calendar-view-container" class="view-container active">
+            <!-- Calendar DOM injected here by JS when activated -->
+        </div>
+
+        <!-- List View Container -->
+        <div id="list-view-container" class="view-container">
+            <!-- List content generated by JS -->
+        </div>
+
+        <!-- Calendar View Container (Initially Empty) -->
+        
+    </div> <!-- End Container -->
+
+
+    <!-- Event Details Modal -->
+    <div id="event-details-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="event-detail-title">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="event-detail-title" class="modal-title">Event Details</h3>
+                <button id="close-detail-modal-button" class="nav-button close-button modal-close-button" aria-label="Close Event Details">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="event-detail-body">
+                 <!-- Image container -->
+                 <div class="detail-image-container" id="detail-image-wrapper">
+                     <img src="#" alt="Event Image" id="detail-image">
+                 </div>
+                 <!-- Details -->
+                 <div class="detail-item">
+                    <i class="fas fa-calendar-day"></i> <span id="detail-date">Date</span>
+                 </div>
+                 <div class="detail-item" id="detail-time-item">
+                    <i class="fas fa-clock"></i> <span id="detail-time">Time</span>
+                 </div>
+                 <div class="detail-item" id="detail-location-item">
+                    <i class="fas fa-map-marker-alt"></i> <span id="detail-location">Location</span>
+                 </div>
+                 <div class="detail-item" id="detail-category-item">
+                    <i class="fas fa-tag"></i> <span id="detail-category">Category</span>
+                 </div>
+                 <div id="detail-description-item">
+                    <h4>Description</h4>
+                    <p id="detail-description" class="detail-description">Description</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-share-buttons">
+                     <button class="modal-button share whatsapp" id="detail-share-whatsapp" title="Share on WhatsApp">
+                         <i class="fab fa-whatsapp"></i> WhatsApp
+                     </button>
+                     <button class="modal-button share copy" id="detail-share-copy" title="Copy Link">
+                         <i class="fas fa-link"></i> Copy Link
+                     </button>
+                </div>
+            </div>
+        </div>
     </div>
 
-     <!-- Add Event Modal -->
-     <div id="add-event-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="add-event-title">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h3 id="add-event-title" class="modal-title">Add New Event</h3>
-                 <button id="close-modal-button" class="nav-button close-button modal-close-button" aria-label="Close Add Event Form">
-                     <i class="fas fa-times"></i>
-                 </button>
-             </div>
-             <div class="modal-body">
-                 <form id="add-event-form">
-                     <div class="form-group">
-                         <label for="event-name">Event Name *</label>
-                         <input type="text" id="event-name" name="eventName" required>
-                     </div>
-                     <div class="form-group">
-                         <label for="event-category">Category</label>
-                         <select id="event-category" name="eventCategory">
-                             <!-- Options populated by JS -->
-                         </select>
-                     </div>
-                     <div class="form-group">
-                         <label for="event-time">Time (e.g., 14:00 or All Day)</label>
-                         <input type="text" id="event-time" name="eventTime" placeholder="HH:MM or All Day">
-                     </div>
-                     <div class="form-group">
-                         <label for="event-location">Location</label>
-                         <input type="text" id="event-location" name="eventLocation">
-                     </div>
-                     <div class="form-group">
-                         <label for="event-description">Description</label>
-                         <textarea id="event-description" name="eventDescription"></textarea>
-                     </div>
-                     <input type="hidden" id="event-date" name="eventDate">
-                     <div class="modal-footer">
-                         <button type="button" class="modal-button secondary" id="cancel-modal-button">Cancel</button>
-                         <button type="submit" class="modal-button primary">Add Event</button>
-                     </div>
-                 </form>
-             </div>
-         </div>
-     </div>
+    <!-- Toast Notification -->
+    <div id="toast-notification">Copied!</div>
 
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("Enhanced Calendar script loaded.");
+            console.log("Khojum V3 script loaded.");
 
             // --- DOM Elements ---
-            const calendarIcon = document.getElementById('calendar-icon');
-            const calendarPopup = document.getElementById('calendar-popup');
-            const prevMonthBtn = document.getElementById('prev-month');
-            const nextMonthBtn = document.getElementById('next-month');
-            const monthYearDisplay = document.getElementById('month-year');
-            const calendarDaysContainer = document.getElementById('calendar-days');
-            const nepaliDateToggle = document.getElementById('nepali-date-toggle');
-            const eventsPanel = document.getElementById('events-panel');
-            const eventPanelDate = document.getElementById('event-panel-date');
-            const eventPanelList = document.getElementById('event-panel-list');
+            const viewTabs = document.querySelectorAll('.view-tab');
+            const viewContainers = document.querySelectorAll('.view-container');
+            const listViewContainer = document.getElementById('list-view-container');
+            const calendarViewContainer = document.getElementById('calendar-view-container');
+            // Calendar elements (initialized later)
+            let prevMonthBtn, nextMonthBtn, monthYearDisplay, calendarDaysContainer, nepaliDateToggle, eventsPanel, eventPanelDate, eventPanelList;
+            // Shared / Global
             const eventCategoriesFilter = document.getElementById('event-categories-filter');
-            const closeCalendarBtn = document.getElementById('close-calendar');
-            const closeEventsBtn = document.getElementById('close-events');
-            const addEventButton = document.getElementById('add-event-button');
-            const addEventModal = document.getElementById('add-event-modal');
-            const addEventForm = document.getElementById('add-event-form');
-            const closeModalButton = document.getElementById('close-modal-button');
-            const cancelModalButton = document.getElementById('cancel-modal-button');
-            const eventCategorySelect = document.getElementById('event-category');
-            const eventDateInput = document.getElementById('event-date');
-
+            // Details Modal elements
+            const eventDetailsModal = document.getElementById('event-details-modal');
+            const closeDetailModalBtn = document.getElementById('close-detail-modal-button');
+            const eventDetailTitle = document.getElementById('event-detail-title');
+            // const eventDetailBody = document.getElementById('event-detail-body'); // Not needed directly?
+            const detailImageWrapper = document.getElementById('detail-image-wrapper');
+            const detailImage = document.getElementById('detail-image');
+            const detailDate = document.getElementById('detail-date');
+            const detailTime = document.getElementById('detail-time');
+            const detailLocation = document.getElementById('detail-location');
+            const detailCategory = document.getElementById('detail-category');
+            const detailDescription = document.getElementById('detail-description');
+            const detailTimeItem = document.getElementById('detail-time-item');
+            const detailLocationItem = document.getElementById('detail-location-item');
+            const detailCategoryItem = document.getElementById('detail-category-item');
+            const detailDescriptionItem = document.getElementById('detail-description-item');
+            const detailShareWhatsapp = document.getElementById('detail-share-whatsapp');
+            const detailShareCopy = document.getElementById('detail-share-copy');
+            const toast = document.getElementById('toast-notification');
 
             // --- State ---
+            let currentView = 'list';
             let currentMonth = new Date().getMonth();
             let currentYear = new Date().getFullYear();
-            let showNepaliDates = nepaliDateToggle ? nepaliDateToggle.checked : false;
-            let selectedDate = null; // Stores the currently selected Date object
+            let showNepaliDates = false;
+            let selectedDate = null; // Date object for Calendar selection
             let selectedCategories = new Set();
             let isMobileView = window.innerWidth < 768;
+            let calendarRendered = false; // Lazy load flag
+            let eventsById = new Map(); // For lookup
 
-             // --- Data (Using provided structure, added more examples) ---
-             const eventsData = {
-                '2024-07-15': [ { id: 1, name: 'Team Lunch', category: 'work', time: '12:30', location: 'Cafeteria', description: 'Team building lunch' } ],
-                '2024-07-22': [ { id: 3, name: 'Art Workshop', category: 'culture', time: '10:00', location: 'Art Gallery', description: 'Learn painting techniques' } ],
-                '2024-07-05': [ { id: 4, name: 'Summer Sale', category: 'promotion', time: 'All Day', location: 'City Mall', description: 'Up to 50% off' } ],
-                '2024-08-01': [
-                    { id: 5, name: 'Park Festival', category: 'holiday', time: '09:00', location: 'Central Park', description: 'Music and food stalls' },
-                    { id: 6, name: 'Coding Bootcamp', category: 'education', time: '14:00', location: 'Innovation Hub', description: 'Learn JavaScript basics' },
-                    { id: 7, name: 'Open Mic Night', category: 'entertainment', time: '20:00', location: 'The Local Pub', description: 'Showcase your talent' }
-                ],
-                // Dynamic Today/Tomorrow
-                [(new Date().toISOString().split('T')[0])] : [
-                    { id: 101, name: 'Daily Standup', category: 'work', time: '09:00', location: 'Office / Zoom', description: 'Quick updates' },
-                    { id: 103, name: 'Yoga Class', category: 'health', time: '18:00', location: 'Studio B', description: ''}
-                ],
-                [(() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0]; })()] : [
-                    { id: 102, name: 'Client Meeting Prep', category: 'work', time: '11:00', location: 'Meeting Room 3', description: 'Prepare presentation' }
-                ],
-                 // Example multi-day/recurring (simple representation)
-                 '2024-08-10': [ { id: 201, name: 'Weekend Trip', category: 'personal', time: 'All Day', location: 'Mountains', description: 'Hiking getaway' }],
-                 '2024-08-11': [ { id: 202, name: 'Weekend Trip', category: 'personal', time: 'All Day', location: 'Mountains', description: 'Return journey' }],
-            };
-
-             const holidays = { /* ... Keep existing holiday data ... */
-                nepali: { '2081-01-01': 'Nepali New Year', '2081-07-03': 'Dashain (Phulpati)', '2081-07-21': 'Tihar (Laxmi Puja)', },
-                english: { '2024-01-01': 'New Year\'s Day', '2024-12-25': 'Christmas Day', '2024-07-04': 'Independence Day (US)' } // Added example
-            };
-
-             const categoryConfig = { // Added more categories and icons
-                'entertainment': { color: '#ff7f50', icon: '🎵' }, 'education': { color: '#4682b4', icon: '📚' },
+             // --- Data & Config ---
+             const eventsData = { // Added imageUrl examples
+                 '2024-07-15': [ { id: 'evt1', name: 'Team Lunch at Bytes Cafe', category: 'work', time: '12:30', location: 'Bytes Cafe', description: 'Celebrate project milestone. Discuss Q3 roadmap informally.', imageUrl: 'https://via.placeholder.com/300x400/A0D2DB/34495e?text=Team+Lunch' } ],
+                 '2024-07-22': [ { id: 'evt3', name: 'Impressionist Art Workshop', category: 'culture', time: '10:00 - 13:00', location: 'City Art Gallery', description: 'Learn painting techniques inspired by Monet and Renoir. Materials provided.', imageUrl: 'https://via.placeholder.com/300x400/9370db/ffffff?text=Art+Workshop' } ],
+                 '2024-07-05': [ { id: 'evt4', name: 'Mega Summer Sale', category: 'promotion', time: 'All Day', location: 'Downtown Mall', description: 'Up to 50% off on selected fashion, electronics, and home goods. Don\'t miss out!', imageUrl: 'https://via.placeholder.com/300x400/f1c40f/34495e?text=SALE' } ],
+                 '2024-08-01': [
+                    { id: 'evt5', name: 'Lakeside Music Festival', category: 'holiday', time: '12:00 onwards', location: 'Green Valley Park', description: 'Live bands, food trucks, and family activities by the lake.', imageUrl: 'https://via.placeholder.com/300x400/2ecc71/ffffff?text=Festival' },
+                    { id: 'evt6', name: 'Intro to Web Development Bootcamp', category: 'education', time: '14:00 - 17:00', location: 'Tech Hub Co-working', description: 'Get started with HTML, CSS, and JavaScript basics. Bring your laptop!', imageUrl: 'https://via.placeholder.com/300x400/4682b4/ffffff?text=Code+Camp' },
+                    { id: 'evt7', name: 'Acoustic Open Mic Night', category: 'entertainment', time: '20:00', location: 'The Corner Brew', description: 'Share your songs, poetry, or just enjoy the local talent.' } // No image example
+                 ],
+                 [(new Date().toISOString().split('T')[0])] : [
+                    { id: 'evt101', name: 'Project Phoenix Standup', category: 'work', time: '09:00', location: 'Office / Zoom', description: 'Quick updates on blockers and progress.' },
+                    { id: 'evt103', name: 'Evening Yoga Flow', category: 'health', time: '18:00', location: 'Studio B', description: 'Relax and rejuvenate.', imageUrl: 'https://via.placeholder.com/300x400/1abc9c/ffffff?text=Yoga' }
+                 ],
+                 [(() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0]; })()] : [
+                    { id: 'evt102', name: 'Client Presentation - Final Review', category: 'meeting', time: '11:00', location: 'Meeting Room 3', description: 'Go through slides and talking points for tomorrow\'s client meeting.' }
+                 ],
+                  '2024-08-10': [ { id: 'evt201', name: 'Mountain Hiking Trip', category: 'personal', time: 'All Day', location: 'Eagle Peak Trail', description: 'Weekend hiking getaway. Pack essentials.', imageUrl: 'https://via.placeholder.com/300x400/e74c3c/ffffff?text=Hiking' }],
+                  '2024-08-11': [ { id: 'evt202', name: 'Return from Hiking Trip', category: 'personal', time: 'Afternoon', location: 'Eagle Peak Trail', description: 'Drive back home.' }],
+             };
+             const holidays = { /* ... keep data ... */
+                  nepali: { '2081-01-01': 'Nepali New Year', '2081-07-03': 'Dashain (Phulpati)', '2081-07-21': 'Tihar (Laxmi Puja)', },
+                english: { '2024-01-01': 'New Year\'s Day', '2024-12-25': 'Christmas Day', '2024-07-04': 'Independence Day (US)' }
+             };
+             const categoryConfig = { /* ... keep data ... */
+                 'entertainment': { color: '#ff7f50', icon: '🎵' }, 'education': { color: '#4682b4', icon: '📚' },
                 'culture': { color: '#9370db', icon: '🎨' }, 'holiday': { color: '#2ecc71', icon: '🎉' }, // Brighter green
                 'promotion': { color: '#f1c40f', icon: '💰' }, 'work': { color: '#3498db', icon: '💼' }, // Brighter blue
                 'health': { color: '#1abc9c', icon: '❤️' }, 'personal': { color: '#e74c3c', icon: '👤' }, // Red for personal
                 'meeting': { color: '#8e44ad', icon: '🗣️' },
                 'default': { color: '#95a5a6', icon: '📅' } // Grey
-            };
-
-            const nepaliDaysInMonth = { /* ... Keep existing data ... */
-                2080: [30, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 30], 2081: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 29, 30],
+             };
+             const nepaliDaysInMonth = { /* ... keep data ... */
+                 2080: [30, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 30], 2081: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 29, 30],
                 2082: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30], 2083: [31, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 30],
-            };
-            const nepaliMonths = [ 'बैशाख', 'जेठ', 'असार', 'श्रावण', 'भदौ', 'असोज', 'कार्तिक', 'मंसिर', 'पुष', 'माघ', 'फागुन', 'चैत' ];
-            const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+             };
+             const nepaliMonths = [ /* ... keep data ... */ 'बैशाख', 'जेठ', 'असार', 'श्रावण', 'भदौ', 'असोज', 'कार्तिक', 'मंसिर', 'पुष', 'माघ', 'फागुन', 'चैत' ];
+             const nepaliDigits = [/* ... keep data ... */ '०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
 
-            // --- Helper Functions (Keep existing helpers: toNepaliDigits, getNepaliDetails, isHoliday, getHolidayName) ---
-             function toNepaliDigits(num) {
-                 return num.toString().split('').map(d => nepaliDigits[parseInt(d)] || d).join('');
-             }
-             function getNepaliDetails(targetDate) {
-                 // Basic check for Date object validity
-                 if (!(targetDate instanceof Date) || isNaN(targetDate)) {
-                    console.error("Invalid date provided to getNepaliDetails:", targetDate);
-                    // Return a placeholder or throw an error
-                    return { year: 0, month: 0, day: 0, monthName: 'Invalid', dayNepali: '०', yearNepali: '०' };
-                 }
-                const year = targetDate.getFullYear();
-                const month = targetDate.getMonth();
-                const day = targetDate.getDate();
-                 // Reference Date: April 13, 2023 AD == Baishakh 1, 2080 BS
-                 // Let's use a more reliable reference if possible, but stick to the logic if needed.
-                 // Using Jan 1, 2024 for consistency with previous code.
-                 const referenceEnglishDate = new Date(2024, 0, 1); // Jan 1, 2024 AD
-                 const referenceNepaliYear = 2080;
-                 const referenceNepaliMonth = 8; // Poush (index 8)
-                 const referenceNepaliDay = 16;
-
-                function checkYearData(yr) {
-                    if (!nepaliDaysInMonth[yr]) {
-                         console.warn(`Nepali month data missing for year ${yr}. Using fallback data.`);
-                         // Try to extrapolate or use a default. Using 2081 as fallback.
-                         return nepaliDaysInMonth[2081] || nepaliDaysInMonth[Object.keys(nepaliDaysInMonth)[0]];
-                    }
-                    return nepaliDaysInMonth[yr];
-                }
-
-                const millisecondsPerDay = 24 * 60 * 60 * 1000;
-                const targetUTC = Date.UTC(year, month, day);
-                const referenceUTC = Date.UTC(referenceEnglishDate.getFullYear(), referenceEnglishDate.getMonth(), referenceEnglishDate.getDate());
-                const daysDifference = Math.round((targetUTC - referenceUTC) / millisecondsPerDay);
-
-                let nepaliYear = referenceNepaliYear;
-                let nepaliMonth = referenceNepaliMonth; // 0-indexed month
-                let nepaliDay = referenceNepaliDay;
-                let currentYearData = checkYearData(nepaliYear);
-                let remainingDays = daysDifference;
-
-                if (remainingDays >= 0) { // Target date is after reference date
-                    while (remainingDays > 0) {
-                        const daysInCurrentMonth = currentYearData[nepaliMonth];
-                        if (!daysInCurrentMonth) { // Safety check
-                            console.error(`Missing days for BS ${nepaliYear}, Month ${nepaliMonth}`);
-                            currentYearData = checkYearData(nepaliYear + (nepaliMonth === 11 ? 1 : 0)); // Try next year's data? Risky.
-                            break; // Prevent infinite loop
-                        }
-                        const daysLeftInMonth = daysInCurrentMonth - nepaliDay;
-                        if (remainingDays <= daysLeftInMonth) {
-                            nepaliDay += remainingDays; remainingDays = 0;
-                        } else {
-                            remainingDays -= (daysLeftInMonth + 1); // Move to the 1st of next month
-                            nepaliDay = 1;
-                            nepaliMonth++;
-                            if (nepaliMonth > 11) { // New Nepali Year
-                                nepaliMonth = 0; nepaliYear++; currentYearData = checkYearData(nepaliYear);
-                            }
-                        }
-                    }
-                } else { // Target date is before reference date
-                    remainingDays = Math.abs(remainingDays);
-                    while (remainingDays > 0) {
-                         const daysToSubtract = nepaliDay - 1; // Days passed in the current month
-                         if (remainingDays <= daysToSubtract) {
-                             nepaliDay -= remainingDays; remainingDays = 0;
-                         } else {
-                             remainingDays -= (daysToSubtract + 1); // Move to the last day of the previous month
-                             nepaliMonth--;
-                             if (nepaliMonth < 0) { // Previous Nepali Year
-                                 nepaliMonth = 11; nepaliYear--; currentYearData = checkYearData(nepaliYear);
-                             }
-                             nepaliDay = currentYearData[nepaliMonth]; // Go to the last day
-                             if (!nepaliDay) { // Safety check
-                                 console.error(`Missing days for BS ${nepaliYear}, Month ${nepaliMonth}`);
-                                 break;
-                             }
-                         }
-                    }
-                }
+            // --- Helper Functions ---
+             function toNepaliDigits(num) { return num.toString().split('').map(d => nepaliDigits[parseInt(d)] || d).join(''); }
+             function getNepaliDetails(targetDate) { /* ... keep existing ... */
+                  // Basic check for Date object validity
+                 if (!(targetDate instanceof Date) || isNaN(targetDate)) { return { year: 0, month: 0, day: 0, monthName: 'Invalid', dayNepali: '०', yearNepali: '०' }; }
+                const year = targetDate.getFullYear(); const month = targetDate.getMonth(); const day = targetDate.getDate();
+                 const referenceEnglishDate = new Date(2024, 0, 1); const referenceNepaliYear = 2080; const referenceNepaliMonth = 8; const referenceNepaliDay = 16;
+                function checkYearData(yr) { if (!nepaliDaysInMonth[yr]) { console.warn(`Nepali month data missing for year ${yr}.`); return nepaliDaysInMonth[2081] || nepaliDaysInMonth[Object.keys(nepaliDaysInMonth)[0]]; } return nepaliDaysInMonth[yr]; }
+                const millisecondsPerDay = 86400000; const targetUTC = Date.UTC(year, month, day); const referenceUTC = Date.UTC(referenceEnglishDate.getFullYear(), referenceEnglishDate.getMonth(), referenceEnglishDate.getDate()); const daysDifference = Math.round((targetUTC - referenceUTC) / millisecondsPerDay);
+                let nepaliYear = referenceNepaliYear; let nepaliMonth = referenceNepaliMonth; let nepaliDay = referenceNepaliDay; let currentYearData = checkYearData(nepaliYear); let remainingDays = daysDifference;
+                if (remainingDays >= 0) { while (remainingDays > 0) { const daysInCurrentMonth = currentYearData[nepaliMonth]; if (!daysInCurrentMonth) { console.error(`Missing days for BS ${nepaliYear}, Month ${nepaliMonth}`); break; } const daysLeftInMonth = daysInCurrentMonth - nepaliDay; if (remainingDays <= daysLeftInMonth) { nepaliDay += remainingDays; remainingDays = 0; } else { remainingDays -= (daysLeftInMonth + 1); nepaliDay = 1; nepaliMonth++; if (nepaliMonth > 11) { nepaliMonth = 0; nepaliYear++; currentYearData = checkYearData(nepaliYear); } } } } else { remainingDays = Math.abs(remainingDays); while (remainingDays > 0) { const daysToSubtract = nepaliDay - 1; if (remainingDays <= daysToSubtract) { nepaliDay -= remainingDays; remainingDays = 0; } else { remainingDays -= (daysToSubtract + 1); nepaliMonth--; if (nepaliMonth < 0) { nepaliMonth = 11; nepaliYear--; currentYearData = checkYearData(nepaliYear); } nepaliDay = currentYearData[nepaliMonth]; if (!nepaliDay) { console.error(`Missing days for BS ${nepaliYear}, Month ${nepaliMonth}`); break; } } } }
                 return { year: nepaliYear, month: nepaliMonth, day: nepaliDay, monthName: nepaliMonths[nepaliMonth], dayNepali: toNepaliDigits(nepaliDay), yearNepali: toNepaliDigits(nepaliYear) };
              }
-            function getEventsForDate(date) {
-                const dateString = formatDateKey(date);
-                return eventsData[dateString] || [];
-            }
-            function formatDateKey(date) {
-                 if (!(date instanceof Date) || isNaN(date)) return '';
-                 return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-            }
-             function isHoliday(date) { /* ... Keep existing logic ... */
-                 const dateKeyEn = formatDateKey(date);
-                 if (holidays.english[dateKeyEn]) return true;
-                 const nepaliDate = getNepaliDetails(date);
-                 const dateKeyNp = `${nepaliDate.year}-${String(nepaliDate.month + 1).padStart(2, '0')}-${String(nepaliDate.day).padStart(2, '0')}`;
-                 return !!holidays.nepali[dateKeyNp];
-             }
-            function getHolidayName(date) { /* ... Keep existing logic ... */
-                 const dateKeyEn = formatDateKey(date);
-                 if (holidays.english[dateKeyEn]) return holidays.english[dateKeyEn];
-                 const nepaliDate = getNepaliDetails(date);
-                 const dateKeyNp = `${nepaliDate.year}-${String(nepaliDate.month + 1).padStart(2, '0')}-${String(nepaliDate.day).padStart(2, '0')}`;
-                 return holidays.nepali[dateKeyNp] || '';
-             }
+             function getEventsForDate(date) { const dateString = formatDateKey(date); return eventsData[dateString] || []; }
+             function formatDateKey(date) { if (!(date instanceof Date) || isNaN(date)) return ''; return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; }
+             function isHoliday(date) { const dateKeyEn = formatDateKey(date); if (holidays.english[dateKeyEn]) return true; const nepaliDate = getNepaliDetails(date); const dateKeyNp = `${nepaliDate.year}-${String(nepaliDate.month + 1).padStart(2, '0')}-${String(nepaliDate.day).padStart(2, '0')}`; return !!holidays.nepali[dateKeyNp]; }
+             function getHolidayName(date) { const dateKeyEn = formatDateKey(date); if (holidays.english[dateKeyEn]) return holidays.english[dateKeyEn]; const nepaliDate = getNepaliDetails(date); const dateKeyNp = `${nepaliDate.year}-${String(nepaliDate.month + 1).padStart(2, '0')}-${String(nepaliDate.day).padStart(2, '0')}`; return holidays.nepali[dateKeyNp] || ''; }
+             function buildEventMap() { eventsById.clear(); Object.keys(eventsData).forEach(dateKey => { const date = new Date(dateKey + 'T00:00:00'); eventsData[dateKey].forEach(event => eventsById.set(event.id, { ...event, date: date })); }); }
+             function getOfferById(offerId) { return eventsById.get(offerId); }
+             function showToast(message) { toast.textContent = message; toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 2500); } // Slightly longer toast
 
-            // --- Calendar Rendering ---
-            function renderCalendar(month, year) {
+            // --- List View Functions ---
+            function getSortedEvents() { /* ... keep existing ... */
+                 const allEvents = []; Object.keys(eventsData).forEach(dateKey => { const date = new Date(dateKey + 'T00:00:00'); eventsData[dateKey].forEach(event => allEvents.push({ ...event, date: date })); });
+                 allEvents.sort((a, b) => { const dateComparison = a.date.getTime() - b.date.getTime(); if (dateComparison !== 0) return dateComparison; const timeA = a.time || ''; const timeB = b.time || ''; if (timeA === 'All Day') return -1; if (timeB === 'All Day') return 1; return timeA.localeCompare(timeB); }); return allEvents;
+            }
+            function renderListView() {
+                console.log("Rendering List View");
+                listViewContainer.innerHTML = ''; // Clear previous
+                const sortedEvents = getSortedEvents();
+                const filteredEvents = selectedCategories.size > 0
+                    ? sortedEvents.filter(event => selectedCategories.has(event.category || 'default'))
+                    : sortedEvents;
+
+                if (filteredEvents.length === 0) {
+                    listViewContainer.innerHTML = `<div class="no-events-list">No events found${selectedCategories.size > 0 ? ' matching filters' : ''}.</div>`;
+                    return;
+                }
+
+                const groupedByDate = filteredEvents.reduce((acc, event) => {
+                    const dateKey = formatDateKey(event.date);
+                    if (!acc[dateKey]) acc[dateKey] = { date: event.date, events: [] };
+                    acc[dateKey].events.push(event); return acc;
+                }, {});
+
+                const fragment = document.createDocumentFragment();
+                Object.keys(groupedByDate).sort().forEach(dateKey => {
+                    const group = groupedByDate[dateKey];
+                    const dateGroupContainer = document.createElement('div');
+                    dateGroupContainer.classList.add('list-date-group');
+                    const nepaliDate = getNepaliDetails(group.date);
+                    const dateHeader = document.createElement('h2');
+                    dateHeader.classList.add('list-date-header');
+                    dateHeader.innerHTML = `
+                        ${group.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                        <span class="sub-date">/ ${nepaliDate.monthName} ${nepaliDate.dayNepali}, ${nepaliDate.yearNepali}</span>
+                    `;
+                    dateGroupContainer.appendChild(dateHeader);
+                    const eventListUl = document.createElement('ul');
+                    group.events.forEach(event => eventListUl.appendChild(createEventItemElement(event, group.date)));
+                    dateGroupContainer.appendChild(eventListUl);
+                    fragment.appendChild(dateGroupContainer);
+                });
+                listViewContainer.appendChild(fragment);
+                 console.log("List View finished rendering");
+            }
+
+            // --- Calendar Rendering (Lazy Loaded) ---
+            function initializeCalendarDOM() { /* ... keep existing ... */
+                calendarViewContainer.innerHTML = `...`; // Paste the full HTML structure here from previous answer
+                 calendarViewContainer.innerHTML = `
+                     <div class="calendar-main">
+                         <div class="calendar-header">
+                             <button id="prev-month" class="nav-button" aria-label="Previous Month"><i class="fas fa-chevron-left"></i></button>
+                             <h2 id="month-year" aria-live="polite">Month Year</h2>
+                             <button id="next-month" class="nav-button" aria-label="Next Month"><i class="fas fa-chevron-right"></i></button>
+                         </div>
+                         <div class="calendar-config">
+                             <label class="toggle-switch" for="nepali-date-toggle">
+                                 <span>Show Nepali Dates</span>
+                                 <input type="checkbox" id="nepali-date-toggle">
+                                 <span class="slider"></span>
+                             </label>
+                         </div>
+                         <div class="calendar-weekdays">
+                             <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div>
+                             <div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div>
+                             <div class="weekday">Sat</div>
+                         </div>
+                         <div id="calendar-days" class="calendar-days" role="grid"></div>
+                     </div>
+                     <aside id="events-panel" aria-labelledby="event-panel-date">
+                         <div class="event-panel-header">
+                             <div id="event-panel-date">Select a date</div>
+                         </div>
+                         <ul id="event-panel-list" class="event-panel-list">
+                             <li class="no-events">Select a date to see events.</li>
+                         </ul>
+                     </aside>
+                 `;
+
+                 // Re-assign DOM element variables
+                 prevMonthBtn = document.getElementById('prev-month');
+                 nextMonthBtn = document.getElementById('next-month');
+                 monthYearDisplay = document.getElementById('month-year');
+                 calendarDaysContainer = document.getElementById('calendar-days');
+                 nepaliDateToggle = document.getElementById('nepali-date-toggle');
+                 eventsPanel = document.getElementById('events-panel');
+                 eventPanelDate = document.getElementById('event-panel-date');
+                 eventPanelList = document.getElementById('event-panel-list');
+
+                 // Add event listeners
+                 prevMonthBtn?.addEventListener('click', () => changeMonth(-1));
+                 nextMonthBtn?.addEventListener('click', () => changeMonth(1));
+                 nepaliDateToggle?.addEventListener('change', (event) => {
+                     showNepaliDates = event.target.checked;
+                     if (currentView === 'calendar') renderCalendar(currentMonth, currentYear);
+                 });
+
+                 showNepaliDates = nepaliDateToggle.checked;
+                 calendarRendered = true;
+                 console.log("Calendar DOM initialized.");
+            }
+            function renderCalendar(month, year) { /* ... keep existing ... */
+                 if (!calendarRendered) return;
                 console.log(`Rendering calendar for: ${year}-${month + 1}`);
                 const nepaliHeaderDate = getNepaliDetails(new Date(year, month, 1));
                 monthYearDisplay.textContent = `${new Date(year, month).toLocaleString('en-US', { month: 'long' })} ${year} / ${nepaliHeaderDate.monthName} ${nepaliHeaderDate.yearNepali}`;
 
                 const fragment = document.createDocumentFragment();
-                const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0=Sun, 6=Sat
+                const firstDayOfMonth = new Date(year, month, 1).getDay();
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
                 const daysInPrevMonth = new Date(year, month, 0).getDate();
                 const today = new Date(); today.setHours(0, 0, 0, 0);
 
-                // Add previous month's inactive days
-                for (let i = firstDayOfMonth - 1; i >= 0; i--) {
-                    const dayElement = createDayElement(year, month - 1, daysInPrevMonth - i, true);
-                    fragment.appendChild(dayElement);
-                }
-
-                // Add current month's active days
+                for (let i = firstDayOfMonth - 1; i >= 0; i--) { fragment.appendChild(createDayElement(year, month - 1, daysInPrevMonth - i, true)); }
                 for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
-                     const dayElement = createDayElement(year, month, dayNum, false);
+                    const dayElement = createDayElement(year, month, dayNum, false);
                     const currentDate = new Date(year, month, dayNum); currentDate.setHours(0, 0, 0, 0);
-
-                    // Apply styles: today, selected, holiday
                     if (currentDate.getTime() === today.getTime()) { dayElement.classList.add('today'); }
-                    if (selectedDate && currentDate.getTime() === selectedDate.getTime()) { dayElement.classList.add('selected'); }
-                    if (isHoliday(currentDate)) {
-                        dayElement.classList.add('holiday');
-                        dayElement.setAttribute('title', getHolidayName(currentDate));
-                    }
-
-                    // Add event indicators
+                    if (selectedDate && currentDate.getFullYear() === selectedDate.getFullYear() && currentDate.getMonth() === selectedDate.getMonth() && currentDate.getDate() === selectedDate.getDate()) { dayElement.classList.add('selected'); }
+                    if (isHoliday(currentDate)) { dayElement.classList.add('holiday'); dayElement.setAttribute('title', getHolidayName(currentDate)); }
                     addEventIndicators(dayElement, currentDate);
-
                     dayElement.addEventListener('click', () => handleDateClick(dayElement, currentDate));
                     fragment.appendChild(dayElement);
                 }
+                const totalDaysRendered = firstDayOfMonth + daysInMonth;
+                const nextMonthDaysToAdd = (7 - (totalDaysRendered % 7)) % 7;
+                for (let i = 1; i <= nextMonthDaysToAdd; i++) { fragment.appendChild(createDayElement(year, month + 1, i, true)); }
 
-                // Add next month's inactive days
-                 const totalDaysRendered = firstDayOfMonth + daysInMonth;
-                 const nextMonthDaysToAdd = (7 - (totalDaysRendered % 7)) % 7;
-                 for (let i = 1; i <= nextMonthDaysToAdd; i++) {
-                     const dayElement = createDayElement(year, month + 1, i, true);
-                     fragment.appendChild(dayElement);
-                 }
-
-
-                // Update DOM smoothly
-                calendarDaysContainer.innerHTML = '';
-                calendarDaysContainer.appendChild(fragment);
-                calendarDaysContainer.classList.toggle('nepali-visible', showNepaliDates);
-
-                // Ensure fade-in animation runs
-                calendarDaysContainer.classList.remove('fade-in');
-                void calendarDaysContainer.offsetWidth; // Force reflow
-                calendarDaysContainer.classList.add('fade-in');
+                calendarDaysContainer.innerHTML = ''; calendarDaysContainer.appendChild(fragment); calendarDaysContainer.classList.toggle('nepali-visible', showNepaliDates);
+                calendarDaysContainer.classList.remove('fade-in'); void calendarDaysContainer.offsetWidth; calendarDaysContainer.classList.add('fade-in');
             }
-
-            function createDayElement(year, month, dayNum, isInactive) {
+            function createDayElement(year, month, dayNum, isInactive) { /* ... keep existing ... */
                  const dayElement = document.createElement('div');
                  dayElement.classList.add('day');
                  if (isInactive) dayElement.classList.add('inactive');
-
                  const currentDate = new Date(year, month, dayNum);
                  const dateString = formatDateKey(currentDate);
-                 dayElement.dataset.date = dateString; // Store YYYY-MM-DD
-
+                 dayElement.dataset.date = dateString;
                  const nepDate = getNepaliDetails(currentDate);
-
-                 dayElement.innerHTML = `
-                     <div class="day-dates">
-                         <span class="eng-date">${dayNum}</span>
-                         <span class="nepali-date">${nepDate.dayNepali}</span>
-                     </div>
-                     <div class="event-indicator"></div>
-                 `;
+                 dayElement.innerHTML = `<div class="day-dates"><span class="eng-date">${dayNum}</span><span class="nepali-date">${nepDate.dayNepali}</span></div><div class="event-indicator"></div>`;
                  return dayElement;
             }
-
-             function addEventIndicators(dayElement, date) {
+            function addEventIndicators(dayElement, date) { /* ... keep existing ... */
                  const events = getEventsForDate(date);
                  const indicatorContainer = dayElement.querySelector('.event-indicator');
                  if (events.length > 0 && indicatorContainer) {
@@ -895,448 +643,227 @@
                      const maxDots = isMobileView ? 3 : 4;
                      const uniqueCategories = [...new Set(events.map(e => e.category || 'default'))];
                      let dotCount = 0;
-
                      uniqueCategories.slice(0, maxDots).forEach(category => {
-                         const dot = document.createElement('span');
-                         dot.classList.add('event-dot');
-                         dot.style.backgroundColor = categoryConfig[category]?.color || categoryConfig.default.color;
-                         indicatorContainer.appendChild(dot);
-                         dotCount++;
+                         const dot = document.createElement('span'); dot.classList.add('event-dot'); dot.style.backgroundColor = categoryConfig[category]?.color || categoryConfig.default.color;
+                         indicatorContainer.appendChild(dot); dotCount++;
                      });
-
-                     const remainingEvents = events.length - dotCount;
-                     const remainingCategories = uniqueCategories.length - dotCount;
-
+                     const remainingEvents = events.length - dotCount; const remainingCategories = uniqueCategories.length - dotCount;
                      if (events.length > maxDots) {
-                         const countBadge = document.createElement('span');
-                         countBadge.classList.add('event-count');
-                         // Show actual count if unique categories fit, otherwise show '+'
+                         const countBadge = document.createElement('span'); countBadge.classList.add('event-count');
                          countBadge.textContent = (remainingCategories <= 0) ? `+${remainingEvents}` : '+';
                          indicatorContainer.appendChild(countBadge);
                      }
                  }
-             }
+            }
 
             // --- Event Handling ---
-            function handleDateClick(dayElement, date) {
-                console.log("Date clicked:", date.toDateString());
+            function handleDateClick(dayElement, date) { /* ... keep existing (only for Calendar) ... */
+                 console.log("Calendar Date clicked:", date.toDateString());
                 const previouslySelected = calendarDaysContainer.querySelector('.day.selected');
                 if (previouslySelected) previouslySelected.classList.remove('selected');
                 dayElement.classList.add('selected');
-                selectedDate = date; // Update the global selectedDate
+                selectedDate = date;
                 updateEventsPanel(date);
-
-                // Show events panel
-                if (isMobileView) {
-                    eventsPanel.classList.add('mobile-visible');
-                }
-                // No 'active' class needed for desktop panel, layout is handled by CSS
             }
-
-            function updateEventsPanel(date) {
-                 if (!date) { // Handle case where no date is selected
-                    eventPanelDate.innerHTML = 'Select a date';
-                    eventPanelList.innerHTML = '<li class="no-events">Select a date to see events.</li>';
-                    // Hide holiday badge if present
-                    const existingBadge = eventPanelDate.querySelector('.holiday-badge');
-                    if(existingBadge) existingBadge.remove();
-                    return;
-                 }
-
-                 const events = getEventsForDate(date);
-                 const nepaliDate = getNepaliDetails(date);
-                 const holidayName = getHolidayName(date);
-                 const dateKey = formatDateKey(date); // Get YYYY-MM-DD for Add Event
-
-                 // Update header
-                 eventPanelDate.innerHTML = `
-                     ${date.toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' })}
-                     <span class="sub-date">${nepaliDate.monthName} ${nepaliDate.dayNepali}, ${nepaliDate.yearNepali}</span>
-                 `;
-                 // Add holiday badge if applicable
-                 const existingBadge = eventPanelDate.querySelector('.holiday-badge');
-                 if(existingBadge) existingBadge.remove(); // Remove old one first
-                 if (holidayName) {
-                     const badge = document.createElement('div');
-                     badge.className = 'holiday-badge';
-                     badge.textContent = holidayName;
-                     eventPanelDate.appendChild(badge); // Append badge to the header div
-                 }
-
-
-                 // Populate category filters if not already done
-                 if (!eventCategoriesFilter.hasChildNodes()) {
-                    updateCategoryFilters(eventsData);
-                 }
-
-                 // Filter events based on selected categories
-                 const filteredEvents = selectedCategories.size > 0
-                     ? events.filter(event => selectedCategories.has(event.category || 'default'))
-                     : events;
-
-                 // Render event list
-                 eventPanelList.innerHTML = ''; // Clear previous list
+            function updateEventsPanel(date) { /* ... keep existing (only for Calendar) ... */
+                 if (!eventsPanel) return;
+                 if (!date) { eventPanelDate.innerHTML = 'Select a date'; eventPanelList.innerHTML = '<li class="no-events">Select a date.</li>'; const b = eventPanelDate.querySelector('.holiday-badge'); if(b) b.remove(); return; }
+                 const events = getEventsForDate(date); const nepaliDate = getNepaliDetails(date); const holidayName = getHolidayName(date);
+                 eventPanelDate.innerHTML = `${date.toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' })}<span class="sub-date">${nepaliDate.monthName} ${nepaliDate.dayNepali}, ${nepaliDate.yearNepali}</span>`;
+                 const b = eventPanelDate.querySelector('.holiday-badge'); if(b) b.remove();
+                 if (holidayName) { const badge = document.createElement('div'); badge.className = 'holiday-badge'; badge.textContent = holidayName; eventPanelDate.appendChild(badge); }
+                 const filteredEvents = selectedCategories.size > 0 ? events.filter(event => selectedCategories.has(event.category || 'default')) : events;
+                 eventPanelList.innerHTML = '';
                  if (filteredEvents.length > 0) {
-                    filteredEvents.sort((a, b) => { // Sort by time
-                         const timeA = a.time || ''; const timeB = b.time || '';
-                         if (timeA === 'All Day') return -1; if (timeB === 'All Day') return 1;
-                         return timeA.localeCompare(timeB);
-                    });
-                    filteredEvents.forEach(event => {
-                        const li = createEventItemElement(event, date);
-                        eventPanelList.appendChild(li);
-                    });
-                } else {
-                    const li = document.createElement('li');
-                    li.classList.add('no-events');
-                    li.textContent = selectedCategories.size > 0 ? 'No events match filters.' : 'No events scheduled.';
-                    eventPanelList.appendChild(li);
-                }
-
-                 // Update hidden date input in the modal form
-                 if (eventDateInput) {
-                     eventDateInput.value = dateKey;
-                 }
+                    filteredEvents.sort((a, b) => { const tA = a.time || ''; const tB = b.time || ''; if (tA === 'All Day') return -1; if (tB === 'All Day') return 1; return tA.localeCompare(tB); });
+                    filteredEvents.forEach(event => eventPanelList.appendChild(createEventItemElement(event, date)));
+                 } else { eventPanelList.innerHTML = `<li class="no-events">${selectedCategories.size > 0 ? 'No events match filters.' : 'No events scheduled.'}</li>`; }
             }
-
+            // --- MODIFIED: createEventItemElement (Adds Image) ---
             function createEventItemElement(event, date) {
                  const li = document.createElement('li');
                  li.classList.add('event-item');
                  li.dataset.eventId = event.id;
                  const category = event.category || 'default';
                  const categoryInfo = categoryConfig[category] || categoryConfig.default;
+                 const hasImage = !!event.imageUrl;
+                 const hasDescription = !!event.description;
 
                  li.innerHTML = `
-                     <div class="event-card" style="border-left-color: ${categoryInfo.color}">
+                     <div class="event-card ${hasImage ? 'has-image' : ''} ${hasDescription ? 'has-description' : ''}" title="Click for details">
+                         ${hasImage ? `
+                             <div class="event-image-container">
+                                 <img src="${event.imageUrl}" alt="${event.name || 'Event Image'}" loading="lazy">
+                             </div>
+                         ` : ''}
                          <div class="event-content-wrapper">
                              <div class="event-header">
-                                 <span class="event-icon" aria-hidden="true">${categoryInfo.icon}</span>
+                                 <span class="event-icon" aria-hidden="true" style="color: ${categoryInfo.color}">${categoryInfo.icon}</span>
                                  <span class="event-name">${event.name || 'Untitled Event'}</span>
                              </div>
                              <div class="event-details">
                                  ${event.time ? `<span class="event-time">${event.time}</span>` : ''}
                                  ${event.location ? `<span class="event-location">${event.location}</span>` : ''}
                              </div>
-                              ${event.description ? `<div class="event-description">${event.description}</div>` : ''}
+                              ${hasDescription ? `<div class="event-description">${event.description}</div>` : ''}
                          </div>
-                         <button class="delete-event" aria-label="Delete event: ${event.name}">×</button>
                      </div>
                  `;
-                 // Add delete functionality
-                 li.querySelector('.delete-event')?.addEventListener('click', (e) => {
-                     e.stopPropagation(); // Prevent card click
-                     deleteEvent(date, event.id);
-                 });
-                 // Add click feedback (can expand to open details)
-                 li.querySelector('.event-card')?.addEventListener('click', (e) => {
-                     e.currentTarget.classList.add('highlight');
-                     setTimeout(() => e.currentTarget.classList.remove('highlight'), 500);
-                     console.log("Clicked event:", event.name);
-                     // Future: Open event details modal here
-                 });
+                 const card = li.querySelector('.event-card');
+                 if (card) {
+                    // Use event object directly from closure
+                    card.addEventListener('click', () => showEventDetails(event, date));
+                 }
                  return li;
              }
 
-
-            function deleteEvent(date, eventId) {
-                 const dateString = formatDateKey(date);
-                 if (eventsData[dateString]) {
-                     const initialLength = eventsData[dateString].length;
-                     eventsData[dateString] = eventsData[dateString].filter(event => event.id !== eventId);
-                     if (eventsData[dateString].length === 0) {
-                         delete eventsData[dateString]; // Remove date key if no events left
-                     }
-                     if (eventsData[dateString]?.length !== initialLength) {
-                         console.log(`Deleted event ${eventId} on ${dateString}`);
-                         updateEventsPanel(date); // Refresh panel
-                         renderCalendar(currentMonth, currentYear); // Re-render to update indicators
-                         updateCategoryFilters(eventsData); // Re-evaluate categories in case one was removed
-                     }
-                 }
+            function updateCategoryFilters(allEventsData) { /* ... keep existing (Shared filter update) ... */
+                 if (!eventCategoriesFilter) return;
+                 const allCategories = new Set(['all']); Object.values(allEventsData).flat().forEach(event => allCategories.add(event.category || 'default'));
+                 eventCategoriesFilter.innerHTML = ''; const sortedCategories = [...allCategories].sort((a,b) => a === 'all' ? -1 : b === 'all' ? 1: a.localeCompare(b));
+                 sortedCategories.forEach(category => {
+                      const categoryInfo = categoryConfig[category] || categoryConfig.default;
+                     const filterOption = document.createElement('button'); filterOption.classList.add('category-filter'); filterOption.dataset.category = category;
+                     if (category === 'all') { filterOption.innerHTML = `<span class="category-name">All</span>`; }
+                     else { filterOption.innerHTML = `<span class="category-dot" style="background-color: ${categoryInfo.color}"></span><span class="category-name">${category.charAt(0).toUpperCase() + category.slice(1)}</span>`; }
+                     if ((category === 'all' && selectedCategories.size === 0) || selectedCategories.has(category)) { filterOption.classList.add('selected'); }
+                     filterOption.addEventListener('click', () => handleCategoryFilterClick(category)); eventCategoriesFilter.appendChild(filterOption);
+                 });
+                 // Modal select removed
+            }
+            function handleCategoryFilterClick(clickedCategory) { /* ... keep existing (Global filter handler) ... */
+                 const allButton = eventCategoriesFilter.querySelector('[data-category="all"]');
+                 if (clickedCategory === 'all') { selectedCategories.clear(); }
+                 else { if (selectedCategories.has(clickedCategory)) { selectedCategories.delete(clickedCategory); } else { selectedCategories.add(clickedCategory); } }
+                 document.querySelectorAll('#event-categories-filter .category-filter').forEach(btn => { const c = btn.dataset.category; if (c === 'all') { btn.classList.toggle('selected', selectedCategories.size === 0); } else { btn.classList.toggle('selected', selectedCategories.has(c)); } });
+                 if (selectedCategories.size > 0) { allButton?.classList.remove('selected'); }
+                 if (currentView === 'list') { renderListView(); } else if (currentView === 'calendar' && selectedDate) { updateEventsPanel(selectedDate); }
+            }
+            function changeMonth(offset) { /* ... keep existing (Only for Calendar View) ... */
+                 if (!calendarRendered) return; // Don't change month if calendar isn't visible
+                 calendarDaysContainer.classList.add('fade-out');
+                 setTimeout(() => {
+                    currentMonth += offset; if (currentMonth < 0) { currentMonth = 11; currentYear--; } else if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+                    renderCalendar(currentMonth, currentYear);
+                    selectedDate = null; updateEventsPanel(null);
+                    calendarDaysContainer.classList.remove('fade-out');
+                 }, 150);
+            }
+            function toggleModal(modalElement, forceShow = null) { /* ... keep generic ... */
+                 if (!modalElement) return;
+                 const isActive = modalElement.classList.contains('active'); const show = forceShow !== null ? forceShow : !isActive;
+                 modalElement.classList.toggle('active', show); modalElement.setAttribute('aria-hidden', String(!show));
             }
 
-             function addEvent(eventDetails) {
-                const dateString = eventDetails.date;
-                if (!dateString) {
-                     console.error("Cannot add event: Date is missing.");
-                     return;
-                }
-                if (!eventsData[dateString]) {
-                    eventsData[dateString] = [];
-                }
-                 // Simple ID generation (replace with robust method if needed)
-                 const newId = Date.now() + Math.floor(Math.random() * 1000);
-                 const newEvent = {
-                     id: newId,
-                     name: eventDetails.name || 'Untitled Event',
-                     category: eventDetails.category || 'default',
-                     time: eventDetails.time || '',
-                     location: eventDetails.location || '',
-                     description: eventDetails.description || ''
-                 };
-                 eventsData[dateString].push(newEvent);
-                 console.log("Added event:", newEvent);
+            // --- MODIFIED: Event Details Modal Logic (Handles Image) ---
+            function showEventDetails(event, date) {
+                if (!event || !date) return;
+                 const nepDate = getNepaliDetails(date);
+                 const category = event.category || 'default';
+                 const categoryInfo = categoryConfig[category] || categoryConfig.default;
 
-                 // Update UI
-                 const eventDateObj = new Date(dateString + 'T00:00:00'); // Ensure it's parsed correctly
-                 if (selectedDate && formatDateKey(selectedDate) === dateString) {
-                     updateEventsPanel(selectedDate); // Update panel if the added event's date is selected
-                 }
-                 renderCalendar(currentMonth, currentYear); // Re-render grid for indicators
-                 updateCategoryFilters(eventsData); // Update filters in case a new category was added
-             }
-
-            function updateCategoryFilters(allEventsData) {
-                 if (!eventCategoriesFilter || !eventCategorySelect) return;
-
-                 const allCategories = new Set();
-                 Object.values(allEventsData).flat().forEach(event => allCategories.add(event.category || 'default'));
-
-                 // --- Update Filter Buttons ---
-                 eventCategoriesFilter.innerHTML = ''; // Clear existing buttons
-                 const sortedCategories = ['all', ...[...allCategories].sort()]; // Add 'all', then sort
-
-                 sortedCategories.forEach(category => {
-                     const categoryInfo = categoryConfig[category] || categoryConfig.default;
-                     const filterOption = document.createElement('button');
-                     filterOption.classList.add('category-filter');
-                     filterOption.dataset.category = category;
-
-                     if (category === 'all') {
-                         filterOption.innerHTML = `<span class="category-name">All</span>`;
-                     } else {
-                         filterOption.innerHTML = `
-                             <span class="category-dot" style="background-color: ${categoryInfo.color}"></span>
-                             <span class="category-name">${category.charAt(0).toUpperCase() + category.slice(1)}</span>`;
-                     }
-
-                     // Set selected state based on global selectedCategories set
-                     if ((category === 'all' && selectedCategories.size === 0) || selectedCategories.has(category)) {
-                         filterOption.classList.add('selected');
-                     }
-
-                     filterOption.addEventListener('click', () => handleCategoryFilterClick(category));
-                     eventCategoriesFilter.appendChild(filterOption);
-                 });
-
-                 // --- Update Modal Select Options ---
-                 eventCategorySelect.innerHTML = ''; // Clear existing options
-                 [...allCategories].sort().forEach(category => {
-                      if (category === 'default') return; // Don't offer 'default' as a choice
-                      const option = document.createElement('option');
-                      option.value = category;
-                      option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-                      eventCategorySelect.appendChild(option);
-                 });
-                  // Add a 'None' or 'Default' option if desired
-                  const defaultOption = document.createElement('option');
-                  defaultOption.value = 'default';
-                  defaultOption.textContent = 'Default';
-                  eventCategorySelect.insertBefore(defaultOption, eventCategorySelect.firstChild);
-
-             }
-
-             function handleCategoryFilterClick(clickedCategory) {
-                 const allButton = eventCategoriesFilter.querySelector('[data-category="all"]');
-                 const clickedButton = eventCategoriesFilter.querySelector(`[data-category="${clickedCategory}"]`);
-
-                 if (clickedCategory === 'all') {
-                     selectedCategories.clear();
+                 // Image Handling
+                 if (event.imageUrl) {
+                     detailImage.src = event.imageUrl;
+                     detailImage.alt = event.name || 'Event Image';
+                     detailImageWrapper.style.display = 'block';
                  } else {
-                     if (selectedCategories.has(clickedCategory)) {
-                         selectedCategories.delete(clickedCategory);
-                     } else {
-                         selectedCategories.add(clickedCategory);
-                     }
+                     detailImageWrapper.style.display = 'none';
                  }
 
-                 // Update button visual states
-                 document.querySelectorAll('#event-categories-filter .category-filter').forEach(btn => {
-                     const category = btn.dataset.category;
-                     if (category === 'all') {
-                         btn.classList.toggle('selected', selectedCategories.size === 0);
-                     } else {
-                         btn.classList.toggle('selected', selectedCategories.has(category));
-                     }
-                 });
+                 // Populate Text Details
+                 eventDetailTitle.textContent = event.name || 'Event Details';
+                 detailDate.textContent = `${date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} / ${nepDate.monthName} ${nepDate.dayNepali}, ${nepDate.yearNepali}`;
+                 detailTimeItem.style.display = event.time ? 'flex' : 'none'; detailTime.textContent = event.time || '';
+                 detailLocationItem.style.display = event.location ? 'flex' : 'none'; detailLocation.textContent = event.location || '';
+                 detailCategoryItem.style.display = (category !== 'default') ? 'flex' : 'none'; detailCategory.textContent = category.charAt(0).toUpperCase() + category.slice(1); detailCategory.style.color = categoryInfo.color;
+                 detailDescriptionItem.style.display = event.description ? 'block' : 'none'; detailDescription.textContent = event.description || '';
 
-                 // If specific categories are selected, ensure 'All' is deselected
-                 if (selectedCategories.size > 0) {
-                     allButton?.classList.remove('selected');
+                 // Share Button Listeners (use closure to capture event.id)
+                 const currentEventId = event.id;
+                 detailShareWhatsapp.onclick = () => shareViaWhatsApp(currentEventId);
+                 detailShareCopy.onclick = () => copyOfferLink(currentEventId);
+
+                 toggleModal(eventDetailsModal, true);
+            }
+
+            // --- Sharing Functions ---
+             function generateOfferLink(offerId) { /* ... keep existing ... */
+                  const url = new URL(window.location.origin + window.location.pathname); url.searchParams.set('view', 'list'); url.searchParams.set('offerId', offerId); return url.toString();
+             }
+             function shareViaWhatsApp(offerId) { /* ... keep existing ... */
+                 const offer = getOfferById(offerId); if (!offer) return; const offerDateStr = offer.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); const offerText = `Check out this offer: ${offer.name} (${offer.time || 'All Day'}) on ${offerDateStr}!`; const offerUrl = generateOfferLink(offerId); const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(offerText + '\n' + offerUrl)}`; window.open(whatsappUrl, '_blank');
+             }
+            function copyOfferLink(offerId) { /* ... keep existing ... */
+                 const offer = getOfferById(offerId); if (!offer) return; const linkToCopy = generateOfferLink(offerId);
+                 if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(linkToCopy).then(() => { showToast('Link Copied!'); }).catch(err => { console.error('Failed to copy link: ', err); showToast('Copy failed'); }); } else { try { const t = document.createElement("textarea"); t.value = linkToCopy; t.style.position = "fixed"; t.style.left = "-9999px"; document.body.appendChild(t); t.focus(); t.select(); document.execCommand('copy'); showToast('Link Copied! (Fallback)'); document.body.removeChild(t); } catch (e) { showToast('Copy failed'); } }
+             }
+
+            // --- Deep Linking Function ---
+             function handleDeepLink() { /* ... keep existing ... */
+                 const urlParams = new URLSearchParams(window.location.search); const offerId = urlParams.get('offerId');
+                 if (offerId) {
+                     console.log("Deep link detected for offerId:", offerId); const offer = getOfferById(offerId);
+                     if (offer) {
+                          switchView('calendar'); // Ensure list view is active
+                          setTimeout(() => {
+                              const element = listViewContainer.querySelector(`.event-item[data-event-id="${offerId}"] .event-card`);
+                              if (element) {
+                                   console.log("Highlighting element:", element); element.scrollIntoView({ behavior: 'smooth', block: 'center' }); element.classList.add('highlight');
+                                  setTimeout(() => element.classList.remove('highlight'), 2500);
+                              } else { console.warn("Deep link target element not found:", offerId); }
+                          }, 400); // Increased delay slightly for render
+                     } else { console.warn("Deep link offerId not found:", offerId); }
+                 }
+             }
+
+            // --- View Switching Logic ---
+             function switchView(viewName) {
+                 if (currentView === viewName && calendarRendered) return; // Avoid unnecessary switches/renders
+
+                 // Special case: Lazy load calendar
+                 if (viewName === 'calendar' && !calendarRendered) {
+                     initializeCalendarDOM(); // Create calendar HTML and listeners
                  }
 
-                 // Refresh the event panel list for the currently selected date
-                 if (selectedDate) {
+                 currentView = viewName;
+                 console.log("Switching to view:", currentView);
+                 viewTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.view === viewName));
+                 viewContainers.forEach(container => container.classList.toggle('active', container.id === `${viewName}-view-container`));
+
+                 if (viewName === 'list') {
+                     renderListView(); // Always render list when switched to
+                 } else if (viewName === 'calendar' && calendarRendered) {
+                     // Calendar is initialized, render its current state
+                     renderCalendar(currentMonth, currentYear);
                      updateEventsPanel(selectedDate);
                  }
              }
 
-
-            function changeMonth(offset) {
-                 calendarDaysContainer.classList.add('fade-out');
-                 setTimeout(() => {
-                    currentMonth += offset;
-                    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-                    else if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-                    renderCalendar(currentMonth, currentYear);
-                    calendarDaysContainer.classList.remove('fade-out');
-                 }, 150); // Match CSS transition duration (approx)
-            }
-
-            function toggleCalendarPopup() {
-                const isOpening = !calendarPopup.classList.contains('active');
-                calendarPopup.classList.toggle('active');
-                calendarPopup.setAttribute('aria-hidden', !isOpening);
-                if (isOpening) {
-                    console.log("Calendar opened");
-                    handleResize(); // Check layout
-                    // If no date is selected, select today by default *on open*
-                    if (!selectedDate) {
-                        const today = new Date(); today.setHours(0,0,0,0);
-                        selectedDate = today; // Set logically
-                    }
-                    renderCalendar(currentMonth, currentYear); // Render after setting selectedDate
-                    updateEventsPanel(selectedDate); // Update panel with selected date (today or previous)
-
-                    if(isMobileView) {
-                        // Only show panel immediately if a date *was already* selected before opening,
-                        // otherwise, user needs to click a date. Let's default to showing it if a date is selected.
-                         if(selectedDate) eventsPanel.classList.add('mobile-visible');
-                    }
-
-                } else {
-                    console.log("Calendar closed");
-                    if(isMobileView) eventsPanel.classList.remove('mobile-visible');
-                }
-            }
-
-            function handleResize() {
-                const currentlyMobile = window.innerWidth < 768;
-                if (currentlyMobile !== isMobileView) {
-                    isMobileView = currentlyMobile;
-                    calendarPopup.classList.toggle('mobile-view', isMobileView);
-                    console.log("View changed. isMobileView:", isMobileView);
-
-                    if (!isMobileView) { // Switching TO Desktop
-                        eventsPanel.classList.remove('mobile-visible'); // Hide mobile overlay panel
-                    } else { // Switching TO Mobile
-                         // Show panel overlay only if a date is currently selected AND calendar is open
-                         if (selectedDate && calendarPopup.classList.contains('active')) {
-                             eventsPanel.classList.add('mobile-visible');
-                         } else {
-                              eventsPanel.classList.remove('mobile-visible');
-                         }
-                    }
-
-                    // Re-render needed if event dot count changes or significant layout shifts
-                     if (calendarPopup.classList.contains('active')) {
-                         renderCalendar(currentMonth, currentYear);
-                          // Re-apply selection after re-render (renderCalendar clears selection class)
-                          if (selectedDate) {
-                               const dateString = formatDateKey(selectedDate);
-                               const dayElement = calendarDaysContainer.querySelector(`.day[data-date="${dateString}"]`);
-                               if (dayElement) dayElement.classList.add('selected');
-                          }
-                     }
-                }
-            }
-
-             function toggleModal(modalElement, forceShow = null) {
-                 if (!modalElement) return;
-                 const isActive = modalElement.classList.contains('active');
-                 const show = forceShow !== null ? forceShow : !isActive;
-
-                 if (show) {
-                     modalElement.classList.add('active');
-                     modalElement.setAttribute('aria-hidden', 'false');
-                     // Focus on the first input field when opening add modal
-                     if (modalElement === addEventModal) {
-                         addEventForm.querySelector('input, select, textarea')?.focus();
-                     }
-                 } else {
-                     modalElement.classList.remove('active');
-                     modalElement.setAttribute('aria-hidden', 'true');
-                 }
-             }
-
             // --- Event Listeners ---
-            calendarIcon?.addEventListener('click', toggleCalendarPopup);
-            prevMonthBtn?.addEventListener('click', () => changeMonth(-1));
-            nextMonthBtn?.addEventListener('click', () => changeMonth(1));
-            closeCalendarBtn?.addEventListener('click', toggleCalendarPopup);
-
-            nepaliDateToggle?.addEventListener('change', (event) => {
-                showNepaliDates = event.target.checked;
-                console.log("Show Nepali Dates:", showNepaliDates);
-                if (calendarPopup.classList.contains('active')) renderCalendar(currentMonth, currentYear);
-            });
-
-            closeEventsBtn?.addEventListener('click', () => eventsPanel.classList.remove('mobile-visible'));
-
-            // Modal Listeners
-            addEventButton?.addEventListener('click', () => {
-                if (!selectedDate) {
-                    alert("Please select a date on the calendar first!");
-                    return;
-                }
-                addEventForm.reset(); // Clear form
-                eventDateInput.value = formatDateKey(selectedDate); // Set date in hidden field
-                toggleModal(addEventModal, true);
-            });
-            closeModalButton?.addEventListener('click', () => toggleModal(addEventModal, false));
-            cancelModalButton?.addEventListener('click', () => toggleModal(addEventModal, false));
-            addEventModal?.addEventListener('click', (event) => { // Close on overlay click
-                if (event.target === addEventModal) toggleModal(addEventModal, false);
-            });
-
-            addEventForm?.addEventListener('submit', (event) => {
-                 event.preventDefault();
-                 const formData = new FormData(addEventForm);
-                 const eventDetails = {
-                     date: formData.get('eventDate'),
-                     name: formData.get('eventName'),
-                     category: formData.get('eventCategory'),
-                     time: formData.get('eventTime'),
-                     location: formData.get('eventLocation'),
-                     description: formData.get('eventDescription')
-                 };
-                 addEvent(eventDetails);
-                 toggleModal(addEventModal, false); // Close modal after adding
-            });
-
-
-            // Close popup with Escape key
-             document.addEventListener('keydown', (event) => {
-                 if (event.key === 'Escape') {
-                     if (addEventModal?.classList.contains('active')) {
-                         toggleModal(addEventModal, false);
-                     } else if (calendarPopup?.classList.contains('active')) {
-                         toggleCalendarPopup();
-                     }
+             viewTabs.forEach(tab => tab.addEventListener('click', () => switchView(tab.dataset.view)));
+             closeDetailModalBtn?.addEventListener('click', () => toggleModal(eventDetailsModal, false));
+             eventDetailsModal?.addEventListener('click', (event) => { if (event.target === eventDetailsModal) toggleModal(eventDetailsModal, false); });
+             document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && eventDetailsModal?.classList.contains('active')) { toggleModal(eventDetailsModal, false); } });
+             window.addEventListener('resize', () => { /* Keep existing resize logic */
+                 const currentlyMobile = window.innerWidth < 768;
+                 if (currentlyMobile !== isMobileView) {
+                    isMobileView = currentlyMobile;
+                     if (currentView === 'calendar' && calendarRendered) {
+                         renderCalendar(currentMonth, currentYear); if (selectedDate) { const d = formatDateKey(selectedDate); const el = calendarDaysContainer.querySelector(`.day[data-date="${d}"]`); if (el) el.classList.add('selected'); }
+                     } else if (currentView === 'list') { renderListView(); } // Re-render list on resize for potentially different image sizes etc.
+                    console.log("View resized. isMobileView:", isMobileView);
                  }
              });
-
-             // Close popup when clicking outside (careful not to interfere with modal)
-             document.addEventListener('click', (event) => {
-                if (calendarPopup?.classList.contains('active') &&
-                    !calendarPopup.contains(event.target) &&        // Clicked outside popup
-                    !calendarIcon?.contains(event.target) &&        // Not the calendar icon
-                    !addEventButton?.contains(event.target) &&      // Not the add event button
-                    !addEventModal?.contains(event.target) &&       // Not inside the modal
-                    !event.target.closest('.modal-overlay')) {      // Not the modal overlay itself
-                    toggleCalendarPopup();
-                }
-             });
-
-
-            window.addEventListener('resize', handleResize);
 
             // --- Initial Setup ---
-            handleResize(); // Set initial mobile/desktop state
-            updateCategoryFilters(eventsData); // Populate filters and modal dropdown
-            // Initial render is now done when the popup is first opened by toggleCalendarPopup()
+            handleResize();
+            buildEventMap();
+            updateCategoryFilters(eventsData);
+            switchView('calendar'); // Ensure 'calendar' view is activated and rendered immediately
+            handleDeepLink(); // Check for deep link
 
-            console.log("Enhanced calendar initialized.");
+            console.log("Khojum V3 Initialized. Default: Calendar");
 
         }); // End DOMContentLoaded
     </script>
