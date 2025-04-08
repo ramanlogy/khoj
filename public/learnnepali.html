@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nepali for Tourists</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #dc143c;
+      --secondary-color: #f9f3e5;
+      --accent-color: #2d4059;
+      --text-color: #333;
+      --light-text: #777;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      padding: 30px 0;
+      background-color: var(--secondary-color);
+      border-radius: 12px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    
+    .tagline {
+      color: var(--light-text);
+      font-size: 18px;
+    }
+    
+    .wotd {
+      background-color: var(--secondary-color);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      border-left: 5px solid var(--primary-color);
+    }
+    
+    .wotd h2 {
+      color: var(--primary-color);
+      margin-top: 0;
+    }
+    
+    .wotd-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .wotd-text {
+      flex: 1;
+    }
+    
+    .nepali-word {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--accent-color);
+      margin: 10px 0;
+    }
+    
+    .english-word {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    
+    .example {
+      font-style: italic;
+      color: var(--light-text);
+    }
+    
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-weight: 500;
+    }
+    
+    .tab.active {
+      border-bottom: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .word-grid, .sentence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .translation-card {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+    
+    .translation-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .english {
+      color: var(--light-text);
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    
+    .nepali {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+    
+    .audio-button {
+      background-color: transparent;
+      color: var(--primary-color);
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: color 0.3s;
+      font-size: 18px;
+      position: relative;
+    }
+    
+    .audio-button:hover {
+      color: #b01030;
+    }
+    
+    .bookmark-button {
+  position: absolute;
+  top: -18px; /* was 15px, reduced to move it up */
+  right: -26px;
+  background-color: transparent;
+  color: var(--light-text);
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+    
+    .bookmark-button:hover, .bookmark-button.active {
+      color: var(--primary-color);
+    }
+    
+    .show-more {
+      text-align: center;
+      margin-top: 30px;
+    }
+    
+    .show-more-btn {
+      background-color: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      padding: 10px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .show-more-btn:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      color: var(--light-text);
+      font-size: 14px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  white-space: nowrap; /* Prevent line break */
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 8px;
+  position: absolute;
+  z-index: 1;
+  top: 100%; /* Position below the icon */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: -5px; /* Arrow above the tooltip box */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #555 transparent;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+    
+    .bookmarks-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    
+    .bookmarks-button:hover {
+      background-color: #b01030;
+    }
+    
+    .bookmarks-count {
+      background-color: white;
+      color: var(--primary-color);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .bookmarks-modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .bookmarks-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 80%;
+      position: relative;
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--light-text);
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    
+    .close-modal:hover {
+      color: var(--primary-color);
+    }
+    
+    .bookmarks-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .bookmarks-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-weight: 500;
+    }
+    
+    .bookmarks-tab.active {
+      border-bottom: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .bookmark-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .empty-bookmark-message {
+      text-align: center;
+      color: var(--light-text);
+      padding: 30px;
+    }
+    
+    .no-bookmarks {
+      text-align: center;
+      color: var(--light-text);
+      padding: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>नेपाली सिकौँ (Learn Nepali)</h1>
+      <div class="tagline">Essential Nepali phrases for your Himalayan adventure</div>
+      <button class="bookmarks-button" id="show-bookmarks">
+        <i class="fas fa-bookmark"></i>
+        <span>Saved</span>
+        <div class="bookmarks-count">0</div>
+      </button>
+    </header>
+    
+    <div class="wotd">
+      <h2>Word of the Day</h2>
+      <div class="wotd-content">
+        <div class="wotd-text">
+          <div class="nepali-word">नमस्ते</div>
+          <div class="english-word">Namaste - Hello/Greetings</div>
+          <div class="example">Example: "नमस्ते, तपाईंलाई कस्तो छ?" (Namaste, tapāīṁlāī kasto cha?) - Hello, how are you?</div>
+        </div>
+        <div class="tooltip">
+          <button class="audio-button" data-text="नमस्ते" data-lang="ne">
+            <i class="fas fa-volume-up"></i>
+          </button>
+          <span class="tooltip-text">Listen</span>
+        </div>
+        <div class="tooltip">
+          <button class="bookmark-button" data-type="word" data-english="Hello" data-nepali="नमस्ते" data-pronunciation="Namaste">
+            <i class="far fa-bookmark"></i>
+          </button>
+          <span class="tooltip-text">Save</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <div class="tab active" data-tab="words">Basic Words</div>
+      <div class="tab" data-tab="sentences">Useful Sentences</div>
+    </div>
+    
+    <div class="tab-content active" id="words">
+      <div class="word-grid">
+        <div class="translation-card">
+          <div class="english">Hello</div>
+          <div class="nepali">नमस्ते</div>
+          <div class="pronunciation">Namaste</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="नमस्ते" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Hello" data-nepali="नमस्ते" data-pronunciation="Namaste">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Thank you</div>
+          <div class="nepali">धन्यवाद</div>
+          <div class="pronunciation">Dhanyavād</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="धन्यवाद" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Thank you" data-nepali="धन्यवाद" data-pronunciation="Dhanyavād">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Yes</div>
+          <div class="nepali">हो</div>
+          <div class="pronunciation">Ho</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="हो" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Yes" data-nepali="हो" data-pronunciation="Ho">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">No</div>
+          <div class="nepali">होइन</div>
+          <div class="pronunciation">Hoina</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="होइन" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="No" data-nepali="होइन" data-pronunciation="Hoina">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Water</div>
+          <div class="nepali">पानी</div>
+          <div class="pronunciation">Pani</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="पानी" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Water" data-nepali="पानी" data-pronunciation="Pani">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Food</div>
+          <div class="nepali">खाना</div>
+          <div class="pronunciation">Khana</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="खाना" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Food" data-nepali="खाना" data-pronunciation="Khana">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Hidden words (shown when "Show More" is clicked) -->
+      <div class="word-grid hidden" id="more-words">
+        <div class="translation-card">
+          <div class="english">Good</div>
+          <div class="nepali">राम्रो</div>
+          <div class="pronunciation">Ramro</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="राम्रो" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Good" data-nepali="राम्रो" data-pronunciation="Ramro">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Friend</div>
+          <div class="nepali">साथी</div>
+          <div class="pronunciation">Sathi</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="साथी" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Friend" data-nepali="साथी" data-pronunciation="Sathi">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Mountain</div>
+          <div class="nepali">पहाड</div>
+          <div class="pronunciation">Pahaad</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="पहाड" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Mountain" data-nepali="पहाड" data-pronunciation="Pahaad">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Beautiful</div>
+          <div class="nepali">सुन्दर</div>
+          <div class="pronunciation">Sundar</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="सुन्दर" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Beautiful" data-nepali="सुन्दर" data-pronunciation="Sundar">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Money</div>
+          <div class="nepali">पैसा</div>
+          <div class="pronunciation">Paisa</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="पैसा" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Money" data-nepali="पैसा" data-pronunciation="Paisa">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Hotel</div>
+          <div class="nepali">होटेल</div>
+          <div class="pronunciation">Hotel</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="होटेल" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="word" data-english="Hotel" data-nepali="होटेल" data-pronunciation="Hotel">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="show-more">
+        <button class="show-more-btn" id="show-more-words">Show More Words</button>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="sentences">
+      <div class="sentence-grid">
+        <div class="translation-card">
+          <div class="english">How are you?</div>
+          <div class="nepali">तपाईंलाई कस्तो छ?</div>
+          <div class="pronunciation">Tapāīṁlāī kasto cha?</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="तपाईंलाई कस्तो छ" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="sentence" data-english="How are you?" data-nepali="तपाईंलाई कस्तो छ?" data-pronunciation="Tapāīṁlāī kasto cha?">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">My name is...</div>
+          <div class="nepali">मेरो नाम ... हो</div>
+          <div class="pronunciation">Mero naam ... ho</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="मेरो नाम हो" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="sentence" data-english="My name is..." data-nepali="मेरो नाम ... हो" data-pronunciation="Mero naam ... ho">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Where is the bathroom?</div>
+          <div class="nepali">शौचालय कहाँ छ?</div>
+          <div class="pronunciation">Shauchalay kahā̐ cha?</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="शौचालय कहाँ छ" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="sentence" data-english="Where is the bathroom?" data-nepali="शौचालय कहाँ छ?" data-pronunciation="Shauchalay kahā̐ cha?">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">How much does it cost?</div>
+          <div class="nepali">कति पर्छ?</div>
+          <div class="pronunciation">Kati parcha?</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="कति पर्छ" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="sentence" data-english="How much does it cost?" data-nepali="कति पर्छ?" data-pronunciation="Kati parcha?">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Hidden sentences (shown when "Show More" is clicked) -->
+      <div class="sentence-grid hidden" id="more-sentences">
+        <div class="translation-card">
+          <div class="english">I don't understand</div>
+          <div class="nepali">मैले बुझिनँ</div>
+          <div class="pronunciation">Maile bujhina</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="मैले बुझिनँ" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="sentence" data-english="I don't understand" data-nepali="मैले बुझिनँ" data-pronunciation="Maile bujhina">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">I am from...</div>
+          <div class="nepali">म ... बाट आएको हुँ</div>
+          <div class="pronunciation">Ma ... bata aeko hu</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="म बाट आएको हुँ" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="sentence" data-english="I am from..." data-nepali="म ... बाट आएको हुँ" data-pronunciation="Ma ... bata aeko hu">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">Can you help me?</div>
+          <div class="nepali">मलाई मद्दत गर्न सक्नुहुन्छ?</div>
+          <div class="pronunciation">Malai maddat garna saknu huncha?</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="मलाई मद्दत गर्न सक्नुहुन्छ" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="sentence" data-english="Can you help me?" data-nepali="मलाई मद्दत गर्न सक्नुहुन्छ?" data-pronunciation="Malai maddat garna saknu huncha?">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+        
+        <div class="translation-card">
+          <div class="english">The food is delicious</div>
+          <div class="nepali">खाना मिठो छ</div>
+          <div class="pronunciation">Khana mitho cha</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="खाना मिठो छ" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button" data-type="sentence" data-english="The food is delicious" data-nepali="खाना मिठो छ" data-pronunciation="Khana mitho cha">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <span class="tooltip-text">Save</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="show-more">
+        <button class="show-more-btn" id="show-more-sentences">Show More Sentences</button>
+    </div>
+</div>
+</div>
+
+<!-- Bookmarks Modal -->
+<div class="bookmarks-modal" id="bookmarks-modal">
+<div class="bookmarks-content">
+  <span class="close-modal">&times;</span>
+  <h2>Saved Phrases</h2>
+  
+  <div class="bookmarks-tabs">
+    <div class="bookmarks-tab active" data-tab="bookmarked-words">Words</div>
+    <div class="bookmarks-tab" data-tab="bookmarked-sentences">Sentences</div>
+  </div>
+  
+  <div id="bookmarked-words" class="bookmark-content active">
+    <div class="bookmark-grid" id="bookmark-words-grid">
+      <!-- Bookmarked words will appear here -->
+      <div class="no-bookmarks">You haven't saved any words yet.</div>
+    </div>
+  </div>
+  
+  <div id="bookmarked-sentences" class="bookmark-content hidden">
+    <div class="bookmark-grid" id="bookmark-sentences-grid">
+      <!-- Bookmarked sentences will appear here -->
+      <div class="no-bookmarks">You haven't saved any sentences yet.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>
+<p>&copy; 2025 Nepali for Tourists. All rights reserved.</p>
+<p>Created to help travelers connect with the beautiful culture and people of Nepal.</p>
+</footer>
+</div>
+
+<script>
+// Tab switching
+$('.tab').click(function() {
+  $('.tab').removeClass('active');
+  $(this).addClass('active');
+  
+  const tabId = $(this).data('tab');
+  $('.tab-content').removeClass('active').hide();
+  $('#' + tabId).addClass('active').show();
+});
+
+// Show more/less functionality
+$('#show-more-words').click(function() {
+  $('#more-words').toggleClass('hidden');
+  $(this).text(function(i, text) {
+    return text === "Show More Words" ? "Show Less Words" : "Show More Words";
+  });
+});
+
+$('#show-more-sentences').click(function() {
+  $('#more-sentences').toggleClass('hidden');
+  $(this).text(function(i, text) {
+    return text === "Show More Sentences" ? "Show Less Sentences" : "Show More Sentences";
+  });
+});
+
+// Audio button functionality
+$('.audio-button').click(function() {
+  const text = $(this).data('text');
+  const lang = $(this).data('lang');
+  
+  // Using browser's speech synthesis API
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang;
+  speechSynthesis.speak(utterance);
+});
+
+// Bookmark functionality
+let bookmarkedWords = JSON.parse(localStorage.getItem('bookmarkedWords')) || [];
+let bookmarkedSentences = JSON.parse(localStorage.getItem('bookmarkedSentences')) || [];
+
+// Update bookmark count
+function updateBookmarkCount() {
+  const totalBookmarks = bookmarkedWords.length + bookmarkedSentences.length;
+  $('.bookmarks-count').text(totalBookmarks);
+}
+
+// Initial bookmark count update
+updateBookmarkCount();
+
+// Toggle bookmark status
+$('.bookmark-button').click(function() {
+  const $this = $(this);
+  const type = $this.data('type');
+  const english = $this.data('english');
+  const nepali = $this.data('nepali');
+  const pronunciation = $this.data('pronunciation');
+  
+  const bookmarkData = {
+    english: english,
+    nepali: nepali,
+    pronunciation: pronunciation
+  };
+  
+  if (type === 'word') {
+    const existingIndex = bookmarkedWords.findIndex(item => item.nepali === nepali);
+    
+    if (existingIndex !== -1) {
+      // Remove bookmark
+      bookmarkedWords.splice(existingIndex, 1);
+      $this.html('<i class="far fa-bookmark"></i>');
+    } else {
+      // Add bookmark
+      bookmarkedWords.push(bookmarkData);
+      $this.html('<i class="fas fa-bookmark"></i>');
+    }
+    
+    localStorage.setItem('bookmarkedWords', JSON.stringify(bookmarkedWords));
+  } else if (type === 'sentence') {
+    const existingIndex = bookmarkedSentences.findIndex(item => item.nepali === nepali);
+    
+    if (existingIndex !== -1) {
+      // Remove bookmark
+      bookmarkedSentences.splice(existingIndex, 1);
+      $this.html('<i class="far fa-bookmark"></i>');
+    } else {
+      // Add bookmark
+      bookmarkedSentences.push(bookmarkData);
+      $this.html('<i class="fas fa-bookmark"></i>');
+    }
+    
+    localStorage.setItem('bookmarkedSentences', JSON.stringify(bookmarkedSentences));
+  }
+  
+  updateBookmarkCount();
+  renderBookmarks();
+});
+
+// Update initial bookmark status
+function updateInitialBookmarkStatus() {
+  $('.bookmark-button').each(function() {
+    const $this = $(this);
+    const type = $this.data('type');
+    const nepali = $this.data('nepali');
+    
+    if (type === 'word') {
+      const exists = bookmarkedWords.some(item => item.nepali === nepali);
+      if (exists) {
+        $this.html('<i class="fas fa-bookmark"></i>');
+      }
+    } else if (type === 'sentence') {
+      const exists = bookmarkedSentences.some(item => item.nepali === nepali);
+      if (exists) {
+        $this.html('<i class="fas fa-bookmark"></i>');
+      }
+    }
+  });
+}
+
+updateInitialBookmarkStatus();
+
+// Render bookmarks in modal
+function renderBookmarks() {
+  // Words
+  const $wordsGrid = $('#bookmark-words-grid');
+  $wordsGrid.empty();
+  
+  if (bookmarkedWords.length === 0) {
+    $wordsGrid.append('<div class="no-bookmarks">You haven\'t saved any words yet.</div>');
+  } else {
+    bookmarkedWords.forEach(word => {
+      const card = `
+        <div class="translation-card">
+          <div class="english">${word.english}</div>
+          <div class="nepali">${word.nepali}</div>
+          <div class="pronunciation">${word.pronunciation}</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="${word.nepali}" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button bookmark-delete" data-type="word" data-nepali="${word.nepali}">
+              <i class="fas fa-trash"></i>
+            </button>
+            <span class="tooltip-text">Remove</span>
+          </div>
+        </div>
+      `;
+      $wordsGrid.append(card);
+    });
+  }
+  
+  // Sentences
+  const $sentencesGrid = $('#bookmark-sentences-grid');
+  $sentencesGrid.empty();
+  
+  if (bookmarkedSentences.length === 0) {
+    $sentencesGrid.append('<div class="no-bookmarks">You haven\'t saved any sentences yet.</div>');
+  } else {
+    bookmarkedSentences.forEach(sentence => {
+      const card = `
+        <div class="translation-card">
+          <div class="english">${sentence.english}</div>
+          <div class="nepali">${sentence.nepali}</div>
+          <div class="pronunciation">${sentence.pronunciation}</div>
+          <div class="tooltip">
+            <button class="audio-button" data-text="${sentence.nepali}" data-lang="ne">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <span class="tooltip-text">Listen</span>
+          </div>
+          <div class="tooltip">
+            <button class="bookmark-button bookmark-delete" data-type="sentence" data-nepali="${sentence.nepali}">
+              <i class="fas fa-trash"></i>
+            </button>
+            <span class="tooltip-text">Remove</span>
+          </div>
+        </div>
+      `;
+      $sentencesGrid.append(card);
+    });
+  }
+  
+  // Add event listeners for audio buttons in bookmarks
+  $('.audio-button').click(function() {
+    const text = $(this).data('text');
+    const lang = $(this).data('lang');
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    speechSynthesis.speak(utterance);
+  });
+  
+  // Add event listeners for delete buttons in bookmarks
+  $('.bookmark-delete').click(function() {
+    const type = $(this).data('type');
+    const nepali = $(this).data('nepali');
+    
+    if (type === 'word') {
+      bookmarkedWords = bookmarkedWords.filter(item => item.nepali !== nepali);
+      localStorage.setItem('bookmarkedWords', JSON.stringify(bookmarkedWords));
+    } else if (type === 'sentence') {
+      bookmarkedSentences = bookmarkedSentences.filter(item => item.nepali !== nepali);
+      localStorage.setItem('bookmarkedSentences', JSON.stringify(bookmarkedSentences));
+    }
+    
+    updateBookmarkCount();
+    renderBookmarks();
+    updateInitialBookmarkStatus();
+  });
+}
+
+// Show bookmarks modal
+$('#show-bookmarks').click(function() {
+  renderBookmarks();
+  $('#bookmarks-modal').show();
+});
+
+// Close bookmarks modal
+$('.close-modal').click(function() {
+  $('#bookmarks-modal').hide();
+});
+
+// Close modal if clicked outside
+$(window).click(function(event) {
+  if (event.target === document.getElementById('bookmarks-modal')) {
+    $('#bookmarks-modal').hide();
+  }
+});
+
+// Switch bookmark tabs
+$('.bookmarks-tab').click(function() {
+  $('.bookmarks-tab').removeClass('active');
+  $(this).addClass('active');
+  
+  const tabId = $(this).data('tab');
+  $('.bookmark-content').addClass('hidden').removeClass('active');
+  $('#' + tabId).removeClass('hidden').addClass('active');
+});
+</script>
+</body>
+</html>
