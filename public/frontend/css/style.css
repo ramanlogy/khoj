@@ -30,7 +30,7 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif; /* Use Poppins as the primary font */
+    font-family: 'Plus Jakarta Sans', sans-serif; /* Use Plus Jakarta Sans as the primary font */
     line-height: 1.6;
     color: var(--dark-text);
     background-color: var(--lightest-bg);
@@ -163,12 +163,33 @@ header::before {
 .date-display {
     font-family: 'Poppins', sans-serif; /* Consistent font */
     font-style: normal;
-    font-size: 1rem; /* Adjusted size */
+    font-size: 0.9rem; /* Adjusted size */
     font-weight: 500;
     margin-top: 15px; /* More space */
     display: block;
     opacity: 0.85; /* Slightly less prominent */
+    text-align: center;
+    
 }
+.promote-icon {
+    position: absolute; /* Absolute relative to footer */
+    bottom: -6500px;
+    right: 20px;
+    background-color: var(--nepal-blue);
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border-radius: 25px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    z-index: 10;
+}
+
 
 /* Filter Bar */
 .filter-bar {
@@ -1088,6 +1109,19 @@ input:checked + .slider:before { transform: translateX(22px); } /* Adjusted tran
     margin-bottom: 30px;
     font-weight: 600;
 }
+.highlighted-text {
+    color: var(--accent-yellow);
+    transition: opacity 0.4s ease-in-out;
+    font-weight: bold;
+  }
+
+  .fade-out {
+    opacity: 0;
+  }
+
+  .fade-in {
+    opacity: 1;
+  }
 
 
 
