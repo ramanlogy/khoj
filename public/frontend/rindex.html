@@ -3,438 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Featured Events Carousel</title>
-    <!-- Font Awesome for Icons -->
+    <title>Featured Offers Carousel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- Base Styles --- */
+        :root {
+            /* Keep previous color/font variables */
+             --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            --c-primary: #6D5B97; --c-secondary: #A0D2DB; --c-accent: #F5A6E8;
+            --c-text-dark: #2c3e50; --c-text-medium: #566573; --c-text-light: #8899a6;
+            --c-bg-main: #f4f7f6; --c-bg-panel: #ffffff; --c-border: #e1e8ed;
+            --c-highlight-bg: #fff9c4; /* Highlight color */
+            --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.06); --shadow-medium: 0 4px 10px rgba(0, 0, 0, 0.08); --shadow-heavy: 0 8px 25px rgba(0, 0, 0, 0.12);
+            --transition-fast: 0.2s ease-out; --transition-medium: 0.6s ease-out; --transition-slow: 0.9s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            margin: 0;
-            background-color: #f4f7f6;
-            color: #333;
-            line-height: 1.5;
+            font-family: var(--font-primary); margin: 0; background-color: var(--c-bg-main);
+            color: var(--c-text-dark); line-height: 1.5;
+        }
+        button { cursor: pointer; border: none; background: none; padding: 0; font-family: inherit; color: inherit; }
+        h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 600; line-height: 1.3; }
+
+        /* Highlight for Deep Linking */
+        .highlight-card {
+            animation: highlight-fade 2.8s ease-in-out;
+            box-shadow: 0 0 0 3px var(--c-primary), var(--shadow-heavy) !important; /* Add border + existing shadow */
+            transform: translateY(-6px) scale(1.02); /* Keep hover effect during highlight */
+        }
+        @keyframes highlight-fade {
+            0%, 100% { box-shadow: var(--shadow-medium); } /* Start/end with normal shadow */
+            10%, 75% { box-shadow: 0 0 0 3px var(--c-primary), var(--shadow-heavy); background-color: var(--c-highlight-bg); } /* Apply highlight */
         }
 
-        /* --- Featured Events Section Styles --- */
-        #featured-events {
-            padding: 40px 0;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            overflow: hidden;
-            position: relative;
-        }
 
-        #featured-events .container {
-            position: relative;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
+        /* --- Featured Offers Section Styles --- */
+        #featured-offers {
+            padding: 50px 0; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            overflow: hidden; position: relative;
         }
-
-        #featured-events h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #4a148c; /* Deep purple */
-            font-size: 2rem;
-            font-weight: 600;
-            position: relative;
+        #featured-offers .container { position: relative; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        #featured-offers h2 {
+            text-align: center; margin-bottom: 40px; /* More space */ color: #4a148c;
+            font-size: 2.2rem; font-weight: 700; position: relative;
         }
-
-        #featured-events h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 4px;
-            background-color: #7b1fa2; /* Accent purple */
-            border-radius: 2px;
-        }
+        #featured-offers h2::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background-color: #7b1fa2; border-radius: 2px; }
 
         /* --- Carousel Container & Track --- */
-        .featured-carousel {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            padding: 20px 0;
-        }
-
+        .featured-carousel { position: relative; width: 100%; overflow: hidden; padding: 20px 0; }
         .carousel-track {
             display: flex;
-            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
-            will-change: transform;
-            padding-bottom: 10px; /* Space for card shadow */
+            transition: transform var(--transition-medium); /* Use the medium transition for smooth scrolling */
+            will-change: transform; padding-bottom: 15px; /* Increased space */
         }
-
-        /* --- Event Card Styles --- */
-        .featured-event-card {
-            flex: 0 0 260px;
-            margin: 0 10px;
-            height: 175px; /* Slightly increased height for share button */
-            border-radius: 12px;
-            background-color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            overflow: hidden; /* Changed from visible for clean corners */
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            display: flex;
-            flex-direction: column;
+        
+        /* --- Offer Card Styles --- */
+        .featured-offer-card {
+            flex: 0 0 270px; /* Slightly wider card */
+            margin: 0 12px; /* More space between cards */
+            height: 185px; /* Taller */
+            border-radius: 12px; background-color: white; box-shadow: var(--shadow-medium);
+            overflow: hidden; cursor: pointer;
+            transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+            position: relative; display: flex; flex-direction: column; border: 1px solid var(--c-border);
         }
-
-        .featured-event-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        .featured-offer-card:hover {
+            transform: translateY(-7px) scale(1.03); /* Slightly more pronounced hover */
+            box-shadow: var(--shadow-heavy);
         }
-
-        .event-card-header {
-            height: 8px;
-            width: 100%;
-            flex-shrink: 0;
+        .offer-card-header { height: 8px; width: 100%; flex-shrink: 0; }
+        .offer-card-content {
+            padding: 18px; display: flex; flex-direction: column; flex-grow: 1;
+            position: relative; overflow: hidden;
         }
-
-        .event-card-content {
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            position: relative; /* Needed for absolute positioning of share menu */
-            overflow: hidden; /* Hide potential text overflow */
+        .offer-meta-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .offer-date-badge {
+            background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(4px); border: 1px solid #eee;
+            border-radius: 6px; padding: 5px 10px; font-size: 0.7rem; font-weight: 600; color: #444;
+            box-shadow: var(--shadow-light); display: inline-flex; align-items: center; flex-shrink: 0;
         }
-
-        .event-meta-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
+        .offer-date-badge i { margin-right: 5px; color: #7b1fa2; font-size: 0.8rem; }
+        .offer-category-tag {
+            font-size: 0.7rem; font-weight: 600; color: #fff; background-color: #aaa; /* Default */
+            padding: 4px 8px; border-radius: 4px; text-transform: capitalize;
         }
-
-        .event-date-badge {
-            background-color: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(3px);
-            border: 1px solid #eee;
-            border-radius: 6px;
-            padding: 4px 8px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #555;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            flex-shrink: 0;
+        .featured-offer-title {
+            font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; color: #222; line-height: 1.35;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; text-overflow: ellipsis; min-height: 2.7em; flex-grow: 1;
         }
-
-        .event-date-badge i {
-            margin-right: 4px;
-            color: #7b1fa2;
-            font-size: 0.75rem;
-        }
-
-        .event-category-tag {
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: #666;
-            background-color: #f0f0f0;
-            padding: 3px 6px;
-            border-radius: 4px;
-            text-transform: capitalize;
-        }
-
-        .featured-event-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #333;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            min-height: 2.6em;
-            flex-grow: 1; /* Allow title to expand */
-        }
-
-        .featured-event-detail {
-            font-size: 0.75rem;
-            color: #555;
-            display: flex;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-        .featured-event-detail:last-child {
-             margin-bottom: 0; /* Remove margin below last detail item */
-        }
-
-        .featured-event-detail i {
-            margin-right: 5px;
-            font-size: 0.8rem;
-            width: 14px;
-            text-align: center;
-            color: #888;
-        }
-
-        /* --- Urgency Badge --- */
-        .urgency-badge {
-            position: absolute;
-            top: 12px; left: -5px;
-            background-color: #ff4081; color: white;
-            padding: 3px 8px 3px 10px; font-size: 0.65rem; font-weight: bold;
-            border-radius: 0 4px 4px 0; box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
-            z-index: 2;
-        }
-         .urgency-badge.tomorrow { background-color: #ffc107; color: #333; }
+        .featured-offer-detail { font-size: 0.8rem; color: var(--c-text-medium); display: flex; align-items: center; margin-bottom: 6px; }
+        .featured-offer-detail:last-child { margin-bottom: 0; }
+        .featured-offer-detail i { margin-right: 6px; font-size: 0.85rem; width: 15px; text-align: center; color: var(--c-text-light); }
+        /* Urgency Badge */
+        .urgency-badge { position: absolute; top: 12px; left: -5px; background-color: #ff4081; color: white; padding: 3px 8px 3px 10px; font-size: 0.65rem; font-weight: bold; border-radius: 0 4px 4px 0; box-shadow: 1px 1px 5px rgba(0,0,0,0.2); z-index: 2; }
+        .urgency-badge.tomorrow { background-color: #ffc107; color: #333; }
 
         /* --- Carousel Navigation (Arrows & Dots) --- */
         .carousel-nav {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            width: 36px; height: 36px; border-radius: 50%;
-            background-color: rgba(17, 14, 14, 0.9);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10; transition: all 0.3s;
-            color: #f5ebeb; opacity: 0.8; border: none;
+            position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9); box-shadow: var(--shadow-medium);
+            display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;
+            transition: all var(--transition-medium); color: var(--c-text-medium); border: 1px solid var(--c-border);
         }
-         .carousel-nav:hover:not(:disabled) {
-            background-color: #313131; color: white; opacity: 1;
-            transform: translateY(-50%) scale(1.05);
-        }
-        .carousel-nav:disabled {
-            opacity: 0.4; cursor: not-allowed;
-            background-color: rgba(230, 230, 230, 0.8); color: #999;
-            transform: translateY(-50%);
-        }
-        .prev-button { left: 5px; }
-        .next-button { right: 5px; }
+         .carousel-nav:hover:not(:disabled) { background-color: white; color: var(--c-primary); transform: translateY(-50%) scale(1.1); box-shadow: var(--shadow-heavy); }
+        .carousel-nav:disabled { opacity: 0.5; cursor: not-allowed; background-color: rgba(230, 230, 230, 0.8); color: #999; transform: translateY(-50%); }
+        .prev-button { left: -10px; } .next-button { right: -10px; } /* Position slightly outside on desktop */
+        .carousel-dots { display: flex; justify-content: center; margin-top: 30px; padding-bottom: 10px; }
+        .carousel-dot { width: 11px; height: 11px; border-radius: 50%; background-color: #ced4da; margin: 0 6px; cursor: pointer; transition: background-color 0.3s, transform 0.3s; border: none; padding: 0; }
+        .carousel-dot.active { background-color: #7b1fa2; transform: scale(1.25); }
 
-        .carousel-dots {
-            display: flex; justify-content: center;
-            margin-top: 25px; padding-bottom: 10px;
-        }
-        .carousel-dot {
-            width: 10px; height: 10px; border-radius: 50%;
-            background-color: #ccc; margin: 0 5px; cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-            border: none; padding: 0;
-        }
-        .carousel-dot.active { background-color: #7b1fa2; transform: scale(1.2); }
-
-        /* --- Category Colors --- */
+        /* --- Category Colors (Apply to tag and header) --- */
         /* Card Header */
-        .category-personal { background-color: #ff7043; }
-        .category-work { background-color: #42a5f5; }
-        .category-meeting { background-color: #66bb6a; }
-        .category-holiday { background-color: #ec407a; }
-        .category-birthday { background-color: #ab47bc; }
-        .category-reminder { background-color: #ffa726; }
-        .category-conference { background-color: #26c6da; }
-        /* Modal Tag */
-        .modal-category-tag.category-personal { background-color: #ff7043; }
-        .modal-category-tag.category-work { background-color: #42a5f5; }
-        .modal-category-tag.category-meeting { background-color: #66bb6a; }
-        .modal-category-tag.category-holiday { background-color: #ec407a; }
-        .modal-category-tag.category-birthday { background-color: #ab47bc; }
-        .modal-category-tag.category-reminder { background-color: #ffa726; }
-        .modal-category-tag.category-conference { background-color: #26c6da; }
+        .category-personal .offer-card-header { background-color: #ff7043; } .category-work .offer-card-header { background-color: #42a5f5; } .category-meeting .offer-card-header { background-color: #66bb6a; } .category-holiday .offer-card-header { background-color: #ec407a; } .category-birthday .offer-card-header { background-color: #ab47bc; } .category-reminder .offer-card-header { background-color: #ffa726; } .category-conference .offer-card-header { background-color: #26c6da; } .category-promotion .offer-card-header { background-color: #f1c40f; } .category-culture .offer-card-header { background-color: #9370db; } .category-education .offer-card-header { background-color: #4682b4; } .category-health .offer-card-header { background-color: #1abc9c; } .category-entertainment .offer-card-header { background-color: #ff7f50; }
+        /* Tag Background */
+        .offer-category-tag.category-personal { background-color: #ff7043; } .offer-category-tag.category-work { background-color: #42a5f5; } .offer-category-tag.category-meeting { background-color: #66bb6a; } .offer-category-tag.category-holiday { background-color: #ec407a; } .offer-category-tag.category-birthday { background-color: #ab47bc; } .offer-category-tag.category-reminder { background-color: #ffa726; } .offer-category-tag.category-conference { background-color: #26c6da; } .offer-category-tag.category-promotion { background-color: #f1c40f; color: #333; } .offer-category-tag.category-culture { background-color: #9370db; } .offer-category-tag.category-education { background-color: #4682b4; } .offer-category-tag.category-health { background-color: #1abc9c; } .offer-category-tag.category-entertainment { background-color: #ff7f50; }
+
 
         /* --- Share Menu Styles (On Card) --- */
-        .share-menu {
-            position: absolute;
-            bottom: 12px; right: 15px;
-            z-index: 5;
-        }
-        .share-btn {
-            width: 30px; height: 30px; border-radius: 50%;
-            background-color: rgba(123, 31, 162, 0.15);
-            color: #7b1fa2; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 0.9rem; transition: all 0.3s ease;
-            border: 1px solid rgba(123, 31, 162, 0.2);
-        }
-        .share-btn:hover {
-             background-color: rgba(123, 31, 162, 0.8); color: white;
-             transform: scale(1.1); border-color: transparent;
-        }
-        .share-options {
-            position: absolute; bottom: 40px; right: -5px;
-            background-color: white; border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18);
-            padding: 8px; display: flex; gap: 10px;
-            opacity: 0; visibility: hidden;
-            transform: translateY(10px) scale(0.9);
-            transition: opacity 0.25s ease, visibility 0s 0.25s, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 6;
-        }
-        .share-menu.active .share-options {
-            opacity: 1; visibility: visible; transform: translateY(0) scale(1);
-            transition-delay: 0s, 0s, 0s;
-        }
-        .share-option {
-            width: 32px; height: 32px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s ease; font-size: 1.1rem;
-            border: none; background: none; padding: 0; color: #555;
-        }
+        .share-menu { position: absolute; bottom: 15px; right: 15px; z-index: 5; }
+        .share-btn { width: 32px; height: 32px; border-radius: 50%; background-color: rgba(123, 31, 162, 0.1); color: #7b1fa2; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; transition: all 0.3s ease; border: 1px solid rgba(123, 31, 162, 0.15); }
+        .share-btn:hover { background-color: rgba(123, 31, 162, 0.8); color: white; transform: scale(1.1); border-color: transparent; }
+        .share-options { position: absolute; bottom: 42px; right: -5px; background-color: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18); padding: 8px; display: flex; gap: 10px; opacity: 0; visibility: hidden; transform: translateY(10px) scale(0.9); transition: opacity 0.25s ease, visibility 0s 0.25s, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 6; }
+        .share-menu.active .share-options { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition-delay: 0s, 0s, 0s; }
+        .share-option { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; font-size: 1.1rem; border: none; background: none; padding: 0; color: #555; }
         .share-option:hover { transform: scale(1.2); color: #000; }
-        .share-option.share-copy:hover { color: #6c757d; }
-        .share-option.share-whatsapp:hover { color: #25d366; }
-        .share-option.share-messenger:hover { color: #0084ff; }
+        .share-option.share-copy:hover { color: #6c757d; } .share-option.share-whatsapp:hover { color: #25d366; } .share-option.share-messenger:hover { color: #0084ff; }
+        .copy-feedback { font-size: 0.75rem; color: green; position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: #e8f5e9; padding: 2px 5px; border-radius: 3px; }
 
-
-        /* --- Redesigned Event Modal Styles --- */
-        .event-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000;
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.35s ease, visibility 0s 0.35s;
-            padding: 20px; box-sizing: border-box;
+        /* --- Redesigned Offer Detail Modal Styles --- */
+        .offer-modal { /* ... Keep general modal styles ... */
+             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0s 0.35s; padding: 20px; box-sizing: border-box;
         }
-        .event-modal.active { opacity: 1; visibility: visible; transition-delay: 0s; }
-
-        .modal-content {
-            width: 100%; max-width: 600px;
-            background-color: white; border-radius: 16px;
-            overflow: hidden; position: relative;
-            display: flex; flex-direction: column;
-            max-height: 90vh;
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        .offer-modal.active { opacity: 1; visibility: visible; transition-delay: 0s; }
+        .modal-content { /* ... Keep general modal styles ... */
+             width: 100%; max-width: 650px; background-color: white; border-radius: 16px; overflow: hidden; position: relative; display: flex; flex-direction: column; max-height: 90vh; transform: scale(0.9) translateY(20px); transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 40px rgba(0,0,0,0.25);
         }
-        .event-modal.active .modal-content { transform: scale(1) translateY(0); }
-
-        .modal-close {
-            position: absolute; top: 12px; right: 12px;
-            width: 32px; height: 32px; background-color: rgba(0, 0, 0, 0.4); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s; font-size: 1rem;
-            border: none; padding: 0; color: white; z-index: 10;
+        .offer-modal.active .modal-content { transform: scale(1) translateY(0); }
+        .modal-close { /* ... Keep general modal styles ... */
+            position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background-color: rgba(0, 0, 0, 0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.3s, transform 0.3s; font-size: 1rem; border: none; padding: 0; color: white; z-index: 10;
         }
         .modal-close:hover { background-color: rgba(0, 0, 0, 0.6); transform: scale(1.1) rotate(90deg); }
-
-        .modal-image-area {
-            width: 100%; height: 220px; overflow: hidden; background-color: #eee;
-        }
+        .modal-image-area { width: 100%; height: 250px; overflow: hidden; background-color: #eee; }
         .modal-image-area img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
-
-        .modal-body { padding: 20px 25px 25px 25px; flex-grow: 1; overflow-y: auto; }
-
-        .modal-category-tag {
-            display: inline-block; font-size: 0.75rem; font-weight: 600;
-            color: #fff; background-color: #888; /* Default, JS overrides */
-            padding: 4px 10px; border-radius: 15px; margin-bottom: 12px;
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
-
-        .modal-event-title { font-size: 1.8rem; font-weight: 700; margin: 0 0 15px 0; color: #222; line-height: 1.25; }
-
-        .modal-meta-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px 20px; margin-bottom: 20px; padding-bottom: 15px;
-            border-bottom: 1px solid #e5e5e5;
-        }
-        .meta-item { display: flex; align-items: center; font-size: 0.9rem; color: #555; }
-        .meta-icon { flex-shrink: 0; margin-right: 10px; color: #7b1fa2; width: 18px; text-align: center; font-size: 1.1rem; }
-        .meta-text { line-height: 1.4; }
+        .modal-body { padding: 25px 30px 30px 30px; flex-grow: 1; overflow-y: auto; }
+        .modal-category-tag { display: inline-block; font-size: 0.75rem; font-weight: 600; color: #fff; background-color: #888; padding: 4px 10px; border-radius: 15px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .modal-offer-title { font-size: 1.9rem; font-weight: 700; margin: 0 0 18px 0; color: #111; line-height: 1.3; }
+        .modal-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px 25px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #e5e5e5; }
+        .meta-item { display: flex; align-items: center; font-size: 0.95rem; color: #444; }
+        .meta-icon { flex-shrink: 0; margin-right: 12px; color: #7b1fa2; width: 20px; text-align: center; font-size: 1.2rem; }
+        .meta-text { line-height: 1.45; }
         .meta-item-full { grid-column: 1 / -1; }
-
-        .modal-event-desc { margin: 0 0 25px 0; font-size: 1rem; line-height: 1.6; color: #444; }
-
-        .modal-event-actions {
-            display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end;
-            margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e5e5;
-        }
-        .event-action-btn {
-            padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 500;
-            cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-            transition: all 0.25s ease; border: none; text-decoration: none;
-        }
-        .event-action-btn.primary { background-color: #7b1fa2; color: white; }
-        .event-action-btn.secondary { background-color: #f0f0f0; color: #444; border: 1px solid #ddd; }
-        .event-action-btn.primary:hover { background-color: #4a148c; box-shadow: 0 4px 12px rgba(123, 31, 162, 0.3); transform: translateY(-2px); }
-        .event-action-btn.secondary:hover { background-color: #e0e0e0; border-color: #ccc; color: #222; transform: translateY(-2px); }
-        .event-action-btn i { margin-right: 8px; font-size: 0.9em; }
+        .modal-offer-desc { margin: 0 0 30px 0; font-size: 1rem; line-height: 1.65; color: #333; }
+        .modal-offer-actions { display: flex; flex-wrap: wrap; gap: 15px; justify-content: flex-end; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e5e5; }
+        .offer-action-btn { padding: 11px 22px; border-radius: 8px; font-size: 0.95rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.25s ease; border: none; text-decoration: none; }
+        .offer-action-btn.primary { background-color: #7b1fa2; color: white; box-shadow: 0 2px 5px rgba(123, 31, 162, 0.2); }
+        .offer-action-btn.secondary { background-color: #f0f0f0; color: #444; border: 1px solid #ddd; }
+        .offer-action-btn.primary:hover { background-color: #4a148c; box-shadow: 0 4px 12px rgba(123, 31, 162, 0.3); transform: translateY(-2px); }
+        .offer-action-btn.secondary:hover { background-color: #e0e0e0; border-color: #ccc; color: #222; transform: translateY(-2px); }
+        .offer-action-btn i { margin-right: 8px; font-size: 1em; }
 
 
         /* --- Responsive Adjustments --- */
-        @media (max-width: 1024px) {
-            .featured-event-card { flex-basis: 240px; margin: 0 8px; height: 170px;} /* Adjusted height */
-        }
-
+        @media (max-width: 1024px) { .featured-offer-card { flex-basis: 250px; } }
         @media (max-width: 768px) {
-            #featured-events { padding: 30px 0; }
-            #featured-events h2 { font-size: 1.8rem; margin-bottom: 25px; }
-            #featured-events .container { padding: 0 10px; }
-            .featured-event-card { flex-basis: 220px; margin: 0 6px; height: 165px; } /* Adjusted height */
-            .carousel-nav { width: 32px; height: 32px; }
-            .prev-button { left: 2px; }
-            .next-button { right: 2px; }
-
-            .modal-content { max-width: 95%; max-height: 85vh; }
-            .modal-image-area { height: 180px; }
-            .modal-body { padding: 15px 20px 20px 20px; }
-            .modal-event-title { font-size: 1.5rem; margin-bottom: 12px; }
-            .modal-meta-grid { grid-template-columns: 1fr; gap: 10px; }
-            .modal-event-desc { font-size: 0.95rem; }
-            .modal-event-actions { justify-content: center; }
+            #featured-offers { padding: 40px 0; } #featured-offers h2 { font-size: 1.9rem; margin-bottom: 30px; }
+            .featured-offer-card { flex-basis: 230px; height: 175px; }
+            .prev-button { left: 5px; } .next-button { right: 5px; }
+            .modal-content { max-width: 95%; max-height: 85vh; } .modal-image-area { height: 200px; }
+            .modal-body { padding: 20px; } .modal-offer-title { font-size: 1.6rem; margin-bottom: 15px; }
+            .modal-meta-grid { grid-template-columns: 1fr; gap: 12px; }
+            .modal-offer-desc { font-size: 0.95rem; margin-bottom: 25px; }
+            .modal-offer-actions { justify-content: center; }
         }
-
         @media (max-width: 480px) {
-             #featured-events h2 { font-size: 1.6rem; margin-bottom: 20px; }
-            .featured-event-card { flex-basis: 190px; margin: 0 5px; height: 170px; border-radius: 10px; } /* Adjusted height */
-            .featured-event-title { font-size: 0.9rem; min-height: 2.4em; margin-bottom: 4px;}
-            .featured-event-detail { font-size: 0.7rem; margin-bottom: 4px; }
-            .featured-event-detail i { font-size: 0.75rem; margin-right: 4px; }
-            .event-date-badge { font-size: 0.65rem; padding: 3px 6px; }
-            .event-category-tag { font-size: 0.65rem; padding: 2px 5px; }
-            .carousel-nav { display: none; }
-            .carousel-dots { margin-top: 20px; }
-            .carousel-dot { width: 8px; height: 8px; margin: 0 4px; }
-
-            /* Share Menu Responsive */
-            .share-menu { bottom: 10px; right: 10px; }
-            .share-btn { width: 28px; height: 28px; font-size: 0.8rem; }
-            .share-options { bottom: 35px; gap: 8px; padding: 6px; }
-            .share-option { width: 28px; height: 28px; font-size: 1rem; }
-
-            /* Modal Responsive */
-            .event-modal { padding: 10px; }
-            .modal-content { border-radius: 12px; max-height: 80vh; }
-            .modal-close { top: 8px; right: 8px; width: 28px; height: 28px; font-size: 0.9rem;}
-            .modal-image-area { height: 150px; }
-            .modal-body { padding: 15px; }
-            .modal-category-tag { font-size: 0.7rem; padding: 3px 8px; margin-bottom: 10px;}
-            .modal-event-title { font-size: 1.3rem; }
-            .meta-item { font-size: 0.85rem; }
-            .meta-icon { font-size: 1rem; margin-right: 8px; }
-            .modal-event-desc { font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px; }
-            .event-action-btn { width: 100%; justify-content: center; padding: 10px 15px; font-size: 0.9rem;}
-            .modal-event-actions { gap: 10px; padding-top: 10px; border-top: none; }
+            #featured-offers h2 { font-size: 1.7rem; margin-bottom: 25px; }
+            .featured-offer-card { flex-basis: 200px; height: 180px; border-radius: 10px; } /* Taller on mobile */
+            .featured-offer-title { font-size: 0.95rem; } .featured-offer-detail { font-size: 0.75rem; }
+            .carousel-nav { display: none; } .carousel-dots { margin-top: 20px; } .carousel-dot { width: 9px; height: 9px; }
+            .share-menu { bottom: 12px; right: 12px; } .share-btn { width: 30px; height: 30px; } .share-options { bottom: 40px; } .share-option { width: 30px; height: 30px; }
+            .modal-content { border-radius: 12px; max-height: 85vh; } .modal-image-area { height: 160px; }
+            .modal-body { padding: 20px; } .modal-offer-title { font-size: 1.4rem; } .meta-item { font-size: 0.9rem; }
+            .modal-offer-desc { font-size: 0.9rem; } .offer-action-btn { width: 100%; }
         }
 
-.copy-message {
-    font-size: 0.8rem;
-    color: green;
-    margin-left: 5px;
-}
+        /* Toast */
+        #toast-notification { /* ... keep existing ... */ position: fixed; bottom: 25px; left: 50%; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 12px 22px; border-radius: 25px; font-size: 0.95rem; z-index: 1100; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; transform: translate(-50%, 10px); }
+        #toast-notification.show { opacity: 1; transform: translate(-50%, 0); }
 
     </style>
 </head>
 <body>
+
+    
+
     <!-- Section HTML -->
-    <section id="featured-events" role="region" aria-labelledby="featured-events-title">
+    <section id="featured-offers" role="region" aria-labelledby="featured-offers-title">
         <div class="container">
-            <h2 id="featured-events-title">Don't Miss These!</h2>
-            <div class="featured-carousel">
-                <div class="carousel-track" id="featured-events-track">
-                    <!-- Event cards populated by JS -->
+            <h2 id="featured-offers-title">Don't Miss These!</h2>
+
+            <div class="featured-carousel" id="featured-carousel-wrapper"> <!-- Added ID for hover listener -->
+                <div class="carousel-track" id="featured-offers-track">
+                    <!-- Offer cards populated by JS -->
                 </div>
-                <button class="carousel-nav prev-button" aria-label="Previous slide">
+                <button class="carousel-nav prev-button" aria-label="Previous offers">
                     <i class="fas fa-chevron-left" aria-hidden="true"></i>
                 </button>
-                 <button class="carousel-nav next-button" aria-label="Next slide">
+                 <button class="carousel-nav next-button" aria-label="Next offers">
                     <i class="fas fa-chevron-right" aria-hidden="true"></i>
                 </button>
             </div>
@@ -444,167 +220,437 @@
         </div>
     </section>
 
-    <!-- Redesigned Event Detail Modal HTML -->
-    <div class="event-modal" id="event-modal" role="dialog" aria-modal="true" aria-labelledby="modal-event-title" hidden>
+    <!-- Redesigned Offer Detail Modal HTML -->
+    <div class="offer-modal" id="offer-modal" role="dialog" aria-modal="true" aria-labelledby="modal-offer-title" hidden>
         <div class="modal-content">
             <button class="modal-close" id="modal-close" aria-label="Close modal">
                 <i class="fas fa-times" aria-hidden="true"></i>
             </button>
             <div class="modal-image-area">
-                <img id="modal-event-image" src="" alt="Event Image" />
+                <img id="modal-offer-image" src="" alt="Offer Image" />
             </div>
             <div class="modal-body">
-                 <span class="modal-category-tag" id="modal-event-category-tag"></span>
-                <h3 class="modal-event-title" id="modal-event-title"></h3>
+                 <span class="modal-category-tag" id="modal-offer-category-tag"></span>
+                <h3 class="modal-offer-title" id="modal-offer-title"></h3>
                 <div class="modal-meta-grid">
                     <div class="meta-item">
                         <i class="far fa-calendar-alt meta-icon" aria-hidden="true"></i>
-                        <span id="modal-event-date" class="meta-text"></span>
+                        <span id="modal-offer-date" class="meta-text"></span>
                     </div>
                     <div class="meta-item">
                         <i class="far fa-clock meta-icon" aria-hidden="true"></i>
-                        <span id="modal-event-time" class="meta-text"></span>
+                        <span id="modal-offer-time" class="meta-text"></span>
                     </div>
                     <div class="meta-item meta-item-full">
                         <i class="fas fa-map-marker-alt meta-icon" aria-hidden="true"></i>
-                        <span id="modal-event-location" class="meta-text"></span>
+                        <span id="modal-offer-location" class="meta-text"></span>
                     </div>
                 </div>
-                <p class="modal-event-desc" id="modal-event-desc"></p>
-                <div class="modal-event-actions" id="modal-event-actions">
-                    <!-- Action buttons populated by JS -->
+                <p class="modal-offer-desc" id="modal-offer-desc"></p>
+                 <!-- Share buttons moved to footer for single view -->
+                <div class="modal-offer-actions" id="modal-offer-actions">
+                    <!-- Action buttons (like 'View Details') populated by JS if needed -->
                 </div>
+                 <!-- Footer for Sharing (Shown only for single offer view) -->
+                 <div class="modal-footer" id="modal-footer-sharing"> <!-- Added ID -->
+                     <div class="modal-share-buttons">
+                          <button class="modal-button share whatsapp" id="detail-share-whatsapp" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                          <button class="modal-button share copy" id="detail-share-copy" title="Copy Link"><i class="fas fa-link"></i> Copy Link</button>
+                     </div>
+                 </div>
             </div>
         </div>
     </div>
 
+     <!-- Toast Notification -->
+     <div id="toast-notification">Copied!</div>
+
     <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- Sample Data (with imageUrl) ---
-            const upcomingEvents = [
+            console.log("Khojum V8 - Autoplay Carousel");
+
+            // --- Sample Offer Data (Includes imageUrl) ---
+            const offerData = [ // Renamed from upcomingEvents
                  (() => {
                     const today = new Date(); const tomorrow = new Date(); tomorrow.setDate(today.getDate() + 1); const nextWeek = new Date(); nextWeek.setDate(today.getDate() + 7);
                     const formatDate = (d) => d.toISOString().split('T')[0]; const formatShortDate = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                    const placeholderImg = "https://via.placeholder.com/600x220/cccccc/888888?text=Event";
+                    const placeholderImg = "https://via.placeholder.com/600x220/cccccc/888888?text=Offer"; // Generic placeholder
                     return [
-                        { id: 1, title: "Urgent: Project Alpha Deadline", fullDate: formatDate(today), date: "Today", time: "5:00 PM", location: "Online Submission", description: "Final deadline for Project Alpha submission. Ensure all documents are uploaded and verified.", category: "work", categoryName: "Work", imageUrl: "https://via.placeholder.com/600x220/42a5f5/ffffff?text=Work+Deadline", actions: [ { type: "join", label: "View Details", icon: "fa-eye" }, { type: "contact", label: "Support", icon: "fa-headset" }] },
-                        { id: 2, title: "Team Sync Meeting", fullDate: formatDate(tomorrow), date: "Tomorrow", time: "10:00 AM - 11:00 AM", location: "Conf Room B / Zoom", description: "Quick sync-up meeting to discuss progress and plan. Come prepared with updates.", category: "meeting", categoryName: "Meeting", imageUrl: "https://via.placeholder.com/600x220/66bb6a/ffffff?text=Meeting", actions: [ { type: "join", label: "Add to Calendar", icon: "fa-calendar-plus" }, { type: "contact", label: "Agenda", icon: "fa-list-alt" }] },
-                        { id: 3, title: "Company Social Hour", fullDate: formatDate(nextWeek), date: formatShortDate(nextWeek), time: "4:00 PM - 6:00 PM", location: "Rooftop Terrace", description: "Relax and connect with colleagues. Drinks and snacks provided.", category: "holiday", categoryName: "Social Event", imageUrl: "https://via.placeholder.com/600x220/ec407a/ffffff?text=Social+Event", actions: [ { type: "join", label: "RSVP", icon: "fa-check-circle" }, { type: "contact", label: "More Info", icon: "fa-info-circle" }] },
-                        { id: 4, title: "Product Launch Presentation", fullDate: "2024-04-25", date: "Apr 25", time: "11:00 AM", location: "Exhibition Center", description: "Unveiling our new product line. Includes live demos, Q&A, and networking.", category: "work", categoryName: "Work", imageUrl: placeholderImg, actions: [ { type: "tickets", label: "Register", icon: "fa-ticket-alt" }, { type: "contact", label: "Contact Team", icon: "fa-envelope" }] },
-                        { id: 5, title: "Sarah Miller's Birthday", fullDate: "2024-04-28", date: "Apr 28", time: "3:00 PM", location: "Break Room", description: "Cake and celebrations for Sarah's birthday! Sign the card at reception.", category: "birthday", categoryName: "Birthday", imageUrl: "https://via.placeholder.com/600x220/ab47bc/ffffff?text=Birthday!", actions: [ { type: "join", label: "Send Wishes", icon: "fa-gift" }, { type: "contact", label: "Contribute", icon: "fa-hand-holding-heart" }] },
-                        { id: 6, title: "InnovateTech Conference 2024", fullDate: "2024-05-05", date: "May 5", time: "9:00 AM - 5:00 PM", location: "Convention Center", description: "Annual tech conference with industry leaders, workshops, and networking.", category: "conference", categoryName: "Conference", imageUrl: "https://via.placeholder.com/600x220/26c6da/ffffff?text=Conference", actions: [ { type: "tickets", label: "Buy Tickets", icon: "fa-ticket-alt" }, { type: "join", label: "Add to Calendar", icon: "fa-calendar-plus" }] }
+                        {
+                            id: 'offer1',
+                            title: "Exclusive: 30% Off Weekend Brunch",
+                            fullDate: formatDate(today),
+                            date: "Today!",
+                            time: "10 AM - 2 PM",
+                            location: "The Sunny Cafe",
+                            description: "Enjoy our award-winning brunch menu with a special 30% discount this weekend only. Mention code 'BRUNCH30'.",
+                            category: "promotion",
+                            categoryName: "Food Promo",
+                            imageUrl: "https://imgs.search.brave.com/SDbcifEO63utV6fQ86G65bnbwGpAK7auRKHcqEpqcO8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9waXhs/ci5jb20vaW1hZ2Vz/L2luZGV4L3Bob3Rv/LWZpbHRlci1lZmZl/Y3Qtb25lLmpwZw",
+                            actions: [
+                                { type: "join", label: "View Menu", icon: "fa-utensils" },
+                                { type: "contact", label: "Book Table", icon: "fa-calendar-check" }
+                            ]
+                        },
+                        {
+                            id: 'offer2',
+                            title: "Tomorrow: Tech Gadget Expo",
+                            fullDate: formatDate(tomorrow),
+                            date: "Tomorrow",
+                            time: "9 AM - 6 PM",
+                            location: "City Convention Center",
+                            description: "Explore the latest gadgets, attend workshops, and meet industry experts. Limited tickets remaining.",
+                            category: "conference",
+                            categoryName: "Tech Event",
+                            imageUrl: "https://via.placeholder.com/600x220/26c6da/ffffff?text=Gadget+Expo",
+                            actions: [
+                                { type: "tickets", label: "Get Tickets", icon: "fa-ticket-alt" },
+                                { type: "contact", label: "View Schedule", icon: "fa-list-alt" }
+                            ]
+                        },
+                        {
+                            id: 'offer3',
+                            title: "Artisan Market Next Week",
+                            fullDate: formatDate(nextWeek),
+                            date: formatShortDate(nextWeek),
+                            time: "11 AM - 4 PM",
+                            location: "Old Town Square",
+                            description: "Discover unique handmade crafts, local produce, and enjoy live music.",
+                            category: "culture",
+                            categoryName: "Market",
+                            imageUrl: "https://via.placeholder.com/600x220/9370db/ffffff?text=Artisan+Market",
+                            actions: [
+                                { type: "join", label: "Vendor Info", icon: "fa-store" },
+                                { type: "contact", label: "Directions", icon: "fa-map-marked-alt" }
+                            ]
+                        },
+                        {
+                            id: 'offer4',
+                            title: "Flash Sale: 50% Off Select Items",
+                            fullDate: "2024-08-15",
+                            date: "Aug 15",
+                            time: "Online Only",
+                            location: "Website",
+                            description: "Limited time flash sale on selected summer collection items. While stocks last!",
+                            category: "promotion",
+                            categoryName: "Online Sale",
+                            imageUrl: placeholderImg,
+                            actions: [
+                                { type: "tickets", label: "Shop Now", icon: "fa-shopping-cart" },
+                                { type: "contact", label: "View Items", icon: "fa-tags" }
+                            ]
+                        },
+                        {
+                            id: 'offer5',
+                            title: "Yoga in the Park Session",
+                            fullDate: "2024-08-18",
+                            date: "Aug 18",
+                            time: "8:00 AM",
+                            location: "Central Park Meadow",
+                            description: "Start your Sunday with a refreshing outdoor yoga session. All levels welcome. Bring your mat!",
+                            category: "health",
+                            categoryName: "Wellness",
+                            imageUrl: "https://via.placeholder.com/600x220/1abc9c/ffffff?text=Park+Yoga",
+                            actions: [
+                                { type: "join", label: "More Info", icon: "fa-info-circle" }
+                            ]
+                        },
+                        {
+                            id: 'offer6',
+                            title: "Live Acoustic Music Night",
+                            fullDate: "2024-08-22",
+                            date: "Aug 22",
+                            time: "7:30 PM",
+                            location: "The Cozy Corner Pub",
+                            description: "Enjoy live performances from talented local musicians. Great atmosphere and drinks.",
+                            category: "entertainment",
+                            categoryName: "Music",
+                            imageUrl: "https://via.placeholder.com/600x220/ff7f50/ffffff?text=Live+Music",
+                            actions: [
+                                { type: "contact", label: "View Lineup", icon: "fa-microphone-alt" }
+                            ]
+                        }
                     ];
                 })()
             ].flat();
 
+            const offersById = new Map(); // Map for quick ID lookup
+
             // --- Carousel Logic Object ---
             const featuredCarousel = {
                 // Core Selectors
-                track: document.getElementById('featured-events-track'),
+                track: document.getElementById('featured-offers-track'),
                 dotsContainer: document.getElementById('carousel-dots'),
                 prevButton: document.querySelector('.prev-button'),
                 nextButton: document.querySelector('.next-button'),
+                carouselWrapper: document.getElementById('featured-carousel-wrapper'), // For hover pause
                 // Modal Selectors
-                modal: document.getElementById('event-modal'),
+                modal: document.getElementById('offer-modal'),
                 modalClose: document.getElementById('modal-close'),
-                modalImage: document.getElementById('modal-event-image'),
-                modalCategoryTag: document.getElementById('modal-event-category-tag'),
-                modalEventTitle: document.getElementById('modal-event-title'),
-                modalDate: document.getElementById('modal-event-date'),
-                modalTime: document.getElementById('modal-event-time'),
-                modalLocation: document.getElementById('modal-event-location'),
-                modalDesc: document.getElementById('modal-event-desc'),
-                modalActions: document.getElementById('modal-event-actions'),
+                modalImage: document.getElementById('modal-offer-image'),
+                modalCategoryTag: document.getElementById('modal-offer-category-tag'),
+                modalOfferTitle: document.getElementById('modal-offer-title'),
+                modalDate: document.getElementById('modal-offer-date'),
+                modalTime: document.getElementById('modal-offer-time'),
+                modalLocation: document.getElementById('modal-offer-location'),
+                modalDesc: document.getElementById('modal-offer-desc'),
+                modalActions: document.getElementById('modal-offer-actions'),
+                modalFooterSharing: document.getElementById('modal-footer-sharing'),
+                 // Sharing buttons in Modal Footer
+                 modalShareWhatsapp: document.getElementById('detail-share-whatsapp'),
+                 modalShareCopy: document.getElementById('detail-share-copy'),
+                // Toast
+                 toast: document.getElementById('toast-notification'),
                 // State
-                currentIndex: 0, totalSlides: upcomingEvents.length, slidesToShow: 4, slideWidth: 0,
+                currentIndex: 0, totalSlides: offerData.length, slidesToShow: 4, slideWidth: 0,
                 touchStartX: 0, touchEndX: 0, isDragging: false,
+                autoplayIntervalId: null, autoplayDelay: 2000, // 5 seconds
+                isHovering: false, // Track hover state
 
                 // --- Methods ---
                 init: function() {
-                    this.populateEvents(); this.handleResize(); this.createDots();
+                    if (!this.track) { console.error("Carousel track not found!"); return; }
+                    this.buildOfferMap(); // Build ID map first
+                    this.populateOffers(); this.handleResize(); this.createDots();
                     this.setupListeners(); this.goToSlide(0, false);
+                    this.startAutoplay(); // Start autoplay on init
+                    this.handleDeepLink(); // Check for deep link
                 },
-                getUrgency: function(fullDate) { /* ... (same as before) ... */
-                     if (!fullDate) return null; try { const today = new Date(); today.setHours(0, 0, 0, 0); const tomorrow = new Date(); tomorrow.setDate(today.getDate() + 1); tomorrow.setHours(0, 0, 0, 0); const [y, m, d] = fullDate.split('-').map(Number); const eventDate = new Date(y, m - 1, d); eventDate.setHours(0, 0, 0, 0); if (eventDate.getTime() === today.getTime()) return { text: "Today", class: "today" }; if (eventDate.getTime() === tomorrow.getTime()) return { text: "Tomorrow", class: "tomorrow" }; } catch (e) { console.error("Date parse error:", fullDate, e); } return null;
+                buildOfferMap: function() {
+                    offersById.clear();
+                    offerData.forEach((offer, index) => {
+                        // Add index to map data for easier slide navigation in deep link
+                        offersById.set(offer.id, { ...offer, index: index });
+                    });
+                     console.log("Offer map built:", offersById);
                 },
-                populateEvents: function() {
+                getOfferById: function(offerId) { // Use internal map
+                     return offersById.get(offerId);
+                },
+                showToast: function(message) {
+                     if (!this.toast) return;
+                     this.toast.textContent = message; this.toast.classList.add('show');
+                     setTimeout(() => { this.toast.classList.remove('show'); }, 2500);
+                },
+                getUrgency: function(fullDate) { /* ... (keep existing logic) ... */
+                     if (!fullDate) return null; try { const today = new Date(); today.setHours(0, 0, 0, 0); const tomorrow = new Date(); tomorrow.setDate(today.getDate() + 1); tomorrow.setHours(0, 0, 0, 0); const [y, m, d] = fullDate.split('-').map(Number); const offerDate = new Date(y, m - 1, d); offerDate.setHours(0, 0, 0, 0); if (offerDate.getTime() === today.getTime()) return { text: "Today!", class: "today" }; if (offerDate.getTime() === tomorrow.getTime()) return { text: "Tomorrow", class: "tomorrow" }; } catch (e) { console.error("Date parse error:", fullDate, e); } return null;
+                },
+                populateOffers: function() {
                     this.track.innerHTML = '';
-                    upcomingEvents.forEach((event) => {
-                        const eventCard = document.createElement('div'); eventCard.className = 'featured-event-card'; eventCard.dataset.id = event.id; eventCard.setAttribute('role', 'group'); eventCard.setAttribute('aria-label', event.title);
-                        const urgency = this.getUrgency(event.fullDate); const urgencyBadgeHTML = urgency ? `<div class="urgency-badge ${urgency.class}">${urgency.text}</div>` : '';
-                        eventCard.innerHTML = `
-                            ${urgencyBadgeHTML}
-                            <div class="event-card-header category-${event.category}"></div>
-                            <div class="event-card-content">
-                                <div class="event-meta-top">
-                                     <div class="event-date-badge"><i class="far fa-calendar-alt" aria-hidden="true"></i>${event.date}</div>
-                                    <span class="event-category-tag">${event.categoryName || event.category}</span>
-                                </div>
-                                <h3 class="featured-event-title">${event.title}</h3>
-                                <div class="featured-event-detail featured-event-time"><i class="far fa-clock" aria-hidden="true"></i><span>${event.time}</span></div>
-                                <div class="featured-event-detail featured-event-location"><i class="fas fa-map-marker-alt" aria-hidden="true"></i><span>${event.location}</span></div>
-                                <div class="share-menu" data-id="${event.id}">
-                                    <button class="share-btn" aria-label="Share this event" aria-haspopup="true" aria-expanded="false"><i class="fas fa-share-alt" aria-hidden="true"></i></button>
-                                    <div class="share-options" role="menu">
-    <button class="share-option share-copy" data-platform="copy" aria-label="Copy link" role="menuitem">
-        <i class="fas fa-link" aria-hidden="true"></i>
-        <span class="copy-message" style="display: none;">Link Copied!</span>
-    </button>
-    <button class="share-option share-whatsapp" data-platform="whatsapp" aria-label="Share on WhatsApp" role="menuitem">
-        <i class="fab fa-whatsapp" aria-hidden="true"></i>
-    </button>
-    <button class="share-option share-messenger" data-platform="messenger" aria-label="Share on Messenger" role="menuitem">
-        <i class="fab fa-facebook-messenger" aria-hidden="true"></i>
-    </button>
-</div>
+                    offerData.forEach((offer) => {
+                        const offerCard = document.createElement('div');
+                        offerCard.className = `featured-offer-card category-${offer.category}`; // Add category class for header color
+                        offerCard.dataset.id = offer.id; // Use offer id
+                        offerCard.setAttribute('role', 'group'); offerCard.setAttribute('aria-label', offer.title);
+                        offerCard.setAttribute('tabindex', '0'); // Make card focusable
 
+                        const urgency = this.getUrgency(offer.fullDate);
+                        const urgencyBadgeHTML = urgency ? `<div class="urgency-badge ${urgency.class}">${urgency.text}</div>` : '';
+
+                        offerCard.innerHTML = `
+                            ${urgencyBadgeHTML}
+                            <div class="offer-card-header"></div>
+                            <div class="offer-card-content">
+                                <div class="offer-meta-top">
+                                     <div class="offer-date-badge"><i class="far fa-calendar-alt" aria-hidden="true"></i>${offer.date}</div>
+                                    <span class="offer-category-tag category-${offer.category}">${offer.categoryName || offer.category}</span>
+                                </div>
+                                <h3 class="featured-offer-title">${offer.title}</h3>
+                                <div class="featured-offer-detail featured-offer-time">
+                                    ${offer.time ? `<i class="far fa-clock" aria-hidden="true"></i><span>${offer.time}</span>` : ''}
+                                </div>
+                                <div class="featured-offer-detail featured-offer-location">
+                                    ${offer.location ? `<i class="fas fa-map-marker-alt" aria-hidden="true"></i><span>${offer.location}</span>` : ''}
+                                </div>
+                                <div class="share-menu" data-id="${offer.id}">
+                                    <button class="share-btn" aria-label="Share this offer" aria-haspopup="true" aria-expanded="false"><i class="fas fa-share-alt" aria-hidden="true"></i></button>
+                                    <div class="share-options" role="menu">
+                                        <button class="share-option share-copy" data-platform="copy" aria-label="Copy link" role="menuitem"><i class="fas fa-link" aria-hidden="true"></i></button>
+                                        <button class="share-option share-whatsapp" data-platform="whatsapp" aria-label="Share on WhatsApp" role="menuitem"><i class="fab fa-whatsapp" aria-hidden="true"></i></button>
+                                        <button class="share-option share-messenger" data-platform="messenger" aria-label="Share on Messenger" role="menuitem"><i class="fab fa-facebook-messenger" aria-hidden="true"></i></button>
+                                    </div>
                                 </div>
                             </div>`;
-                        this.track.appendChild(eventCard);
-                        eventCard.addEventListener('click', (e) => { if (!e.target.closest('.share-menu')) this.openEventModal(event.id); });
+                        this.track.appendChild(offerCard);
+                        // Add listeners for modal opening
+                        offerCard.addEventListener('click', (e) => { if (!e.target.closest('.share-menu')) this.openOfferModal(offer.id); });
+                        offerCard.addEventListener('keydown', (e) => { if((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.share-menu')) { e.preventDefault(); this.openOfferModal(offer.id); } });
                     });
-                    this.totalSlides = upcomingEvents.length;
-                    this.setupShareMenus(); // Setup share listeners
+                    this.totalSlides = offerData.length;
+                    this.setupShareMenus();
                 },
-                handleResize: function() { /* ... (same as before) ... */
+                handleResize: function() { /* ... keep existing logic ... */
                     const windowWidth = window.innerWidth; let newSlidesToShow = 4; if (windowWidth < 480) newSlidesToShow = 1; else if (windowWidth < 768) newSlidesToShow = 2; else if (windowWidth < 1024) newSlidesToShow = 3; if (this.slidesToShow !== newSlidesToShow || this.slideWidth === 0) { this.slidesToShow = newSlidesToShow; requestAnimationFrame(() => { if (this.track.children.length > 0) { const firstCard = this.track.children[0]; const cardStyle = window.getComputedStyle(firstCard); const cardWidth = firstCard.offsetWidth; const marginLeft = parseFloat(cardStyle.marginLeft); const marginRight = parseFloat(cardStyle.marginRight); this.slideWidth = cardWidth + marginLeft + marginRight; this.createDots(); this.currentIndex = Math.min(this.currentIndex, Math.max(0, this.totalSlides - this.slidesToShow)); this.goToSlide(this.currentIndex, false); } else { this.slideWidth = 0; this.createDots(); this.goToSlide(0, false); } }); }
                 },
-                createDots: function() { /* ... (same as before) ... */
-                    this.dotsContainer.innerHTML = ''; const numDots = Math.max(0, this.totalSlides - this.slidesToShow + 1); if (numDots > 1) { for (let i = 0; i < numDots; i++) { const dot = document.createElement('button'); dot.className = 'carousel-dot'; dot.dataset.index = i; dot.setAttribute('aria-label', `Go to slide group ${i + 1}`); dot.addEventListener('click', () => this.goToSlide(i)); this.dotsContainer.appendChild(dot); } } this.updateActiveDot();
+                createDots: function() { /* ... keep existing logic ... */
+                     this.dotsContainer.innerHTML = ''; const numDots = Math.max(0, this.totalSlides - this.slidesToShow + 1); if (numDots > 1) { for (let i = 0; i < numDots; i++) { const dot = document.createElement('button'); dot.className = 'carousel-dot'; dot.dataset.index = i; dot.setAttribute('aria-label', `Go to slide group ${i + 1}`); dot.addEventListener('click', () => this.goToSlide(i)); this.dotsContainer.appendChild(dot); } } this.updateActiveDot();
                 },
-                updateActiveDot: function() { /* ... (same as before) ... */
+                updateActiveDot: function() { /* ... keep existing logic ... */
                      Array.from(this.dotsContainer.children).forEach((dot, i) => { if (i === this.currentIndex) { dot.classList.add('active'); dot.setAttribute('aria-current', 'true'); } else { dot.classList.remove('active'); dot.removeAttribute('aria-current'); } });
                 },
-                setupListeners: function() { /* ... (same as before - includes modal, touch, resize) ... */
-                    this.prevButton.addEventListener('click', () => this.goToSlide(this.currentIndex - 1)); this.nextButton.addEventListener('click', () => this.goToSlide(this.currentIndex + 1)); this.track.addEventListener('touchstart', (e) => { this.touchStartX = e.touches[0].clientX; this.isDragging = true; this.track.style.transition = 'none'; }, { passive: true }); this.track.addEventListener('touchmove', (e) => { if (!this.isDragging) return; this.touchEndX = e.touches[0].clientX; }, { passive: true }); this.track.addEventListener('touchend', () => { if (!this.isDragging) return; this.isDragging = false; this.track.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)'; if (this.touchEndX === 0) this.touchEndX = this.touchStartX; this.handleSwipe(); this.touchEndX = 0; }); this.track.addEventListener('touchcancel', () => { if (!this.isDragging) return; this.isDragging = false; this.track.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)'; this.goToSlide(this.currentIndex, true); this.touchEndX = 0; }); this.modalClose.addEventListener('click', () => this.closeEventModal()); this.modal.addEventListener('click', (e) => { if (e.target === this.modal) this.closeEventModal(); }); document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && this.modal.classList.contains('active')) this.closeEventModal(); }); let resizeTimer; window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => this.handleResize(), 250); });
+                setupListeners: function() {
+                    this.prevButton.addEventListener('click', () => { this.goToSlide(this.currentIndex - 1); this.stopAutoplay(); }); // Stop autoplay on manual nav
+                    this.nextButton.addEventListener('click', () => { this.goToSlide(this.currentIndex + 1); this.stopAutoplay(); }); // Stop autoplay on manual nav
+                    // Autoplay Pause/Resume on Hover
+                    this.carouselWrapper.addEventListener('mouseenter', () => this.stopAutoplay());
+                    this.carouselWrapper.addEventListener('mouseleave', () => this.startAutoplay());
+                    // Dots navigation also stops autoplay
+                    this.dotsContainer.addEventListener('click', (e) => { if (e.target.classList.contains('carousel-dot')) this.stopAutoplay(); });
+                    // Touch Events
+                    this.track.addEventListener('touchstart', (e) => { this.touchStartX = e.touches[0].clientX; this.isDragging = true; this.stopAutoplay(); this.track.style.transition = 'none'; }, { passive: true });
+                    this.track.addEventListener('touchmove', (e) => { if (!this.isDragging) return; this.touchEndX = e.touches[0].clientX; const diff = this.touchStartX - this.touchEndX; const currentPos = -this.currentIndex * this.slideWidth; this.track.style.transform = `translateX(${currentPos - diff}px)`; }, { passive: true }); // Move track visually
+                    this.track.addEventListener('touchend', () => { if (!this.isDragging) return; this.isDragging = false; this.track.style.transition = 'transform var(--transition-slow)'; if (this.touchEndX === 0) this.touchEndX = this.touchStartX; this.handleSwipe(); this.touchEndX = 0; this.startAutoplay(); }, { passive: true }); // Resume autoplay
+                    this.track.addEventListener('touchcancel', () => { if (!this.isDragging) return; this.isDragging = false; this.track.style.transition = 'transform var(--transition-slow)'; this.goToSlide(this.currentIndex, true); this.touchEndX = 0; this.startAutoplay(); }, { passive: true }); // Resume autoplay
+                    // Modal Close Listeners
+                    this.modalClose.addEventListener('click', () => this.closeOfferModal());
+                    this.modal.addEventListener('click', (e) => { if (e.target === this.modal) this.closeOfferModal(); });
+                    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && this.modal.classList.contains('active')) this.closeOfferModal(); });
+                    // Resize Listener
+                    let resizeTimer; window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => this.handleResize(), 250); });
                 },
-                handleSwipe: function() { /* ... (same as before) ... */
-                    const swipeThreshold = 50; const diff = this.touchStartX - this.touchEndX; if (Math.abs(diff) > swipeThreshold) { if (diff > 0) this.goToSlide(this.currentIndex + 1); else this.goToSlide(this.currentIndex - 1); } else { this.goToSlide(this.currentIndex, true); }
+                handleSwipe: function() {
+                    const swipeThreshold = 50; const diff = this.touchStartX - this.touchEndX;
+                    if (Math.abs(diff) > swipeThreshold) { if (diff > 0) this.goToSlide(this.currentIndex + 1); else this.goToSlide(this.currentIndex - 1); }
+                    else { this.goToSlide(this.currentIndex, true); } // Snap back if not enough swipe
                 },
-                goToSlide: function(index, animate = true) { /* ... (same as before) ... */
-                     if ((!this.slideWidth || this.slideWidth <= 0) && this.track.children.length > 0) { this.handleResize(); return; } if (!this.slideWidth || this.slideWidth <= 0) return; const maxIndex = Math.max(0, this.totalSlides - this.slidesToShow); index = Math.max(0, Math.min(index, maxIndex)); this.currentIndex = index; const position = -this.currentIndex * this.slideWidth; this.track.style.transition = animate ? 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'; this.track.style.transform = `translateX(${position}px)`; if (!animate) { requestAnimationFrame(() => { requestAnimationFrame(() => { this.track.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)'; }); }); } this.updateActiveDot(); this.updateNavButtons(maxIndex);
+                goToSlide: function(index, animate = true) {
+                    if ((!this.slideWidth || this.slideWidth <= 0) && this.track.children.length > 0) { this.handleResize(); return; }
+                    if (!this.slideWidth || this.slideWidth <= 0) return;
+
+                    const maxIndex = Math.max(0, this.totalSlides - this.slidesToShow);
+
+                    // Autoplay Loop Logic
+                    if (this.autoplayIntervalId !== null && !this.isHovering && !this.isDragging) { // Check if autoplay is active
+                         if (index > maxIndex) {
+                              index = 0; // Loop to beginning
+                              animate = false; // Don't animate the jump back usually
+                         } else if (index < 0) {
+                              index = maxIndex; // Loop to end (less common for next)
+                              animate = false;
+                         }
+                    } else {
+                         // Manual navigation clamping
+                         index = Math.max(0, Math.min(index, maxIndex));
+                    }
+
+                    this.currentIndex = index;
+                    const position = -this.currentIndex * this.slideWidth;
+                    this.track.style.transition = animate ? 'transform var(--transition-slow)' : 'none';
+                    this.track.style.transform = `translateX(${position}px)`;
+                    // Ensure transition is re-enabled after non-animated jump
+                    if (!animate) { requestAnimationFrame(() => { requestAnimationFrame(() => { this.track.style.transition = 'transform var(--transition-slow)'; }); }); }
+                    this.updateActiveDot(); this.updateNavButtons(maxIndex);
                 },
-                updateNavButtons: function(maxIndex) { /* ... (same as before) ... */
+                 updateNavButtons: function(maxIndex) { /* ... keep existing logic ... */
                      this.prevButton.disabled = (this.currentIndex === 0); this.nextButton.disabled = (this.currentIndex >= maxIndex);
+                 },
+                nextSlide: function() { // Helper for autoplay
+                    this.goToSlide(this.currentIndex + 1);
+                },
+                startAutoplay: function() {
+                    if (this.autoplayIntervalId) return; // Already running
+                    this.isHovering = false;
+                    console.log("Starting autoplay...");
+                    this.autoplayIntervalId = setInterval(() => this.nextSlide(), this.autoplayDelay);
+                },
+                stopAutoplay: function() {
+                    if (!this.autoplayIntervalId) return; // Not running
+                     this.isHovering = true; // Assume stop is due to hover or interaction
+                    console.log("Stopping autoplay...");
+                    clearInterval(this.autoplayIntervalId);
+                    this.autoplayIntervalId = null;
                 },
 
                 // --- Share Methods ---
-                setupShareMenus: function() { /* ... (same as before) ... */
-                    const shareMenus = this.track.querySelectorAll('.share-menu'); shareMenus.forEach(menu => { const shareBtn = menu.querySelector('.share-btn'); const shareOptionsContainer = menu.querySelector('.share-options'); const eventId = parseInt(menu.dataset.id); const event = upcomingEvents.find(e => e.id === eventId); if (!event) return; shareBtn.addEventListener('click', (e) => { e.stopPropagation(); const isActive = menu.classList.contains('active'); this.track.querySelectorAll('.share-menu.active').forEach(activeMenu => { if (activeMenu !== menu) { activeMenu.classList.remove('active'); activeMenu.querySelector('.share-btn').setAttribute('aria-expanded', 'false'); } }); menu.classList.toggle('active'); shareBtn.setAttribute('aria-expanded', !isActive); }); const shareOptions = shareOptionsContainer.querySelectorAll('.share-option'); shareOptions.forEach(option => { option.addEventListener('click', (e) => { e.stopPropagation(); const platform = option.dataset.platform; this.shareEvent(event, platform, option); menu.classList.remove('active'); shareBtn.setAttribute('aria-expanded', 'false'); }); }); }); document.addEventListener('click', (e) => { if (!e.target.closest('.share-menu')) { this.track.querySelectorAll('.share-menu.active').forEach(activeMenu => { activeMenu.classList.remove('active'); activeMenu.querySelector('.share-btn').setAttribute('aria-expanded', 'false'); }); } }, true);
+                setupShareMenus: function() { /* ... keep existing logic ... */
+                     const shareMenus = this.track.querySelectorAll('.share-menu'); shareMenus.forEach(menu => { const shareBtn = menu.querySelector('.share-btn'); const shareOptionsContainer = menu.querySelector('.share-options'); const offerId = menu.dataset.id; const offer = this.getOfferById(offerId); if (!offer) return; shareBtn.addEventListener('click', (e) => { e.stopPropagation(); const isActive = menu.classList.contains('active'); this.track.querySelectorAll('.share-menu.active').forEach(activeMenu => { if (activeMenu !== menu) { activeMenu.classList.remove('active'); activeMenu.querySelector('.share-btn').setAttribute('aria-expanded', 'false'); } }); menu.classList.toggle('active'); shareBtn.setAttribute('aria-expanded', !isActive); }); const shareOptions = shareOptionsContainer.querySelectorAll('.share-option'); shareOptions.forEach(option => { option.addEventListener('click', (e) => { e.stopPropagation(); const platform = option.dataset.platform; this.shareOffer(offer, platform, option); menu.classList.remove('active'); shareBtn.setAttribute('aria-expanded', 'false'); }); }); }); document.addEventListener('click', (e) => { if (!e.target.closest('.share-menu')) { this.track.querySelectorAll('.share-menu.active').forEach(activeMenu => { activeMenu.classList.remove('active'); activeMenu.querySelector('.share-btn').setAttribute('aria-expanded', 'false'); }); } }, true);
                 },
-                shareEvent: async function(event, platform, buttonElement) { /* ... (same as before - remember FB App ID placeholder) ... */
-                    const eventUrl = window.location.href; const eventTitle = event.title; const eventText = `${event.title} on ${event.date} at ${event.time}. Location: ${event.location}`; const encodedUrl = encodeURIComponent(eventUrl); const encodedText = encodeURIComponent(eventText); const encodedTitle = encodeURIComponent(eventTitle); let shareUrl = ''; switch (platform) { case 'copy': try { await navigator.clipboard.writeText(eventUrl); const originalIcon = buttonElement.innerHTML; buttonElement.innerHTML = '<i class="fas fa-check" style="color: green;"></i>'; setTimeout(() => { buttonElement.innerHTML = originalIcon; }, 1500); } catch (err) { console.error('Failed to copy link: ', err); alert('Failed to copy link.'); } return; case 'whatsapp': shareUrl = `https://wa.me/?text=${encodedText}%0A${encodedUrl}`; break; case 'messenger': shareUrl = `https://www.facebook.com/dialog/send?link=${encodedUrl}&app_id=123456789&redirect_uri=${encodedUrl}`; console.warn("Messenger share requires valid FB App ID."); break; default: console.warn('Unknown share platform:', platform); return; } if (shareUrl) { window.open(shareUrl, '_blank', 'noopener,noreferrer,width=600,height=400'); }
-                },
+                 generateOfferLink: function(offerId) { const url = new URL(window.location.origin + window.location.pathname); url.searchParams.set('offerId', offerId); return url.toString(); },
+                 shareOffer: async function(offer, platform, buttonElement) { // Renamed from shareEvent
+                     const offerUrl = this.generateOfferLink(offer.id); const offerTitle = offer.title; const offerText = `${offer.title} on ${offer.date}. Location: ${offer.location}`; const encodedUrl = encodeURIComponent(offerUrl); const encodedText = encodeURIComponent(offerText); const encodedTitle = encodeURIComponent(offerTitle); let shareUrl = '';
+                     switch (platform) {
+                         case 'copy':
+                             try { await navigator.clipboard.writeText(offerUrl); this.showToast('Link Copied!'); } // Use internal toast
+                             catch (err) { console.error('Failed to copy link: ', err); alert('Failed to copy link.'); } return;
+                         case 'whatsapp': shareUrl = `https://wa.me/?text=${encodedText}%0A${encodedUrl}`; break;
+                         case 'messenger': shareUrl = `https://www.facebook.com/dialog/send?link=${encodedUrl}&app_id=YOUR_FACEBOOK_APP_ID&redirect_uri=${encodedUrl}`; console.warn("Messenger share requires valid FB App ID."); break; // <<< Replace YOUR_FACEBOOK_APP_ID
+                         default: console.warn('Unknown share platform:', platform); return;
+                     }
+                     if (shareUrl) window.open(shareUrl, '_blank', 'noopener,noreferrer,width=600,height=400');
+                 },
 
-                // --- Modal Methods ---
-                openEventModal: function(eventId) { /* ... (same as before - populates new modal structure) ... */
-                    const eventData = upcomingEvents.find(e => e.id === eventId); if (!eventData) return; this.modalImage.src = eventData.imageUrl || "https://via.placeholder.com/600x220/cccccc/888888?text=Event"; this.modalImage.alt = eventData.title + " event image"; this.modalCategoryTag.textContent = eventData.categoryName || eventData.category; this.modalCategoryTag.className = `modal-category-tag category-${eventData.category}`; this.modalEventTitle.textContent = eventData.title; this.modalEventTitle.setAttribute('id', `modal-event-title-${eventData.id}`); this.modal.setAttribute('aria-labelledby', `modal-event-title-${eventData.id}`); this.modalDate.textContent = eventData.fullDate ? new Date(eventData.fullDate).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}) : eventData.date; this.modalTime.textContent = eventData.time; this.modalLocation.textContent = eventData.location; this.modalDesc.textContent = eventData.description; this.modalActions.innerHTML = ''; if (eventData.actions && Array.isArray(eventData.actions)) { eventData.actions.forEach(action => { const button = document.createElement('button'); const isPrimary = ['join', 'tickets', 'rsvp', 'register'].includes(action.type); button.className = `event-action-btn ${isPrimary ? 'primary' : 'secondary'}`; button.innerHTML = `<i class="fas ${action.icon}" aria-hidden="true"></i> ${action.label}`; button.addEventListener('click', () => { alert(`Action: '${action.label}' for event '${eventData.title}'\n(Actual implementation needed)`); }); this.modalActions.appendChild(button); }); } this.modal.removeAttribute('hidden'); requestAnimationFrame(() => { this.modal.classList.add('active'); }); document.body.style.overflow = 'hidden'; this.modal.querySelector('.modal-close').focus();
-                },
-                closeEventModal: function() { /* ... (same as before) ... */
-                    this.modal.classList.remove('active'); this.modal.addEventListener('transitionend', () => { this.modal.setAttribute('hidden', 'true'); }, { once: true }); document.body.style.overflow = '';
-                }
-                
+                 // --- Modal Methods ---
+                 openOfferModal: function(offerId) { // Renamed, uses internal map
+                     const offerData = this.getOfferById(offerId);
+                     if (!offerData) return;
+                     this.modalImage.src = offerData.imageUrl || "https://via.placeholder.com/600x220/cccccc/888888?text=Offer"; this.modalImage.alt = offerData.title + " offer image";
+                     this.modalCategoryTag.textContent = offerData.categoryName || offerData.category; this.modalCategoryTag.className = `modal-category-tag category-${offerData.category}`;
+                     this.modalOfferTitle.textContent = offerData.title; this.modalOfferTitle.setAttribute('id', `modal-offer-title-${offerData.id}`); this.modal.setAttribute('aria-labelledby', `modal-offer-title-${offerData.id}`);
+                     this.modalDate.textContent = offerData.fullDate ? new Date(offerData.fullDate+'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}) : offerData.date; // Show full date
+                     this.modalTime.textContent = offerData.time || 'N/A';
+                     this.modalLocation.textContent = offerData.location || 'N/A';
+                     this.modalDesc.textContent = offerData.description || 'No description available.';
+                     // Setup sharing buttons for this specific offer in the modal footer
+                     this.modalFooterSharing.style.display = 'flex'; // Always show footer for modal
+                     this.modalShareWhatsapp.onclick = () => this.shareOffer(offerData, 'whatsapp');
+                     this.modalShareCopy.onclick = () => this.shareOffer(offerData, 'copy');
+
+                     // Populate Action Buttons
+                     this.modalActions.innerHTML = ''; // Clear previous
+                     if (offerData.actions && Array.isArray(offerData.actions)) {
+                         offerData.actions.forEach(action => { const btn = document.createElement('button'); const isPrimary = ['join', 'tickets', 'rsvp', 'register', 'shop'].includes(action.type); btn.className = `offer-action-btn ${isPrimary ? 'primary' : 'secondary'}`; btn.innerHTML = `<i class="fas ${action.icon}" aria-hidden="true"></i> ${action.label}`; btn.addEventListener('click', () => alert(`Action: '${action.label}' clicked.\n(Implement actual action)`)); this.modalActions.appendChild(btn); });
+                     }
+
+                     this.modal.removeAttribute('hidden');
+                     requestAnimationFrame(() => { this.modal.classList.add('active'); });
+                     document.body.style.overflow = 'hidden';
+                     this.modal.querySelector('.modal-close').focus();
+                     this.stopAutoplay(); // Stop autoplay when modal opens
+                 },
+                 closeOfferModal: function() {
+                     this.modal.classList.remove('active');
+                     this.modal.addEventListener('transitionend', () => { this.modal.setAttribute('hidden', 'true'); }, { once: true });
+                     document.body.style.overflow = '';
+                     this.startAutoplay(); // Resume autoplay when modal closes
+                 },
+                  handleDeepLink: function() {
+                      const urlParams = new URLSearchParams(window.location.search);
+                      const offerId = urlParams.get('offerId');
+                      if (offerId) {
+                          console.log("Deep link detected for offerId:", offerId);
+                          const offer = this.getOfferById(offerId);
+                          if (offer && typeof offer.index === 'number') {
+                              const targetIndex = offer.index;
+                              const maxIndex = Math.max(0, this.totalSlides - this.slidesToShow);
+                              const slideIndexToShow = Math.min(targetIndex, maxIndex); // Go to the slide where the item is first visible
+
+                              console.log(`Deep link: Found offer "${offer.title}" at index ${targetIndex}. Going to slide index ${slideIndexToShow}.`);
+
+                              // Go to slide immediately (no animation)
+                              this.goToSlide(slideIndexToShow, false);
+
+                              // Highlight the card after slight delay
+                              setTimeout(() => {
+                                  const targetCard = this.track.querySelector(`.featured-offer-card[data-id="${offerId}"]`);
+                                  if (targetCard) {
+                                      console.log("Highlighting card:", targetCard);
+                                      targetCard.classList.add('highlight-card');
+                                       // Scroll card into view within the track if needed (though goToSlide should handle it)
+                                      // targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                                      setTimeout(() => targetCard.classList.remove('highlight-card'), 3000);
+                                       // Optional: Open modal automatically?
+                                       // this.openOfferModal(offerId);
+                                  } else {
+                                      console.warn("Deep link target card not found in DOM after slide change:", offerId);
+                                  }
+                              }, 400); // Delay to allow rendering/sliding
+
+                          } else {
+                              console.warn("Deep link offerId not found or index missing:", offerId);
+                          }
+                      }
+                  }
 
             }; // End featuredCarousel Object
 
