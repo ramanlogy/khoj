@@ -192,6 +192,19 @@
         #toast-notification { /* ... keep existing ... */ position: fixed; bottom: 25px; left: 50%; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 12px 22px; border-radius: 25px; font-size: 0.95rem; z-index: 1100; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; transform: translate(-50%, 10px); }
         #toast-notification.show { opacity: 1; transform: translate(-50%, 0); }
 
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #d4143dd4;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        .back-button:hover {
+            background-color:darkred;
+        }
+
     </style>
 </head>
 <body>
@@ -264,6 +277,7 @@
 
      <!-- Toast Notification -->
      <div id="toast-notification">Copied!</div>
+     <a href="../index.html" class="back-button">Back to Home Page</a>
 
     <!-- JavaScript -->
     <script>
